@@ -1,32 +1,31 @@
 [package]
 name = "logic_tracer"
 version = "0.1.0"
+description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
+license = "MIT"
+
 edition = "2021"
 authors = ["Yrrrrrf"]
 
-license = "MIT"
-description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
 # repository = "
+
 exclude = [
+    "resources/*",
+    "target",
+    ".gitignore",
+    "Cargo.lock",
+    "LICENSE",
+    "README",
+
+    # SOME POSSIBLE EXCLUDES (not sure if they are necessary)
     "tests",
     "benches", 
     "examples", 
-    "docs", 
-    ".github", 
-    ".gitignore", 
-    ".gitattributes", 
-    "Cargo.lock", 
-    "README.md", 
-    "LICENSE"
+    "docs"
     ]  # exclude these files from the package
 
 
-[profile.dev]
-opt-level = 0  # no optimizations
-
-[profile.release]
-opt-level = 3  # full optimizations
-
+# RUN MODE ------------------------------------------------------------------------------------
 
 # [[bin]]  # add main.rs to the bin section
 # name = "main"  # cargo run --bin main
@@ -38,8 +37,21 @@ opt-level = 3  # full optimizations
 # path = "src/dev.rs"
 
 
+# COMPILE OPTIMIZATION ------------------------------------------------------------------------
+# where 1 is the lowest and 3 is the highest level of optimization
+
+[profile.dev]
+opt-level = 0  # no optimizations
+
+[profile.release]
+opt-level = 3  # full optimizations
+
+
+# DEPENDENCIES --------------------------------------------------------------------------------
+
 [dependencies]
-reqwest = { version = "0.11", features = ["blocking", "json"] }  # HTTP client (https://docs.rs/reqwest/latest/reqwest/)
-tokio = { version = "1", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)
-# serde = { version = "1.0.0", features = ["derive"] }  # Serialization (https://docs.serde.rs/serde/)
+# reqwest = { version = "0.11", features = ["blocking", "json"] }  # HTTP client (https://docs.rs/reqwest/latest/reqwest/)
+# tokio = { version = "1", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)
+serde = { version = "1.0.164", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
+
 

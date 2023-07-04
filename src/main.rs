@@ -1,7 +1,8 @@
 #![allow(dead_code)]
+#![allow(unused_mut)]
 #![allow(unused_imports)]
 #![allow(unused_variables)]
-#![allow(unused_mut)]
+
 
 mod config;
 use config::globals::*;
@@ -9,11 +10,16 @@ use config::globals::*;
 mod util;
 use util::terminal::*;
 
+mod components;
+use components::*;
+
 
 fn main() {
-    // terminal::clear();
-    println!("{} {}\n", (set_fg(APP_NAME, "green")), APP_VERSION);  // Print the app name and version
-    // println!("Author: {}", terminal::set_fg(&APP_AUTHOR, "blue"));  // Print the app author
+    clear();  // Clear the terminal
+    println!("{} {}", (set_fg(APP_NAME, "g")), APP_VERSION);  // Print the app name and version
+    // println!("Author: {}\n", set_fg(APP_AUTHOR, "blue"));  // Print the app author
+    println!("{} ", set_fg("Loading", "y"));    
+
 
 
 }
