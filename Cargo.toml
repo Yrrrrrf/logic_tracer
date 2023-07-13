@@ -3,11 +3,11 @@ name = "logic_tracer"
 version = "0.1.0"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
 license = "MIT"
+repository = "https://github.com/Yrrrrrf/logic_tracer"
 
 edition = "2021"
 authors = ["Yrrrrrf"]
 
-# repository = "
 
 exclude = [
     "resources/*",
@@ -41,10 +41,10 @@ exclude = [
 # where 1 is the lowest and 3 is the highest level of optimization
 
 [profile.dev]
-opt-level = 0  # no optimizations
+opt-level = 0  # no optimizations (fastest compile time, slowest runtime)
 
 [profile.release]
-opt-level = 3  # full optimizations
+opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 
 
 # DEPENDENCIES --------------------------------------------------------------------------------
@@ -52,6 +52,4 @@ opt-level = 3  # full optimizations
 [dependencies]
 # reqwest = { version = "0.11", features = ["blocking", "json"] }  # HTTP client (https://docs.rs/reqwest/latest/reqwest/)
 # tokio = { version = "1", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)
-serde = { version = "1.0.164", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
-
-
+# serde = { version = "1.0.164", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
