@@ -14,7 +14,7 @@ Also implements the [Shunting Yard Algorithm](https://en.wikipedia.org/wiki/Shun
 To run the project, use the command:
 
 ```rust
-// cargo run src/main.rs  // run main (for testing build)
+cargo run src/main.rs  // run main (for testing build)
 cargo run  // run main
 ```
 
@@ -28,9 +28,14 @@ cargo run  // run main
 
 This project is licensed under the terms of the [MIT license](./LICENSE)
 
+## References
+- [iced gui calculator](https://codinginformer.com/blog/rust-iced-calculator-tutorial)
+
 ## Roadmap
-- [ ] Read a logical proposition
-- [ ] Validate the proposition
 - [ ] Tokenize the proposition
+- [ ] Validate the proposition
+- [ ] Read a logical proposition
 - [ ] **Solve proposition** (Shunting Yard Algorithm)
+- [ ] Build the truth table
+- [ ] Build the AST (parse tree)
 - [ ] Reduce a proposition to its simplest form (boolean algebra) 

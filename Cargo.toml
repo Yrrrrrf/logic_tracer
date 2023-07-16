@@ -4,9 +4,8 @@ version = "0.1.0"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
 license = "MIT"
 repository = "https://github.com/Yrrrrrf/logic_tracer"
-
-edition = "2021"
 authors = ["Yrrrrrf"]
+edition = "2021"
 
 
 exclude = [
@@ -15,7 +14,7 @@ exclude = [
     ".gitignore",
     "Cargo.lock",
     "LICENSE",
-    "README",
+    "README.md",
 
     # SOME POSSIBLE EXCLUDES (not sure if they are necessary)
     "tests",
@@ -50,6 +49,9 @@ opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 # DEPENDENCIES --------------------------------------------------------------------------------
 
 [dependencies]
+# regex = { version = "1.9.1", features = ["unicode"] }  # Regular expressions (https://docs.rs/regex/1.4.5/regex/)
 # reqwest = { version = "0.11", features = ["blocking", "json"] }  # HTTP client (https://docs.rs/reqwest/latest/reqwest/)
 # tokio = { version = "1", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)
 # serde = { version = "1.0.164", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
+
+
