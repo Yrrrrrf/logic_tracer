@@ -6,10 +6,12 @@
 //! 
 //! ## Features
 //! 
+//! - Creates a logic trace
 //! - Creates a truth table
 //! - Creates a Karnaugh map
-//! - Creates a logic trace
-//! - Reduces the logic proposition to its simplest form
+//! - Reduces the logic proposition to its simplest form (if possible)
+//! - Creates a circuit diagram (if possible)
+//! - Serializes the logic proposition to a file <must be implemented>
 //! 
 
 
@@ -35,10 +37,18 @@ mod circuits {
     pub mod combinational;
     pub mod sequential;
 }
+// pub use circuits::*;
 
 mod proposition;
 pub use proposition::*;
 
+
+mod gates;
+pub use gates::*;
+
+
+
+// ? Tests ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {

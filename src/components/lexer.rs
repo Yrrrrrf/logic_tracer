@@ -1,10 +1,10 @@
-//! Lexer
+//! # Lexer
 //! 
+//! Is the **first step in the compilation process**. It takes the input string and breaks it down into a list of tokens.
 //! 
-//! Lexer will read the input string and break it down into a list of tokens
 //! Each Token will be categorized into wheter it is READING the FILE, a LINK, or a COMPONENT
 //! 
-//! The list of tokens will then be passed to the [`Parser`] for evaluation.
+//! Then the list of tokens will be passed to the ['Parser'], which will be responsible for creating the AST (Abstract Syntax Tree).
 
 // ? Imports --------------------------------------------------------------------------------------------------------------------------------------------------------------
 

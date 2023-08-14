@@ -13,6 +13,8 @@ cargo run --release # Build and run the project in release mode
 
 cargo update # Update the dependencies
 cargo doc --open # Generate the documentation and open it in the browser
+# documentatio without dependencies
+cargo doc --no-deps --open
 
 cargo clean # Remove the target directory
 cargo clean -p <project_name> # Remove the target directory of a specific project

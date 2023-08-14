@@ -28,7 +28,6 @@
 #![allow(dead_code)]
 
 // Compare this snippet from src\circuits\sequential.rs:
-
 // use logic_tracer::gpio::GPIO;
 
 
@@ -57,7 +56,6 @@ impl CombinationalCircuit {
 }
 
 
-
 #[derive(Debug, Clone)]
 pub struct HalfAdder {
     a: bool,
@@ -78,12 +76,15 @@ impl HalfAdder {
 
     pub fn set_a(&mut self, a: bool) {
         self.a = a;
-        self.sum = self.a ^ self.b;   // XOR
-        self.carry = self.a & self.b;  // AND
+        self.update_output();
     }
 
     pub fn set_b(&mut self, b: bool) {
         self.b = b;
+        self.update_output();
+    }
+
+    fn update_output(&mut self) {
         self.sum = self.a ^ self.b;
         self.carry = self.a & self.b;
     }
@@ -95,6 +96,7 @@ impl HalfAdder {
     pub fn get_carry(&self) -> bool {
         self.carry
     }
+
 
 }
 

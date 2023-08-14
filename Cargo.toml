@@ -54,4 +54,6 @@ opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 # tokio = { version = "1", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)
 # serde = { version = "1.0.164", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
 
+# clap = "3"  # Command line arguments (https://docs.rs/clap/3.0.0-beta.2/clap/)
+colorful = {version = "0.2.2"}  # Colorful terminal output (https://docs.rs/colorful/latest/colorful/)
 
