@@ -11,27 +11,34 @@
 //! - Creates a Karnaugh map
 //! - Reduces the logic proposition to its simplest form (if possible)
 //! - Creates a circuit diagram (if possible)
-//! - Serializes the logic proposition to a file <must be implemented>
+//! - Serializes the logic proposition to a file (must be implemented)
 //! 
 
 
 /// # Logic Tracer
 /// 
 /// `logic_tracer` is a library for tracing the logic of a logic propopsition.
-mod components {
-    pub mod ast;
-    pub mod lexer;
-    // pub mod parser;
-    pub mod token;
-}
-pub use components::*;
+
+mod components;
+pub use components::{
+    lexer,
+    // token,
+    parser,
+    ast,
+    operators,
+    grammar
+};
+pub use components::operators::Operator;
+
+// mod operators;
+// pub use operators::Operator;
 
 
+/// Oseas
 mod util {
     pub mod terminal;
 }
-pub use util::*;
-
+// pub use util::*;
 
 mod circuits {
     pub mod combinational;
@@ -43,8 +50,6 @@ mod proposition;
 pub use proposition::*;
 
 
-mod gates;
-pub use gates::*;
 
 
 
@@ -52,9 +57,14 @@ pub use gates::*;
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
+    // use crate::parser::*;
+
 
     #[test]  // Indicates that this is a test
-    fn test_eq() {
+    fn parse_test_01() {
+        // let mut parse = Parser::new("A & B");
+        // lexer.pair_brackets();
+
         assert_eq!(2 + 2, 4);
     }
     

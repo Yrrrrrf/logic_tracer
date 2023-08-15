@@ -9,7 +9,6 @@
 
 use core::fmt;
 
-use super::token::LogicToken;
 use crate::util::terminal::set_fg;
 
 
@@ -35,17 +34,26 @@ impl AST {
     }
 }
 
+/// The node enum is a vertex on a binary tree (AST)
+/// 
+/// It can be a variable or an operator  
+/// If it is a variable, it will be a leaf node  
+/// If it is an operator, it will be a non-leaf node (internal Node)
 pub enum Node {
     Variable(String),  // Any variable
-    Operator(LogicToken, Box<Node>, Box<Node>),  // Any operator with two operands
+    // Operator(LogicToken, Box<Node>, Box<Node>),  // Any operator with two operands
 }
 
 
 // Implement my own Debug trait
 impl fmt::Debug for AST {
+    /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&set_fg("AST", "g"))
             .field("name", &self.name)
+
+            // todo: make a better visualization of the AST (binary tree)
+
             .finish()
     }
 }

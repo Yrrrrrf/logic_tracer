@@ -17,11 +17,11 @@ mod circuits;
 use circuits::sequential::*;
 use circuits::combinational::*;
 
-pub mod gates;
+// pub mod operators;
 
 use crate::components::ast::AST;
 
-use crate::gates::*;
+use crate::operators::*;
 
 
 use colorful;  // Colorful text
@@ -36,7 +36,6 @@ fn main() {
     // println!("{} ", set_fg("Loading", "y"));    
 
     run();  // Run the app
-
     // cargo watch -q -c -x 'run -q'  // Run the app, quite, clear terminal
     // cargo doc --no-deps --open
 }
@@ -45,11 +44,10 @@ fn main() {
 /// Run the app
 pub fn run() {
 
-    let mut lexer = AST::new("Hello!");
-    println!("{:?}", lexer);
-    println!("{:#?}", lexer);
+    // let mut lexer = AST::new("Test AST!");
+    // println!("{:?}", lexer);
+    // println!("{:#?}", lexer);
     // ● ○
-
 
     // test_colorful_crate();
 }
@@ -58,10 +56,9 @@ pub fn run() {
 pub fn test_colorful_crate() {
     println!("{}", "This code is editable and runnable!".gradient(Color::Red));
     println!("{}", "¡Este código es editable y ejecutable!".gradient(Color::Green));
-    println!("{}", "Ce code est modifiable et exécutable !".gradient(Color::Yellow));
     println!("{}", "Questo codice è modificabile ed eseguibile!".gradient(Color::Blue));
-    println!("{}", "このコードは編集して実行出来ます！".gradient(Color::Magenta));
-    println!("{}", "여기에서 코드를 수정하고 실행할 수 있습니다!".gradient(Color::Cyan));
-    println!("{}", "Ten kod można edytować oraz uruchomić!".gradient(Color::LightGray));
-
+    // println!("{}", "Ce code est modifiable et exécutable !".gradient(Color::Yellow));
+    // println!("{}", "여기에서 코드를 수정하고 실행할 수 있습니다!".gradient(Color::Cyan));
+    // println!("{}", "このコードは編集して実行出来ます！".gradient(Color::Magenta));
+    // println!("{}", "Ten kod można edytować oraz uruchomić!".gradient(Color::LightGray));
 }

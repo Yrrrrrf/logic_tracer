@@ -1,14 +1,5 @@
 //! Terminal related scripts
 //! 
-//! ### Contents:
-// - [ask()](fn.ask.html) - Ask for input from the console
-// - [print_type_of()](fn.print_type_of.html) - Print the type of a variable
-// - [get_type_of()](fn.get_type_of.html) - Return the type of a variable as a string
-//! 
-// - [clear()](fn.clear.html) - Clear and cursor position
-// - [set_fg()](fn.set_fg.html) - Return a string with the color set
-// - [set_bg()](fn.set_bg.html) - Return a string with the foreground color set
-
 #![allow(unused)]  // Allow unused code
 
 // ? util methods for (any) rust code

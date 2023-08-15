@@ -1,4 +1,5 @@
 //! # Lexer
+//! Lexical Analysis
 //! 
 //! Is the **first step in the compilation process**. It takes the input string and breaks it down into a list of tokens.
 //! 
@@ -8,15 +9,23 @@
 
 // ? Imports --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-use super::token::*;
+use std::fmt;
+
+use crate::util::terminal::set_fg;
+
+use super::grammar::GrammarToken;
 
 // ? Lexer --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Clone, PartialEq)]
 pub struct Lexer {
+    /// The source code to be parsed
     pub src: String,  // input string
+    /// Current character being processed
     pub curr: char,   // current character
+    /// Current position in input (points to current char)
     pub pos: usize,  // current position in input (points to current char)
+    /// End of file flag
     pub eof: bool  // end of file flag
 }
 
@@ -52,18 +61,18 @@ impl Lexer {
     /// 
     /// ### Returns
     /// - `Result<Token, String>`: A Result enum that contains either a Token or an error message
-    pub fn next_token(&mut self) -> Result<LogicToken, String> {
+    pub fn next_token(&mut self) -> Result<GrammarToken, String> {
         if self.eof {
-            return Ok(LogicToken::EndOfFile);  // If the end of file flag is true then return the EndOfFile token
+            return Ok(GrammarToken::End);  // If the end of file flag is true then return the EndOfFile token
         }
         match self.curr {  // for all the values in the input string
             ' ' | '\n' | '\t' | '\r' => {
                 self.bump();
-                return Ok(LogicToken::Space);
+                return Ok(GrammarToken::Space);
             }
             _ => {
                 self.bump();
-                return Ok(LogicToken::Reading);
+                return Ok(GrammarToken::Reading);
             }
         }
     }
@@ -113,8 +122,8 @@ impl Lexer {
     /// 
     /// ### Returns:
     /// - `Vec<(Token, char)>`: A Vec of tuples that contain a Token and a char
-    pub fn get_tokens(&mut self) -> Vec<(LogicToken, char)> {
-        let mut tokens: Vec<(LogicToken, char)> = Vec::new();  // create a new Vec to hold the tokens
+    pub fn get_tokens(&mut self) -> Vec<(GrammarToken, char)> {
+        let mut tokens: Vec<(GrammarToken, char)> = Vec::new();  // create a new Vec to hold the tokens
 
         self.trim();  // remove any whitespace from the input string
 
@@ -122,18 +131,21 @@ impl Lexer {
             match self.next_token() {  // get the next token
                 Ok(token) => {  // if the token is Ok
                     match token {
-                        LogicToken::EndOfFile => {  // if the token is EndOfFile
+                        GrammarToken::End => {  // if the token is EndOfFile
                             // println!("{}{:<10}{} ", "\x1b[31m", token.to_string().as_str(), "\x1b[0m");
                             break;
                         },
                         _ => {
                             let n_th_char: char = self.src.chars().nth(self.pos-1).unwrap();
-                            let item: (LogicToken, char) = (token, n_th_char);
+                            let item: (GrammarToken, char) = (token, n_th_char);
                             // println!("{:<10} {}{:>4}{} {}{}{}", item.0.to_string().as_str(), "\x1b[32m", (self.pos-1), "\x1b[0m", "\x1b[34m", n_th_char, "\x1b[0m");
-                            tokens.push(item);  // push the tuple into the Vec
-                       }
+                            tokens.push(item);  // push the tuple into the Vec (Token, char)
+                        }
                     }  // now that we have the token, we can do something with it, like, we can parse it
                 },
+                // todo: this code looks a little bit messy, maybe we can improve it
+
+                // todo: improve error handling here
                 Err(error) => {  // if the token is Err
                     println!("Error: {}", error);  // print the error
                     break;  // break the loop
@@ -156,4 +168,23 @@ impl Lexer {
     }
 
 
+}
+
+
+// Implement my own Debug trait
+impl fmt::Debug for Lexer {
+    /// This function is used to format the output of the AST
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct(&set_fg("AST", "g"))
+            .field("src", &self.src)
+
+            
+            // todo: CHANGE THE SRC FIELD TO PRINT THE TOKEN TABLE
+            
+
+            .field("curr", &self.curr)
+            .field("pos", &self.pos)
+            .field("eof", &self.eof)
+            .finish()
+    }
 }

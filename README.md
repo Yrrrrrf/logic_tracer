@@ -29,7 +29,7 @@ cargo run  // run main
 This project is licensed under the terms of the [MIT license](./LICENSE)
 
 ## References
-- [iced gui calculator](https://codinginformer.com/blog/rust-iced-calculator-tutorial)
+- [iced gui calculator](https://codinginf ormer.com/blog/rust-iced-calculator-tutorial)
 
 ## Roadmap
 - [ ] Tokenize the proposition

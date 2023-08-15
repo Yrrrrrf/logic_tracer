@@ -18,9 +18,9 @@ exclude = [
 
     # SOME POSSIBLE EXCLUDES (not sure if they are necessary)
     "tests",
+    "log",
     "benches", 
     "examples", 
-    "docs"
     ]  # exclude these files from the package
 
 
