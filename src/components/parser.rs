@@ -6,13 +6,12 @@
 //! 
 //! The parser is implemented as a set of mutually recursive functions. Each function
 //! implements one of the grammar rules. The parser is a predictive recursive descent parser (PRDP).
-
 #![allow(unused)]
 
 
 use crate::{lexer::*, operators::Operator};
 use crate::components::grammar::*;
-
+use crate::components::grammar::GrammarToken::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Parser {
@@ -28,7 +27,8 @@ impl Parser {
     /// ### Arguments:
     /// - `lexer` - the lexer to be used
     /// 
-    pub fn new(mut lexer: Lexer) -> Self {
+    pub fn new(mut src: &str) -> Self {
+        let mut lexer = Lexer::new(&mut src);
         lexer.trim();  // trim all whitespaces
         // let current_token = lexer.curr;
         Parser {
@@ -40,31 +40,33 @@ impl Parser {
 
 
     pub fn parse(&mut self) -> Result<(), String> {
+
+        // Iterate over the tokens
+        // let mut token = self.lexer.
+
+
         Ok(())
+
+
+
+
+
+
     }
 
 
-    pub fn check_brackets(&mut self) -> Result<(), String> {
-        panic!("Not implemented yet")
-        // let mut brackets = 0;
-        // while self.current_token != TokenKind::Edn {
-        //     match self.current_token {
-        //         TokenKind::LeftBracket => brackets += 1,
-        //         TokenKind::RightBracket => brackets -= 1,
-        //         _ => ()
-        //     }
-        //     self.next_token();  // advance to next token
+    /// Evaluate the expression and return the results a vectot of bools.
+    pub fn evaluate(&mut self) -> Result<Vec<bool>, String> {
+
+        // todo: implement this function well
+        let mut results = vec![];  // results
+        // while self.current_token != GrammarToken::End { // while not end of expression
+            // let result = self.evaluate_expr()?;  // evaluate expression
+            // results.push(result);  // push result to results
+            // self.next_token();  // advance to next token
         // }
-        // if brackets != 0 {
-        //     Err(format!("Unbalanced brackets: {}", brackets))
-        // } else {
-        //     Ok(())
-        // }
+        Ok(results)
     }
-
-
-
-
 
 
 

@@ -15,6 +15,5 @@ Cargo.lock
 .vscode/
 
 # project specific files
-resources/data/
-resources/keys/
-doc/
+resources/data/*
+resources/keys/*

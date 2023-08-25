@@ -13,28 +13,38 @@ Also implements the [Shunting Yard Algorithm](https://en.wikipedia.org/wiki/Shun
 - Use `cargo build src/main.rs` to build the project.  
 To run the project, use the command:
 
-```rust
-cargo run src/main.rs  // run main (for testing build)
-cargo run  // run main
+```bash
+cargo run src/main.rs  # run main (for testing build)
+cargo run  # run main
 ```
 
-## Development
-- [rust](https://www.rust-lang.org/) as programming language
-- [cargo](https://doc.rust-lang.org/cargo/) as build system and package manager
+## Examples
 
-----
+```bash
+cargo run --example <example name>
+# examples list:
+# - parser
+# - regex
+# - ast
+# - kmap
+# - truth_table
+# - shunting_yard
+# - logic_operations
+```
 
 ## [License](LICENSE)
 
 This project is licensed under the terms of the [MIT license](./LICENSE)
 
 ## References
-- [iced gui calculator](https://codinginf ormer.com/blog/rust-iced-calculator-tutorial)
+- [iced gui calculator](https://codinginformer.com/blog/rust-iced-calculator-tutorial)
 
 ## Roadmap
-- [ ] Tokenize the proposition
-- [ ] Validate the proposition
 - [ ] Read a logical proposition
+- [ ] Validate brackets
+- [ ] Tokenize the proposition
+- [ ] Parse the proposition
+- [ ] Validate the proposition
 - [ ] **Solve proposition** (Shunting Yard Algorithm)
 - [ ] Build the truth table
 - [ ] Build the AST (parse tree)

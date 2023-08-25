@@ -5,6 +5,7 @@
 //! Rust itself implements some of the logic gates, but not all of them.
 
 use core::fmt;
+use std::fmt::Debug;
 
 use crate::util::terminal::set_fg;
 
@@ -17,6 +18,7 @@ pub enum Operator {
 
 
 impl Operator {
+    /// `Override` the default `to_string()` method to return a string representation of the token.
     pub fn to_string(&self) -> String {
         return format!("{:?}", self);
     }
@@ -77,12 +79,12 @@ pub enum LogicOp {
 }
 
 
-impl LogicOp {
-    /// `Override` the default `to_string()` method to return a string representation of the token.
-    pub fn to_string(&self) -> String {
-        return format!("{:?}", self);
-    }
-}
+// impl LogicOp {
+//     /// `Override` the default `to_string()` method to return a string representation of the token.
+//     pub fn to_string(&self) -> String {
+//         return format!("{:?}", self);
+//     }
+// }
 
 
 /// Math Operators
@@ -122,15 +124,9 @@ pub enum MathOp {
     AbsoluteValue,
 }
 
-
 impl MathOp {
-    /// `Override` the default `to_string()` method to return a string representation of the token.
-    pub fn to_string(&self) -> String {
-        return format!("{:?}", self);
-    }
+    // overwrite to_string() method
 }
-
-
 
 
 // Implement my own Debug trait
@@ -138,12 +134,12 @@ impl fmt::Debug for Operator {
     /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&set_fg("Operator", "g"))
-            .field("Type:", &self.to_string())
-            // .field("name", value)
+            // .field("Type:", 
+
             // todo: add a better way to print the data for this operator
             // print the ways to represent it (ASCII and Unicode)
-
 
             .finish()
     }
 }
+

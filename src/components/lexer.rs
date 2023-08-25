@@ -17,6 +17,7 @@ use super::grammar::GrammarToken;
 
 // ? Lexer --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+
 #[derive(Clone, PartialEq)]
 pub struct Lexer {
     /// The source code to be parsed
@@ -156,6 +157,67 @@ impl Lexer {
     }
 
 
+
+    pub fn check_brackets(&mut self) -> bool {
+        let mut tokens: Vec<(GrammarToken, char)> = Vec::new();  // create a new Vec to hold the tokens
+
+        
+        // use a loop to iterate over the tokens and check if the brackets are balanced
+        // if they are balanced, return true
+        // if they are not balanced, return false
+        // if the loop ends and the brackets are balanced, return true
+        // if the loop ends and the brackets are not balanced, return false
+        let mut open_brackets: Vec<char> = Vec::new();
+        let mut closed_brackets: Vec<char> = Vec::new();
+
+        self.trim();  // remove any whitespace from the input string
+
+        loop {  // print the tokens
+            match self.next_token() {  // get the next token
+                Ok(token) => {  // if the token is Ok
+                    match token {
+                        GrammarToken::End => {  // if the token is EndOfFile
+                            // println!("{}{:<10}{} ", "\x1b[31m", token.to_string().as_str(), "\x1b[0m");
+                            break;
+                        },
+                        _ => {
+                            let n_th_char: char = self.src.chars().nth(self.pos-1).unwrap();
+                            let item: (GrammarToken, char) = (token, n_th_char);
+                            // println!("{:<10} {}{:>4}{} {}{}{}", item.0.to_string().as_str(), "\x1b[32m", (self.pos-1), "\x1b[0m", "\x1b[34m", n_th_char, "\x1b[0m");
+                            tokens.push(item);  // push the tuple into the Vec (Token, char)
+                        }
+                    }  // now that we have the token, we can do something with it, like, we can parse it
+                },
+                Err(error) => {  // if the token is Err
+                    println!("Error: {}", error);  // print the error
+                    break;  // break the loop
+                }
+                }
+            }
+
+
+
+        for token in tokens {
+            match token.1 {
+                '(' | '[' | '{' => {
+                    open_brackets.push(token.1);
+                },
+                ')' | ']' | '}' => {
+                    closed_brackets.push(token.1);
+                },
+                _ => {}
+            }
+        }
+
+
+        if open_brackets.len() == closed_brackets.len() {
+            true
+        } else {
+            false
+        }
+
+    }
+
     /// Resets the Lexer struct fields (curr, pos, eof)
     /// Mantain the same src string
     /// 
@@ -175,12 +237,10 @@ impl Lexer {
 impl fmt::Debug for Lexer {
     /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct(&set_fg("AST", "g"))
+        f.debug_struct(&set_fg("Lexer", "g"))
             .field("src", &self.src)
-
             
             // todo: CHANGE THE SRC FIELD TO PRINT THE TOKEN TABLE
-            
 
             .field("curr", &self.curr)
             .field("pos", &self.pos)

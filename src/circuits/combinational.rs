@@ -29,33 +29,21 @@
 
 // Compare this snippet from src\circuits\sequential.rs:
 // use logic_tracer::gpio::GPIO;
+pub trait Combinational {
+    fn calculate(&mut self);
+
+    fn get_input(&self) -> Vec<bool>;
+    fn set_input(&mut self, input_line: Vec<bool>);
+    fn get_output(&self) -> bool;
+    // fn get_input_as_u8(&self) -> u8;
+    // fn get_output_as_u8(&self) -> u8; (...)
+    // fn get_output_as_u32(&self) -> u32;  To make it more generic (bit width)
 
 
-pub enum CombinationalCircuit {
-    HalfAdder,
-    FullAdder,
-    HalfSubtractor,
-    FullSubtractor,
-    Multiplexer,
-    Demultiplexer,
-    Encoder,
-    Decoder,
-    PriorityEncoder,
-    PriorityDecoder,
-    Comparator,
-    ParityGenerator,
-    ParityChecker,
-    ArithmeticLogicUnit,
 }
 
 
-impl CombinationalCircuit {
-    fn new() -> CombinationalCircuit {
-        CombinationalCircuit::HalfAdder
-    }    
-}
-
-
+/// # Half Adder
 #[derive(Debug, Clone)]
 pub struct HalfAdder {
     a: bool,
@@ -65,38 +53,38 @@ pub struct HalfAdder {
 }
 
 impl HalfAdder {
-    pub fn new(a: bool, b: bool) -> HalfAdder {
-        HalfAdder {
+    // pub fn new() -> Self {
+    //     Self::default()
+    // }
+
+    pub fn new_with_input(a: bool, b: bool) -> Self {
+        Self {
             a,
             b,
             sum: a ^ b,
             carry: a & b,
         }
     }
+}
 
-    pub fn set_a(&mut self, a: bool) {
-        self.a = a;
-        self.update_output();
-    }
 
-    pub fn set_b(&mut self, b: bool) {
-        self.b = b;
-        self.update_output();
-    }
-
-    fn update_output(&mut self) {
+impl Combinational for HalfAdder {
+    fn calculate(&mut self) {
         self.sum = self.a ^ self.b;
         self.carry = self.a & self.b;
     }
 
-    pub fn get_sum(&self) -> bool {
+    fn get_input(&self) -> Vec<bool> {
+        vec![self.a, self.b]
+    }
+
+    fn set_input(&mut self, input_line: Vec<bool>) {
+        self.a = input_line[0];
+        self.b = input_line[1];
+    }
+
+    fn get_output(&self) -> bool {
         self.sum
     }
-
-    pub fn get_carry(&self) -> bool {
-        self.carry
-    }
-
-
 }
 
