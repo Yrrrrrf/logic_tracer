@@ -12,7 +12,10 @@ use logic_tracer::{
 };
 
 
-
+/// Run:
+/// ```bash
+/// cargo run --example truth_table
+/// ```
 fn main() {
     println!("Trurh Table example (5)");
 

@@ -13,7 +13,7 @@
 //! - Creates a circuit diagram (if possible)
 //! - Serializes the logic proposition to a file (must be implemented)
 //! 
-#![allow(dead_code)]
+#![allow(unused)]
 
 
 /// # Logic Tracer
@@ -27,7 +27,8 @@ pub use components::{
     parser,
     ast,
     operators,
-    grammar
+    grammar,
+    proposition,
 };
 pub use components::operators::Operator;
 
@@ -36,12 +37,6 @@ mod util {
     pub mod terminal;
 }
 // pub use util::*;
-
-// mod circuits {
-//     pub mod combinational;
-//     pub mod sequential;
-// }
-// pub use circuits::*;
 
 
 mod circuits;
@@ -57,27 +52,47 @@ pub use {
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
-    // use crate::parser::*;
-
-    // use crate::{lexer, parser::{self, Parser}};
+    use crate::{lexer::Lexer, parser::Parser};
+    use crate::components::proposition::Proposition;
+    
+    #[test]  // Indicates that this is a test
+    fn test_pair_brackets() {
+        assert_eq!(Lexer::new("A & (B & C)").check_pair_brackets(), true);
+        assert_eq!(Lexer::new("A & (B & C) & D").check_pair_brackets(), true);
+        assert_eq!(Lexer::new("(a + b) * (c - d)").check_pair_brackets(), true);
+        assert_eq!(Lexer::new("(a + b) * (c - d]").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("x + y] * [z - w]").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("x + y] * [z - w)").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("1, 2, 3, 4}").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("1, 2, 3, 4]").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("html></html>").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("html></htm>").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("(").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("[").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("{").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("<").check_pair_brackets(), false);
+        assert_eq!(Lexer::new("[{()}]").check_pair_brackets(), true);
+        assert_eq!(Lexer::new("{[()]}>").check_pair_brackets(), false);
+        assert_eq!(Lexer::new(" ").check_pair_brackets(), true);
+        assert_eq!(Lexer::new("").check_pair_brackets(), true);
+    }
 
 
     #[test]  // Indicates that this is a test
-    fn parse_test_01() {
-        let mut parse = crate::parser::Parser::new("A & B");
-        // lexer.pair_brackets();
-        // lexer.parse();  // Parse the tokens (It means that it will create the AST)
-        // parse.parse();
-        let output = parse.evaluate();
-        // println!("Results = \n{:?}", output);
-        assert_eq!(output, Ok(vec![false, false, false, true]));
+    fn test_logic_evalaution() {
+        assert_eq!(Proposition::new("A & B").evaluate_logic().unwrap(), vec![false, false, false, true]);
+        assert_eq!(Proposition::new("A | B").evaluate_logic().unwrap(), vec![false, true, true, true]);
+        assert_eq!(Proposition::new("A ^ B").evaluate_logic().unwrap(), vec![false, true, true, false]);
     }
-    
-    
+
+
     #[test]  // Indicates that this is a test
-    fn test_test2() {
-        let mut parse = crate::parser::Parser::new("A & B & C");
-        let output = parse.evaluate();
-        assert_eq!(output, Ok(vec![false, false, false, false, false, false, false, true]));
+    fn test_math_evaluation() {
+        assert_eq!(Proposition::new("21 + 57").evaluate_math().unwrap(), vec![78.0]);
+        assert_eq!(Proposition::new("21 - 57").evaluate_math().unwrap(), vec![-36.0]);
+        assert_eq!(Proposition::new("21 * 57").evaluate_math().unwrap(), vec![1197.0]);
     }
+
+
+
 }

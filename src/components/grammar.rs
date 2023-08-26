@@ -4,7 +4,6 @@
 //! 
 //! Then Grammar Token is the main function of the Parser.
 
-use crate::operators::Operator;
 
 // ? Logic Tokens ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,14 +19,11 @@ pub enum GrammarToken {
     #[default]
     Reading,  // Reading
     /// A token that represents a logic operator
-    Operator(Operator),
+    // Operator(Operator),
     /// A token that represents a logic variable
     Variable(String),  // {A-Za-z0-9} 
     /// A token that represents a logic parenthesis
     Brackets(BracketState),
-    Space,  // ' '
-    /// A token that represents the end of the logic expression
-    End,
     /// This token is used when the lexer encounters a Grammar Error
     Error(String),
 }

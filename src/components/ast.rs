@@ -16,23 +16,54 @@ use crate::util::terminal::set_fg;
 /// This is the most basic trait used in the application.
 /// 
 /// It allows the structs that implement it to use the eval() function that it abstracts.
+// add derive
+#[derive(Clone, PartialEq)]
 pub struct AST {
     name: String,
 }
 
 impl AST {
+    
     pub fn new(name: &str) -> AST {
-    let mut name = name;
-    if name == "" && name.len() == 0 {
-        name = "AST";
-    } else {
-        name = name;
-    }
+        let mut name = name;
+        if name == "" && name.len() == 0 {
+            name = "AST";
+        } else {
+            name = name;
+        }
         AST {
             name: name.to_string(),
         }
     }
+
+    pub fn evaluate(&mut self, input_vec: Vec<bool>) -> Result<Vec<bool>, String> {
+        Ok(vec![])
+    }
+
+    pub fn get_results_vector(&mut self) -> Result<Vec<bool>, String> {
+        Ok(vec![])
+    }
+
+    pub fn show_kmap(&mut self) -> Result<(), String> {
+        Ok(())
+    }        
+
+    pub fn show_truth_table(&mut self) -> Result<(), String> {
+        Ok(())
+    }
+
+    pub fn show_ast(&mut self) -> Result<(), String> {
+        Ok(())
+    }
+
 }
+
+
+
+
+
+
+
 
 /// The node enum is a vertex on a binary tree (AST)
 /// 

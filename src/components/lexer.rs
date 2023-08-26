@@ -6,227 +6,119 @@
 //! Each Token will be categorized into wheter it is READING the FILE, a LINK, or a COMPONENT
 //! 
 //! Then the list of tokens will be passed to the ['Parser'], which will be responsible for creating the AST (Abstract Syntax Tree).
+#[allow(unused)]
 
 // ? Imports --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 use std::fmt;
 
-use crate::util::terminal::set_fg;
+use crate::{
+    util::terminal::set_fg, 
+    components::grammar::*
+};
 
 use super::grammar::GrammarToken;
+
+use std::collections::VecDeque;
 
 // ? Lexer --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+
+/// Lexer: This struct is responsible for breaking down the input string into a list of tokens.
+/// 
+/// It also holds information about the input string provided, such as the current character being processed, its position, and whether or not the end of the string has been reached.
+/// It functions similar as a queue, where the current character is the first element in the queue and the next character is the second element in the queue.
 #[derive(Clone, PartialEq)]
 pub struct Lexer {
     /// The source code to be parsed
     pub src: String,  // input string
     /// Current character being processed
-    pub curr: char,   // current character
-    /// Current position in input (points to current char)
-    pub pos: usize,  // current position in input (points to current char)
-    /// End of file flag
-    pub eof: bool  // end of file flag
+    pub reduced_src: VecDeque<char>,  // input string
 }
 
 
 impl Lexer {
     /// Creates a new instance of the Lexer struct
     ///
-    ///  These fields will hold information about the input string provided, such as the current character being processed, its position, and whether or not the end of the string has been reached.
-    /// 
     /// ### Parameters
     /// - `src`: A [`String`] that represents the input string
     /// 
     /// ### Returns
     /// - `Lexer`: A Lexer struct instance
     pub fn new(src: &str) -> Lexer {
-        let mut lexer = Lexer {  // Create a new Lexer instance
+        Lexer {  // Create a new Lexer instance
             src: src.to_string(),  // Set the input string to the src field
-            curr: '\0',  // Set the current character to null
-            pos: 0,  // Set the current position to 0
-            eof: false  // Set the end of file flag to false
-        };
-        if lexer.pos >= src.len() {lexer.eof = true;  // If the current position is greater than or equal to the length of the input string then set the end of file flag to true
-        } else {lexer.curr = src.chars().nth(0).unwrap();}  // Otherwise, set the current character to the first character in the input string
-        return lexer
+            reduced_src: src.chars()  // Create a new iterator over the input string
+                // filter all the whitespaces, tabs and newlines and return the filtered characters
+                .filter(|c| !c.is_whitespace() || !c.is_ascii_control())
+                .collect::<VecDeque<char>>(),  // return the filtered characters    
+        }
+    }
+
+    
+    
+    /// Check if the brackets are paired
+    /// Also check if the brackets are in the correct order
+    /// 
+    /// This funciton evaluates: parenthesis, square brackets, curly brackets and chevrons
+    /// All of those are described on the [`BracketState`] enum
+    pub fn check_pair_brackets(&mut self) -> bool {
+        let mut stack: Vec<char> = Vec::new();
+        for char in self.src.chars() {
+            match char {
+                '(' | '[' | '{' | '<' => stack.push(char),  // push the opening bracket to the stack
+                ')' | ']' | '}' | '>' => {  // if it is a closing bracket
+                    if stack.is_empty() {return false;}  // if the stack is empty, return false
+                    let top = stack.pop().unwrap();  // pop the top element from the stack
+                    if !((top == '(' && char == ')')
+                      || (top == '[' && char == ']')
+                      || (top == '{' && char == '}')
+                      || (top == '<' && char == '>')) {
+                        return false;
+                    }
+                }
+                _ => (),  // do nothing if it is not a bracket
+            }
+        }
+        stack.is_empty()  // If the stack is empty at the end, all brackets are properly paired
     }
     
 
-    // next_token(): This method is responsible for moving to the new token in the list of tokens created by deconstructing the input string. The next token is categorized into whether it is a number, math operation, parentheses or unexpected character. The category is then returned in the Ok() method
-    /// This method is responsible for moving to the new token in the list of tokens created by deconstructing the input string. The next token is categorized into whether it is a number, math operation, parentheses or unexpected character. The category is then returned in the Ok() method
-    /// 
-    /// ### Parameters
-    /// - `self`: A mutable reference to the Lexer struct
-    /// 
-    /// ### Returns
-    /// - `Result<Token, String>`: A Result enum that contains either a Token or an error message
-    pub fn next_token(&mut self) -> Result<GrammarToken, String> {
-        if self.eof {
-            return Ok(GrammarToken::End);  // If the end of file flag is true then return the EndOfFile token
-        }
-        match self.curr {  // for all the values in the input string
-            ' ' | '\n' | '\t' | '\r' => {
-                self.bump();
-                return Ok(GrammarToken::Space);
-            }
-            _ => {
-                self.bump();
-                return Ok(GrammarToken::Reading);
-            }
-        }
-    }
 
 
-    /// Increments the current position in the input string being read and assigns the new value to the field self.curr
-    /// 
-    /// ### Parameters:
-    /// - `self`: A mutable reference to the Lexer struct
-    pub fn bump(&mut self) {
-        self.curr = self.src.chars().nth(self.pos).unwrap();  // Otherwise, set the current character to the character at the current position in the input string
-        self.pos +=1;  // Increment the current position by 1
-        if self.pos >= self.src.len() {  // If the current position is greater than or equal to the length of the input string then set the end of file flag to true
-            self.eof = true;  // Set the end of file flag to true
-            return;  // Return
-        }
-        // print!("{}", self.pos);
-    }
-
-
-    /// Removes any whitespace from the input string
-    /// 
-    /// ### Parameters:
-    /// - `self`: A mutable reference to the Lexer struct
-    pub fn trim(&mut self) {
-        let mut trimmed = String::new();
-        for i in 0..self.src.len() {
-            self.curr = self.src.chars().nth(i).unwrap();
-            match self.curr {
-                // \r = carriage return
-                // \n = line feed
-                // \t = tab
-                ' ' | '\n' | '\t' | '\r' => {continue;},  // ignore whitespace
-                _ => {trimmed.push(self.curr);}  // add the current character to the trimmed string
-            }
-        }
-        // println!("Trimmed: {}", trimmed);
-        self.src = trimmed;
-        self.reset_lexer();
-    }
-
-
-    /// Return the data of the lexer in a Vec[Result<Token, String>]
-    /// 
-    /// ### Parameters:
-    /// - `self`: A mutable reference to the Lexer struct
-    /// 
-    /// ### Returns:
-    /// - `Vec<(Token, char)>`: A Vec of tuples that contain a Token and a char
-    pub fn get_tokens(&mut self) -> Vec<(GrammarToken, char)> {
+    pub fn get_token_table(&mut self) -> Vec<(GrammarToken, char)> {
         let mut tokens: Vec<(GrammarToken, char)> = Vec::new();  // create a new Vec to hold the tokens
 
-        self.trim();  // remove any whitespace from the input string
+        // || !c.is_ascii_punctuation()
 
-        loop {  // print the tokens
-            match self.next_token() {  // get the next token
-                Ok(token) => {  // if the token is Ok
-                    match token {
-                        GrammarToken::End => {  // if the token is EndOfFile
-                            // println!("{}{:<10}{} ", "\x1b[31m", token.to_string().as_str(), "\x1b[0m");
-                            break;
-                        },
-                        _ => {
-                            let n_th_char: char = self.src.chars().nth(self.pos-1).unwrap();
-                            let item: (GrammarToken, char) = (token, n_th_char);
-                            // println!("{:<10} {}{:>4}{} {}{}{}", item.0.to_string().as_str(), "\x1b[32m", (self.pos-1), "\x1b[0m", "\x1b[34m", n_th_char, "\x1b[0m");
-                            tokens.push(item);  // push the tuple into the Vec (Token, char)
-                        }
-                    }  // now that we have the token, we can do something with it, like, we can parse it
-                },
-                // todo: this code looks a little bit messy, maybe we can improve it
-
-                // todo: improve error handling here
-                Err(error) => {  // if the token is Err
-                    println!("Error: {}", error);  // print the error
-                    break;  // break the loop
-                }
-            }
-        };
-        return tokens;  // return the Vec
-    }
-
-
-
-    pub fn check_brackets(&mut self) -> bool {
-        let mut tokens: Vec<(GrammarToken, char)> = Vec::new();  // create a new Vec to hold the tokens
-
-        
-        // use a loop to iterate over the tokens and check if the brackets are balanced
-        // if they are balanced, return true
-        // if they are not balanced, return false
-        // if the loop ends and the brackets are balanced, return true
-        // if the loop ends and the brackets are not balanced, return false
-        let mut open_brackets: Vec<char> = Vec::new();
-        let mut closed_brackets: Vec<char> = Vec::new();
-
-        self.trim();  // remove any whitespace from the input string
-
-        loop {  // print the tokens
-            match self.next_token() {  // get the next token
-                Ok(token) => {  // if the token is Ok
-                    match token {
-                        GrammarToken::End => {  // if the token is EndOfFile
-                            // println!("{}{:<10}{} ", "\x1b[31m", token.to_string().as_str(), "\x1b[0m");
-                            break;
-                        },
-                        _ => {
-                            let n_th_char: char = self.src.chars().nth(self.pos-1).unwrap();
-                            let item: (GrammarToken, char) = (token, n_th_char);
-                            // println!("{:<10} {}{:>4}{} {}{}{}", item.0.to_string().as_str(), "\x1b[32m", (self.pos-1), "\x1b[0m", "\x1b[34m", n_th_char, "\x1b[0m");
-                            tokens.push(item);  // push the tuple into the Vec (Token, char)
-                        }
-                    }  // now that we have the token, we can do something with it, like, we can parse it
-                },
-                Err(error) => {  // if the token is Err
-                    println!("Error: {}", error);  // print the error
-                    break;  // break the loop
-                }
-                }
-            }
-
-
-
-        for token in tokens {
-            match token.1 {
-                '(' | '[' | '{' => {
-                    open_brackets.push(token.1);
-                },
-                ')' | ']' | '}' => {
-                    closed_brackets.push(token.1);
-                },
-                _ => {}
+        // iterate over the reduces_src and get the tokens (chars)
+        // at the end of the iteration, the reduced_src should be empty, and the tokens should be filled
+        while let Some(c) = self.reduced_src.pop_front() {
+            match c {
+                '&' => tokens.push((GrammarToken::Reading, c)),
+                '|' => tokens.push((GrammarToken::Reading, c)),
+                '(' => tokens.push((GrammarToken::Brackets(BracketState::OpenParenthesis), c)),
+                ')' => tokens.push((GrammarToken::Brackets(BracketState::ClosedParenthesis), c)),
+                '[' => tokens.push((GrammarToken::Brackets(BracketState::OpenSquareBracket), c)),
+                ']' => tokens.push((GrammarToken::Brackets(BracketState::ClosedSquareBracket), c)),
+                '{' => tokens.push((GrammarToken::Brackets(BracketState::OpenCurlyBracket), c)),
+                '}' => tokens.push((GrammarToken::Brackets(BracketState::ClosedCurlyBracket), c)),
+                '<' => tokens.push((GrammarToken::Brackets(BracketState::OpenChevron), c)),
+                '>' => tokens.push((GrammarToken::Brackets(BracketState::ClosedChevron), c)),
+                _ => tokens.push((GrammarToken::Error((c).to_string()), c)),
             }
         }
 
-
-        if open_brackets.len() == closed_brackets.len() {
-            true
-        } else {
-            false
-        }
-
+        tokens
     }
 
-    /// Resets the Lexer struct fields (curr, pos, eof)
-    /// Mantain the same src string
-    /// 
-    /// ### Parameters:
-    /// - `self`: A mutable reference to the Lexer struct
-    pub fn reset_lexer(&mut self) {
-        self.curr = '\0';
-        self.pos = 0;
-        self.eof = false;
+
+    pub fn print_token_table(&mut self) {
+        let tokens = self.get_token_table();
+        for (token, c) in tokens {
+            println!("{:?} {}", token, c);
+        }
     }
 
 
@@ -238,13 +130,8 @@ impl fmt::Debug for Lexer {
     /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&set_fg("Lexer", "g"))
+            .field("reduced expresion", &self.reduced_src)
             .field("src", &self.src)
-            
-            // todo: CHANGE THE SRC FIELD TO PRINT THE TOKEN TABLE
-
-            .field("curr", &self.curr)
-            .field("pos", &self.pos)
-            .field("eof", &self.eof)
             .finish()
     }
 }

@@ -12,14 +12,13 @@ use logic_tracer::{
 };
 
 
-
+/// Run:
+/// ```bash
+/// cargo run --example regex
+/// ```
 fn main() {
     println!("Regex example (2)");
 
-
-    let parser = Parser::new("A & B");
-
-    print!("{:?}", parser);
     panic!("Imlpement the parser example (1)")
 
 }

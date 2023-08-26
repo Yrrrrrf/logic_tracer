@@ -9,13 +9,12 @@
 #![allow(unused)]
 
 
-use crate::{lexer::*, operators::Operator};
 use crate::components::grammar::*;
 use crate::components::grammar::GrammarToken::*;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Parser {
-    lexer: Lexer,  // lexer
+    // lexer: Lexer,  // lexer
     current_token: GrammarToken,  // current token
     peek_token: Option<GrammarToken>  // next token
 }
@@ -28,11 +27,11 @@ impl Parser {
     /// - `lexer` - the lexer to be used
     /// 
     pub fn new(mut src: &str) -> Self {
-        let mut lexer = Lexer::new(&mut src);
-        lexer.trim();  // trim all whitespaces
+        // let mut lexer = Lexer::new(&mut src);
+        // lexer.trim();  // trim all whitespaces
         // let current_token = lexer.curr;
         Parser {
-            lexer,
+            // lexer,
             current_token: GrammarToken::default(),
             peek_token: None  // lexer.next()
         }
