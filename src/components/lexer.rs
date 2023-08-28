@@ -31,10 +31,7 @@ use std::collections::VecDeque;
 /// It functions similar as a queue, where the current character is the first element in the queue and the next character is the second element in the queue.
 #[derive(Clone, PartialEq)]
 pub struct Lexer {
-    /// The source code to be parsed
-    pub src: String,  // input string
-    /// Current character being processed
-    pub reduced_src: VecDeque<char>,  // input string
+    pub src: VecDeque<char>,  // input string
 }
 
 
@@ -48,16 +45,15 @@ impl Lexer {
     /// - `Lexer`: A Lexer struct instance
     pub fn new(src: &str) -> Lexer {
         Lexer {  // Create a new Lexer instance
-            src: src.to_string(),  // Set the input string to the src field
-            reduced_src: src.chars()  // Create a new iterator over the input string
+            // src: src.to_string(),  // Set the input string to the src field
+            src: src.chars()  // Create a new iterator over the input string
                 // filter all the whitespaces, tabs and newlines and return the filtered characters
                 .filter(|c| !c.is_whitespace() || !c.is_ascii_control())
                 .collect::<VecDeque<char>>(),  // return the filtered characters    
         }
     }
 
-    
-    
+
     /// Check if the brackets are paired
     /// Also check if the brackets are in the correct order
     /// 
@@ -65,17 +61,17 @@ impl Lexer {
     /// All of those are described on the [`BracketState`] enum
     pub fn check_pair_brackets(&mut self) -> bool {
         let mut stack: Vec<char> = Vec::new();
-        for char in self.src.chars() {
+        for char in self.src.iter() {
             match char {
-                '(' | '[' | '{' | '<' => stack.push(char),  // push the opening bracket to the stack
+                '(' | '[' | '{' | '<' => stack.push(*char),  // push the opening bracket to the stack
                 ')' | ']' | '}' | '>' => {  // if it is a closing bracket
                     if stack.is_empty() {return false;}  // if the stack is empty, return false
                     let top = stack.pop().unwrap();  // pop the top element from the stack
-                    if !((top == '(' && char == ')')
-                      || (top == '[' && char == ']')
-                      || (top == '{' && char == '}')
-                      || (top == '<' && char == '>')) {
-                        return false;
+                    if !((top == '(' && *char == ')')  // if the top element is not the same as the closing bracket
+                      || (top == '[' && *char == ']')
+                      || (top == '{' && *char == '}')
+                      || (top == '<' && *char == '>')) {
+                        return false;  // return false
                     }
                 }
                 _ => (),  // do nothing if it is not a bracket
@@ -85,16 +81,13 @@ impl Lexer {
     }
     
 
-
-
     pub fn get_token_table(&mut self) -> Vec<(GrammarToken, char)> {
         let mut tokens: Vec<(GrammarToken, char)> = Vec::new();  // create a new Vec to hold the tokens
-
         // || !c.is_ascii_punctuation()
 
         // iterate over the reduces_src and get the tokens (chars)
         // at the end of the iteration, the reduced_src should be empty, and the tokens should be filled
-        while let Some(c) = self.reduced_src.pop_front() {
+        while let Some(c) = self.src.pop_front() {
             match c {
                 '&' => tokens.push((GrammarToken::Reading, c)),
                 '|' => tokens.push((GrammarToken::Reading, c)),
@@ -109,18 +102,8 @@ impl Lexer {
                 _ => tokens.push((GrammarToken::Error((c).to_string()), c)),
             }
         }
-
         tokens
     }
-
-
-    pub fn print_token_table(&mut self) {
-        let tokens = self.get_token_table();
-        for (token, c) in tokens {
-            println!("{:?} {}", token, c);
-        }
-    }
-
 
 }
 
@@ -130,7 +113,6 @@ impl fmt::Debug for Lexer {
     /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&set_fg("Lexer", "g"))
-            .field("reduced expresion", &self.reduced_src)
             .field("src", &self.src)
             .finish()
     }

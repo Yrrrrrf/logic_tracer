@@ -40,12 +40,13 @@ This project is licensed under the terms of the [MIT license](./LICENSE)
 - [iced gui calculator](https://codinginformer.com/blog/rust-iced-calculator-tutorial)
 
 ## Roadmap
-- [ ] Read a logical proposition
-- [ ] Validate brackets
-- [ ] Tokenize the proposition
+- [*] Read a logical proposition
+- [*] Validate brackets
+- [*] Tokenize the proposition
 - [ ] Parse the proposition
 - [ ] Validate the proposition
 - [ ] **Solve proposition** (Shunting Yard Algorithm)
 - [ ] Build the truth table
 - [ ] Build the AST (parse tree)
 - [ ] Reduce a proposition to its simplest form (boolean algebra) 
+- [ ] Add MathPropositions support

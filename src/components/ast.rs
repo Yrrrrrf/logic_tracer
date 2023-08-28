@@ -24,45 +24,59 @@ pub struct AST {
 
 impl AST {
     
+    /// Create a new AST
     pub fn new(name: &str) -> AST {
-        let mut name = name;
-        if name == "" && name.len() == 0 {
-            name = "AST";
-        } else {
-            name = name;
-        }
         AST {
             name: name.to_string(),
         }
     }
 
-    pub fn evaluate(&mut self, input_vec: Vec<bool>) -> Result<Vec<bool>, String> {
-        Ok(vec![])
-    }
-
-    pub fn get_results_vector(&mut self) -> Result<Vec<bool>, String> {
-        Ok(vec![])
-    }
-
-    pub fn show_kmap(&mut self) -> Result<(), String> {
-        Ok(())
-    }        
-
-    pub fn show_truth_table(&mut self) -> Result<(), String> {
-        Ok(())
-    }
 
     pub fn show_ast(&mut self) -> Result<(), String> {
         Ok(())
     }
 
+
+    // ? Notation ---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+    /// Return the postfix notation of the proposition.
+    /// 
+    /// ### Arguments:
+    /// - `self` - the proposition
+    /// 
+    /// ### Returns:
+    /// - `String` - the postfix notation of the proposition
+    pub fn postfix_string(&mut self) -> String {
+        "".to_string()
+    }
+
+
+    /// Return the infix notation of the proposition.
+    /// 
+    /// ### Arguments:
+    /// - `self` - the proposition
+    /// 
+    /// ### Returns:
+    /// - `String` - the infix notation of the proposition
+    pub fn infix_string(&mut self) -> String {
+        "".to_string()
+    }
+    
+    
+    /// Return the prefix notation of the proposition.
+    /// 
+    /// ### Arguments:
+    /// - `self` - the proposition
+    /// 
+    /// ### Returns:
+    /// - `String` - the prefix notation of the proposition
+    pub fn prefix_string(&mut self) -> String {
+        "".to_string()
+    }
+
+
 }
-
-
-
-
-
-
 
 
 /// The node enum is a vertex on a binary tree (AST)
@@ -82,7 +96,6 @@ impl fmt::Debug for AST {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&set_fg("AST", "g"))
             .field("name", &self.name)
-
             // todo: make a better visualization of the AST (binary tree)
 
             .finish()

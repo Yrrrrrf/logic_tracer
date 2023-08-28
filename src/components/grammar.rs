@@ -4,6 +4,8 @@
 //! 
 //! Then Grammar Token is the main function of the Parser.
 
+use crate::components::operators::Operator;
+
 
 // ? Logic Tokens ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -12,6 +14,7 @@
 // PartialEq: allows the struct to be compared to another struct (use the == operator)
 // Default: allows the struct to be created with the default() method
 
+
 /// The LogicToken Enum describes all the possible tokens that can be recognized by the ['Lexer'].
 #[derive(Debug, Clone, PartialEq, Default)]
 pub enum GrammarToken {
@@ -19,7 +22,7 @@ pub enum GrammarToken {
     #[default]
     Reading,  // Reading
     /// A token that represents a logic operator
-    // Operator(Operator),
+    Operator(Operator),
     /// A token that represents a logic variable
     Variable(String),  // {A-Za-z0-9} 
     /// A token that represents a logic parenthesis

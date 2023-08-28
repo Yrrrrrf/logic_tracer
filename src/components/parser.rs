@@ -12,6 +12,7 @@
 use crate::components::grammar::*;
 use crate::components::grammar::GrammarToken::*;
 
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct Parser {
     // lexer: Lexer,  // lexer
@@ -38,37 +39,13 @@ impl Parser {
     }
 
 
+    /// Parse the input string.
+    /// 
+    /// This function will parse the input string and create the AST.
     pub fn parse(&mut self) -> Result<(), String> {
-
-        // Iterate over the tokens
-        // let mut token = self.lexer.
-
-
         Ok(())
 
-
-
-
-
-
     }
-
-
-    /// Evaluate the expression and return the results a vectot of bools.
-    pub fn evaluate(&mut self) -> Result<Vec<bool>, String> {
-
-        // todo: implement this function well
-        let mut results = vec![];  // results
-        // while self.current_token != GrammarToken::End { // while not end of expression
-            // let result = self.evaluate_expr()?;  // evaluate expression
-            // results.push(result);  // push result to results
-            // self.next_token();  // advance to next token
-        // }
-        Ok(results)
-    }
-
-
-
 
 }
 

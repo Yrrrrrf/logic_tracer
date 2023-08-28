@@ -80,17 +80,17 @@ mod tests {
 
     #[test]  // Indicates that this is a test
     fn test_logic_evalaution() {
-        assert_eq!(Proposition::new("A & B").evaluate_logic().unwrap(), vec![false, false, false, true]);
-        assert_eq!(Proposition::new("A | B").evaluate_logic().unwrap(), vec![false, true, true, true]);
-        assert_eq!(Proposition::new("A ^ B").evaluate_logic().unwrap(), vec![false, true, true, false]);
+        assert_eq!(Proposition::new("A & B").evaluate_logic(), vec![false, false, false, true]);
+        assert_eq!(Proposition::new("A | B").evaluate_logic(), vec![false, true, true, true]);
+        assert_eq!(Proposition::new("A ^ B").evaluate_logic(), vec![false, true, true, false]);
     }
 
 
     #[test]  // Indicates that this is a test
     fn test_math_evaluation() {
-        assert_eq!(Proposition::new("21 + 57").evaluate_math().unwrap(), vec![78.0]);
-        assert_eq!(Proposition::new("21 - 57").evaluate_math().unwrap(), vec![-36.0]);
-        assert_eq!(Proposition::new("21 * 57").evaluate_math().unwrap(), vec![1197.0]);
+        assert_eq!(Proposition::new("21 + 57").evaluate_math(), vec![78.0]);
+        assert_eq!(Proposition::new("21 - 57").evaluate_math(), vec![-36.0]);
+        assert_eq!(Proposition::new("21 * 57").evaluate_math(), vec![1197.0]);
     }
 
 
