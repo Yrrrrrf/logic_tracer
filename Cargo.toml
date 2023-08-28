@@ -10,7 +10,6 @@ edition = "2021"
 exclude = [
     ".vscode*",
     "examples/*",
-    "log/*",
     "resources/*",
     "target",
     ".gitignore",

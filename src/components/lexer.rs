@@ -11,6 +11,7 @@
 // ? Imports --------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 use std::fmt;
+use std::collections::VecDeque;
 
 use crate::{
     util::terminal::set_fg, 
@@ -19,10 +20,8 @@ use crate::{
 
 use super::grammar::GrammarToken;
 
-use std::collections::VecDeque;
 
 // ? Lexer --------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 
 
 /// Lexer: This struct is responsible for breaking down the input string into a list of tokens.
@@ -83,25 +82,23 @@ impl Lexer {
 
     pub fn get_token_table(&mut self) -> Vec<(GrammarToken, char)> {
         let mut tokens: Vec<(GrammarToken, char)> = Vec::new();  // create a new Vec to hold the tokens
-        // || !c.is_ascii_punctuation()
 
-        // iterate over the reduces_src and get the tokens (chars)
-        // at the end of the iteration, the reduced_src should be empty, and the tokens should be filled
-        while let Some(c) = self.src.pop_front() {
-            match c {
-                '&' => tokens.push((GrammarToken::Reading, c)),
-                '|' => tokens.push((GrammarToken::Reading, c)),
-                '(' => tokens.push((GrammarToken::Brackets(BracketState::OpenParenthesis), c)),
-                ')' => tokens.push((GrammarToken::Brackets(BracketState::ClosedParenthesis), c)),
-                '[' => tokens.push((GrammarToken::Brackets(BracketState::OpenSquareBracket), c)),
-                ']' => tokens.push((GrammarToken::Brackets(BracketState::ClosedSquareBracket), c)),
-                '{' => tokens.push((GrammarToken::Brackets(BracketState::OpenCurlyBracket), c)),
-                '}' => tokens.push((GrammarToken::Brackets(BracketState::ClosedCurlyBracket), c)),
-                '<' => tokens.push((GrammarToken::Brackets(BracketState::OpenChevron), c)),
-                '>' => tokens.push((GrammarToken::Brackets(BracketState::ClosedChevron), c)),
-                _ => tokens.push((GrammarToken::Error((c).to_string()), c)),
-            }
-        }
+        // while let Some(c) = self.src.pop_front() {
+        //     match c {
+        //         '&' => tokens.push((GrammarToken::Reading, c)),
+        //         '|' => tokens.push((GrammarToken::Reading, c)),
+        //         '(' => tokens.push((GrammarToken::Brackets(BracketState::OpenParenthesis), c)),
+        //         ')' => tokens.push((GrammarToken::Brackets(BracketState::ClosedParenthesis), c)),
+        //         '[' => tokens.push((GrammarToken::Brackets(BracketState::OpenSquareBracket), c)),
+        //         ']' => tokens.push((GrammarToken::Brackets(BracketState::ClosedSquareBracket), c)),
+        //         '{' => tokens.push((GrammarToken::Brackets(BracketState::OpenCurlyBracket), c)),
+        //         '}' => tokens.push((GrammarToken::Brackets(BracketState::ClosedCurlyBracket), c)),
+        //         '<' => tokens.push((GrammarToken::Brackets(BracketState::OpenChevron), c)),
+        //         '>' => tokens.push((GrammarToken::Brackets(BracketState::ClosedChevron), c)),
+        //         _ => tokens.push((GrammarToken::Error((c).to_string()), c)),
+        //     }
+        // }
+
         tokens
     }
 

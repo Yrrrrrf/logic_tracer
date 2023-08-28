@@ -6,8 +6,6 @@
 //! 
 //! The parser is implemented as a set of mutually recursive functions. Each function
 //! implements one of the grammar rules. The parser is a predictive recursive descent parser (PRDP).
-#![allow(unused)]
-
 
 use crate::components::grammar::*;
 use crate::components::grammar::GrammarToken::*;
@@ -49,6 +47,5 @@ impl Parser {
 
 }
 
-// - todo: add grammar rules
-// - todo: add grammar diagram (EBNF)
-// 
+
+// - todo: add grammar diagram (EBNF) -> https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form

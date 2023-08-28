@@ -18,19 +18,12 @@ cargo run src/main.rs  # run main (for testing build)
 cargo run  # run main
 ```
 
-## Examples
+## [Examples](./examples/README.md)
 
 ```bash
 cargo run --example <example name>
-# examples list:
-# - parser
-# - regex
-# - ast
-# - kmap
-# - truth_table
-# - shunting_yard
-# - logic_operations
 ```
+
 
 ## [License](LICENSE)
 

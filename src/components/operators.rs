@@ -5,7 +5,6 @@
 //! Rust itself implements some of the logic gates, but not all of them.
 
 use core::fmt;
-use std::fmt::Debug;
 
 use crate::util::terminal::set_fg;
 
@@ -79,14 +78,6 @@ pub enum LogicOp {
 }
 
 
-// impl LogicOp {
-//     /// `Override` the default `to_string()` method to return a string representation of the token.
-//     pub fn to_string(&self) -> String {
-//         return format!("{:?}", self);
-//     }
-// }
-
-
 /// Math Operators
 /// 
 /// This enum contains all the possible math operators that can be used in the application.
@@ -124,10 +115,6 @@ pub enum MathOp {
     AbsoluteValue,
 }
 
-impl MathOp {
-    // overwrite to_string() method
-}
-
 
 // Implement my own Debug trait
 impl fmt::Debug for Operator {
@@ -142,4 +129,3 @@ impl fmt::Debug for Operator {
             .finish()
     }
 }
-

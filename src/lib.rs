@@ -16,14 +16,12 @@
 #![allow(unused)]
 
 
-/// # Logic Tracer
-/// 
-/// `logic_tracer` is a library for tracing the logic of a logic propopsition.
+// ? Modules ----------------------------------------------------------------------------------------------------------------------
+
 
 mod components;
 pub use components::{
     lexer,
-    // token,
     parser,
     ast,
     operators,
@@ -32,11 +30,10 @@ pub use components::{
 };
 pub use components::operators::Operator;
 
-/// Oseas
+
 mod util {
     pub mod terminal;
 }
-// pub use util::*;
 
 
 mod circuits;
@@ -47,7 +44,7 @@ pub use {
 };
 
 
-// ? Tests ----------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ? Tests ------------------------------------------------------------------------------------------------------------------------
 
 
 #[cfg(test)]  // Only compiles when running tests
@@ -92,7 +89,6 @@ mod tests {
         assert_eq!(Proposition::new("21 - 57").evaluate_math(), vec![-36.0]);
         assert_eq!(Proposition::new("21 * 57").evaluate_math(), vec![1197.0]);
     }
-
 
 
 }
