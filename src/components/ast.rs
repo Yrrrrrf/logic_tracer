@@ -7,8 +7,10 @@
 //! 
 //! It serves as a fundamental component in many Rust programming tools and compilers
 
-use core::fmt;
+use std::fmt;
 
+use crate::grammar::{GrammarToken, BracketState};
+use crate::operators::*;
 use crate::util::terminal::set_fg;
 
 
@@ -18,86 +20,142 @@ use crate::util::terminal::set_fg;
 /// It allows the structs that implement it to use the eval() function that it abstracts.
 // add derive
 #[derive(Clone, PartialEq)]
-pub struct AST {
-    name: String,
+pub struct Ast {
+    src: Vec<char>,
+    token_table: Vec<GrammarToken>,
 }
 
-impl AST {
-    
+
+impl Ast {
     /// Create a new AST
-    pub fn new(name: &str) -> AST {
-        AST {
-            name: name.to_string(),
+    pub fn new(src: &str) -> Ast {
+        let trimeed = src.chars()  // Create a new iterator over the input string
+            .filter(|c| !c.is_whitespace() || !c.is_ascii_control())  // filter all the whitespaces, tabs and newlines
+            .collect::<Vec<char>>();
+        Ast {
+            src: trimeed.clone(),
+            token_table: Ast::get_token_table(trimeed),
         }
     }
 
 
-    pub fn show_ast(&mut self) -> Result<(), String> {
+    /// ? This function makes the same work that will do the **Lexer** in a compile process ---------------------------------------
+    /// This funciton makes the same as the Lexer in a compile process.
+    /// 
+    /// To be a data type optimiser for speed such as std::collections::VecDeque<char>
+    /// 
+    fn get_token_table(src: Vec<char>) -> Vec<GrammarToken> {
+        let mut tokens = Vec::new();
+    
+        // while let Some(c) = src. {
+        for c in src.iter() {
+            tokens.push(match c {
+                // Operators
+                '^' | '*' | '&' => GrammarToken::Operator(Operator::Logic(LogicOp::And)),
+                '∨' | '|' | '+'=> GrammarToken::Operator(Operator::Logic(LogicOp::Or)),
+                // '!' | '¬' => GrammarToken::Operator(Operator::Logic(LogicOp::NOT)),
+                // '↑' => GrammarToken::Operator(Operator::Logic(LogicOp::NAND)),
+                // '↓' => GrammarToken::Operator(Operator::Logic(LogicOp::NOR)),
+                // '⊕' | '⊻' => GrammarToken::Operator(Operator::Logic(LogicOp::XOR)),
+                // '↔' => GrammarToken::Operator(Operator::Logic(LogicOp::XNOR)),
+                // '→' => GrammarToken::Operator(Operator::Logic(LogicOp::IMPLIES)),
+    
+                // Brackets
+                '(' => GrammarToken::Brackets(BracketState::OpenParenthesis),
+                ')' => GrammarToken::Brackets(BracketState::CloseParenthesis),
+                '[' => GrammarToken::Brackets(BracketState::OpenSquareBracket),
+                ']' => GrammarToken::Brackets(BracketState::CloseSquareBracket),
+                '{' => GrammarToken::Brackets(BracketState::OpenCurlyBracket),
+                '}' => GrammarToken::Brackets(BracketState::CloseCurlyBracket),
+                '<' => GrammarToken::Brackets(BracketState::OpenChevron),
+                '>' => GrammarToken::Brackets(BracketState::CloseChevron),
+    
+                // Variables
+                _ => if "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(*c) {GrammarToken::Variable(*c)}
+                else {GrammarToken::Error(c.to_string())}
+                // ^ this code may do the same as the code above (not tested (yet))
+                // 'A'..='Z' | 'a'..='z' | '0'..='9' => tokens.push((GrammarToken::Variable(c.to_string()), c)),
+                // _ => tokens.push((GrammarToken::Error(c.to_string()), c)),
+            });
+        }
+        tokens
+        
+    }
+
+
+    /// ? This function makes the function of the **Parser**.
+    /// Parse the input string.
+    /// 
+    /// This function will parse the input string and create the AST.
+    pub fn parse(&mut self) -> Result<(), String> {
+        self.check_pair_brackets();
+        // Ok(AST::new(self.src))
         Ok(())
     }
 
 
-    // ? Notation ---------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-    /// Return the postfix notation of the proposition.
+    /// Check if the brackets are paired
+    /// Also check if the brackets are in the correct order
     /// 
-    /// ### Arguments:
-    /// - `self` - the proposition
-    /// 
-    /// ### Returns:
-    /// - `String` - the postfix notation of the proposition
-    pub fn postfix_string(&mut self) -> String {
-        "".to_string()
+    /// This funciton evaluates: parenthesis, square brackets, curly brackets and chevrons
+    /// All of those are described on the [`BracketState`] enum
+    pub fn check_pair_brackets(&mut self) -> bool {
+        let mut stack: Vec<char> = Vec::new();
+        for char in self.src.iter() {
+            match char {
+                '(' | '[' | '{' | '<' => stack.push(*char),  // push the opening bracket to the stack
+                ')' | ']' | '}' | '>' => {  // if it is a closing bracket
+                    if stack.is_empty() {return false;}  // if the stack is empty, return false
+                    let top = stack.pop().unwrap();  // pop the top element from the stack
+                    if !((top == '(' && *char == ')')  // if the top element is not the same as the closing bracket
+                      || (top == '[' && *char == ']')
+                      || (top == '{' && *char == '}')
+                      || (top == '<' && *char == '>')) {
+                        return false;  // return false
+                    }
+                }
+                _ => (),  // do nothing if it is not a bracket
+            }
+        }
+        stack.is_empty()  // If the stack is empty at the end, all brackets are properly paired
     }
 
 
-    /// Return the infix notation of the proposition.
-    /// 
-    /// ### Arguments:
-    /// - `self` - the proposition
-    /// 
-    /// ### Returns:
-    /// - `String` - the infix notation of the proposition
-    pub fn infix_string(&mut self) -> String {
-        "".to_string()
-    }
-    
-    
-    /// Return the prefix notation of the proposition.
-    /// 
-    /// ### Arguments:
-    /// - `self` - the proposition
-    /// 
-    /// ### Returns:
-    /// - `String` - the prefix notation of the proposition
-    pub fn prefix_string(&mut self) -> String {
-        "".to_string()
+    /// Get infix string
+    pub fn get_infix_string(&mut self) -> String {
+        // todo: implement infix string
+        todo!("Implement Infix String")
     }
 
+    /// Get postfix string
+    pub fn get_postfix_string(&mut self) -> String {
+        // todo: implement postfix string
+        todo!("Implement Postfix String")
+    }
 
-}
+    /// Get prefix string
+    pub fn get_prefix_string(&mut self) -> String {
+        // todo: implement prefix string
+        todo!("Implement Prefix String")
+    }
+
+    /// Get the AST    
+    // todo: make a better visualization of the AST (binary tree)
+    pub fn get_ast(&mut self) -> String {
+        // todo: implement AST visualization (binary tree)
+        todo!("Implement AST visualization")
+    }
 
 
-/// The node enum is a vertex on a binary tree (AST)
-/// 
-/// It can be a variable or an operator  
-/// If it is a variable, it will be a leaf node  
-/// If it is an operator, it will be a non-leaf node (internal Node)
-pub enum Node {
-    Variable(String),  // Any variable
-    // Operator(LogicToken, Box<Node>, Box<Node>),  // Any operator with two operands
 }
 
 
 // Implement my own Debug trait
-impl fmt::Debug for AST {
+impl fmt::Debug for Ast {
     /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&set_fg("AST", "g"))
-            .field("name", &self.name)
-            // todo: make a better visualization of the AST (binary tree)
-
+            .field("src", &self.src)
             .finish()
     }
 }

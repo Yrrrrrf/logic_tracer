@@ -1,6 +1,6 @@
 [package]
 name = "logic_tracer"
-version = "0.1.0"
+version = "0.0.1"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
 license = "MIT"
 repository = "https://github.com/Yrrrrrf/logic_tracer"
@@ -30,11 +30,20 @@ opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 # DEPENDENCIES --------------------------------------------------------------------------------
 
 [dependencies]
-# regex = { version = "1.9.1", features = ["unicode"] }  # Regular expressions (https://docs.rs/regex/1.4.5/regex/)
 
-# reqwest = { version = "0.11", features = ["blocking", "json"] }  # HTTP client (https://docs.rs/reqwest/latest/reqwest/)
-# tokio = { version = "1", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)
+# todo: uncomment the SERDE and CLAP dependencies if you want to use the serialization and command line arguments features
+# SERDE: serialize and deserialize data structures (https://docs.rs/serde/latest/serde/)
+# CLAP: command line arguments (https://docs.rs/clap/latest/clap/)  // todo: add clap to the features list of the serde dependency
+# serde = { version = "*", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
+# clap = {version = "*", features = ["color"]}  # Command line arguments (https://docs.rs/clap/latest/clap/)
 
-# serde = { version = "1.0.164", features = ["derive"] }  # Serialization (https://docs.rs/serde/latest/serde/)
-# clap = "3"  # Command line arguments (https://docs.rs/clap/3.0.0-beta.2/clap/)
-# colorful = {version = "0.2.2"}  # Colorful terminal output (https://docs.rs/colorful/latest/colorful/)
+
+# colorful = {version = "*"}  # Colorful terminal output (https://docs.rs/colorful/latest/colorful/)
+
+
+
+
+# regex = { version = "*", features = ["unicode"] }  # Regular expressions (https://docs.rs/regex/1.4.5/regex/)
+
+# reqwest = { version = "*", features = ["blocking", "json"] }  # HTTP client (https://docs.rs/reqwest/latest/reqwest/)
+# tokio = { version = "*", features = ["full"] }  # Async runtime (https://docs.rs/tokio/1.0.0/tokio/)

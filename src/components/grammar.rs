@@ -24,7 +24,7 @@ pub enum GrammarToken {
     /// A token that represents a logic operator
     Operator(Operator),
     /// A token that represents a logic variable
-    Variable(String),  // {A-Za-z0-9} 
+    Variable(char),  // {A-Za-z0-9} 
     /// A token that represents a logic parenthesis
     Brackets(BracketState),
     /// This token is used when the lexer encounters a Grammar Error
@@ -46,14 +46,14 @@ pub enum GrammarToken {
 pub enum BracketState {
     /// `(` and `)`
     OpenParenthesis,  // (
-    ClosedParenthesis,  // )
+    CloseParenthesis,  // )
     /// `[` and `]
     OpenSquareBracket,  // [
-    ClosedSquareBracket,  // ]
+    CloseSquareBracket,  // ]
     /// `{` and `}`
     OpenCurlyBracket,  // {
-    ClosedCurlyBracket,  // }
+    CloseCurlyBracket,  // }
     /// `<` and `>`
     OpenChevron,  // <
-    ClosedChevron,  // >
+    CloseChevron,  // >
 }

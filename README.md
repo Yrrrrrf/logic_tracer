@@ -32,6 +32,9 @@ This project is licensed under the terms of the [MIT license](./LICENSE)
 ## References
 - [iced gui calculator](https://codinginformer.com/blog/rust-iced-calculator-tutorial)
 
+## Must do:
+- Y
+
 ## Roadmap
 - [*] Read a logical proposition
 - [*] Validate brackets

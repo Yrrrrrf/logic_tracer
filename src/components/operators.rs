@@ -15,11 +15,9 @@ pub enum Operator {
     Math(MathOp),
 }
 
-
-impl Operator {
-    /// `Override` the default `to_string()` method to return a string representation of the token.
-    pub fn to_string(&self) -> String {
-        return format!("{:?}", self);
+impl fmt::Display for Operator {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        todo!()
     }
 }
 
@@ -37,7 +35,7 @@ impl Operator {
 /// | Operator | Symbol | ASCII Value | Unicode Value |
 /// | :---: | :---: | :---: | :---: |
 /// | AND | & | 38 | U+0026 |
-/// | AND | ∧ | 8743 | U+2227 |
+/// | AND | ^ | 94 | U+005E |
 /// | AND | * | 42 | U+002A |
 /// | OR | \| | 124 | U+007C |
 /// | OR | ∨ | 8744 | U+2228 |
@@ -53,28 +51,28 @@ impl Operator {
 #[derive(Debug, Clone, PartialEq)]
 pub enum LogicOp {
     /// `&` -> ASCII 38 and Unicode U+0026  
-    /// `∧` -> ASCII 8743 and Unicode U+2227  
+    /// `^` -> ASCII 94 and Unicode U+005E
     /// `*` -> ASCII 42 and Unicode U+002A
-    AND,  // &, ∧
+    And,  // &, ∧
     /// `|` -> ASCII 124 and Unicode U+007C  
     /// `∨` -> ASCII 8744 and Unicode U+2228  
     /// `+` -> ASCII 43 and Unicode U+002B
-    OR,  // |, ∨
+    Or,  // |, ∨, +
     /// `!` -> ASCII 33 and Unicode U+0021  
     /// `¬` -> ASCII 172 and Unicode U+00AC
-    NOT,  // !, ¬
+    Not,  // !, ¬
     /// `↑` -> ASCII 8593 and Unicode U+2191
-    NAND,  // ↑
+    NAnd,  // ↑
     /// `↓` -> ASCII 8595 and Unicode U+2193
-    NOR,  // ↓
+    NOr,  // ↓
     /// `⊕` -> ASCII 8853 and Unicode U+2295
-    XOR,  // ⊕
+    XOr,  // ⊕
     /// `⊙` -> ASCII 8857 and Unicode U+2299
-    XNOR,  // ⊙
+    XNOr,  // ⊙
     /// `→` -> ASCII 8594 and Unicode U+2192
-    IMPLIES,  // →
+    Implies,  // →
     /// `↔` -> ASCII 8596 and Unicode U+2194
-    IFF,  // ↔
+    IFf,  // ↔
 }
 
 

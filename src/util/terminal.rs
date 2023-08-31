@@ -60,9 +60,9 @@ pub fn print_app_data() {
 
     for line in content.lines() {  // iterate over the lines in the string
         match line {  // match the line
-            line if line.starts_with("name = ")    => {print!("{}", set_fg(&line[7..].to_string().replace("\"", "").to_uppercase(), "g"));}
-            line if line.starts_with("version = ") => {print!(" {}\n", set_fg(&format!("v{}", line[10..].to_string().replace("\"", "")), "b"));}
-            line if line.starts_with("authors = ") => {println!("Authors: {}", line[10..].to_string().replace("\"", "")); break;}
+            line if line.starts_with("name = ")    => {print!("{}", set_fg(&line[7..].to_string().replace('\"', "").to_uppercase(), "g"));}
+            line if line.starts_with("version = ") => {println!(" {}", set_fg(&format!("v{}", line[10..].to_string().replace('\"', "")), "b"));}
+            line if line.starts_with("authors = ") => {println!("Authors: {}", line[10..].to_string().replace('\"', "")); break;}
             _ => {}  // do nothing
         }
     }

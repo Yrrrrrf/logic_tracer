@@ -5,9 +5,7 @@
 
 use std::fmt;
 
-use crate::components::ast::AST;
-use crate::components::lexer::Lexer;
-use crate::components::parser::Parser;
+use crate::ast::Ast;
 
 
 /// The `Proposition` struct represents a logical proposition.
@@ -16,8 +14,8 @@ use crate::components::parser::Parser;
 #[derive(Clone, PartialEq)]
 pub struct Proposition {
     pub src: String,
-    pub ast: AST,
-    pub f: String,  // function string
+    // pub ast: AST,
+    // pub f: String,  // function string
 }
 
 impl Proposition {
@@ -26,12 +24,12 @@ impl Proposition {
     /// ### Arguments:
     /// - `src` - the proposition source code
     /// 
-    pub fn new(src: &str) -> Self {        
-        let mut abst = AST::new(src);
+    pub fn new(src: &str) -> Self {       
+        let mut abst = Ast::new(src);
         Self {
             src: src.to_string(),
-            ast: abst.clone(),
-            f: abst.postfix_string(),
+            // f: abst.postfix_string(),
+            // ast: abst.clone(),
         }
     }
 
@@ -60,18 +58,19 @@ impl Proposition {
     }
 
 
+    // todo: implement this function
     /// Show the Karnaugh Map of the proposition.
     /// 
     /// ### Arguments:
     /// 
     /// ### Returns:
     /// - `Result<(), String>` - the result of the evaluation
-    pub fn show_kmap(&mut self) -> Result<(), String> {
-        // todo: implement this function
-        Ok(())
+    pub fn show_kmap(&mut self) -> Result<Vec<Vec<bool>>, String> {
+        Ok(vec![vec![false, false], vec![false, false]])
     }        
 
 
+    /// This function must be used only by the 
     pub fn print_truth_table(&mut self) {
         
     }
@@ -85,7 +84,7 @@ impl fmt::Debug for Proposition {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&crate::util::terminal::set_fg("Proposition", "g"))
             .field("src:", &self.src)
-            .field("f:", &self.f)
+            // .field("f:", &self.f)
             .finish()
 
     }
