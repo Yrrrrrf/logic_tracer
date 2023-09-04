@@ -4,18 +4,15 @@
 /// The `Propositions` enum represents different logical propositions.
 
 use std::fmt;
-
 use crate::ast::Ast;
-
 
 /// The `Proposition` struct represents a logical proposition.
 /// 
 /// It is used for modeling logical statements in Rust programs.
 #[derive(Clone, PartialEq)]
 pub struct Proposition {
-    pub src: String,
-    // pub ast: AST,
-    // pub f: String,  // function string
+pub ast: Ast,
+pub f: String,  // function string
 }
 
 impl Proposition {
@@ -27,9 +24,8 @@ impl Proposition {
     pub fn new(src: &str) -> Self {       
         let mut abst = Ast::new(src);
         Self {
-            src: src.to_string(),
-            // f: abst.postfix_string(),
-            // ast: abst.clone(),
+            ast: abst.clone(),
+            f: abst.get_function(),
         }
     }
 
@@ -40,9 +36,9 @@ impl Proposition {
     /// - `self` - the proposition
     /// 
     /// ### Returns:
-    /// - `Vec<bool>` - the result of the evaluation
-    pub fn evaluate_logic(&self) -> Vec<bool> {
-        vec![]
+    /// - `u64` - the result of the evaluation (binary number)
+    pub fn evaluate_logic(&self) -> u64 {
+        0
     }
 
 
@@ -50,29 +46,50 @@ impl Proposition {
     /// 
     /// ### Arguments:
     /// - `self` - the proposition
+    /// - `var` - the variable values that will be used in the evaluation
     /// 
     /// ### Returns:
-    /// - `Vec<f64>` - the result of the evaluation
-    pub fn  evaluate_math(&self) -> Vec<f64> {
+    /// - `f64` - the result of the evaluation (number)
+    pub fn evaluate_math(&self, var: Vec<f64>) -> f64 {
+        0.0
+    }
+
+
+    /// This returns the result of the proposition as a vector of booleans.
+    /// 
+    /// ### Arguments:
+    /// - `self` - the proposition
+    /// 
+    /// ### Returns:
+    /// - `Vec<bool>` - the result of the evaluation 
+    pub fn get_result_vec(&mut self) -> Vec<bool> {
         vec![]
     }
 
 
-    // todo: implement this function
+    // ? VIEW FUNCTIONS ===============================================
+
     /// Show the Karnaugh Map of the proposition.
     /// 
     /// ### Arguments:
+    /// - `self` - the proposition
     /// 
     /// ### Returns:
-    /// - `Result<(), String>` - the result of the evaluation
-    pub fn show_kmap(&mut self) -> Result<Vec<Vec<bool>>, String> {
-        Ok(vec![vec![false, false], vec![false, false]])
+    /// - `String` - the Karnaugh Map
+    pub fn get_kmap_string(&mut self) -> String {
+        "KMap".to_string()
     }        
-
-
-    /// This function must be used only by the 
-    pub fn print_truth_table(&mut self) {
-        
+    
+    
+    /// Show the truth table of the proposition.
+    /// 
+    /// ### Arguments:
+    /// - `self` - the proposition
+    /// 
+    /// ### Returns:
+    /// - `String` - the truth table
+    pub fn get_truth_table_string(&mut self) -> String {
+        "Truth Table".to_string()
     }
 
 }
@@ -83,7 +100,7 @@ impl fmt::Debug for Proposition {
     /// This function is used to format the output of the AST
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct(&crate::util::terminal::set_fg("Proposition", "g"))
-            .field("src:", &self.src)
+            .field("src:", &self.ast.src.iter().map(|x| x.to_string()).collect::<Vec<String>>())
             // .field("f:", &self.f)
             .finish()
 

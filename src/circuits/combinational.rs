@@ -3,32 +3,31 @@
 //! This module contains combinational circuits, which are circuits that have no memory.
 //! 
 //! This module contains the following circuits:
-//! - Half Adder
-//! - Full Adder
-//! 
-//! - Half Subtractor
-//! - Full Subtractor
-//! 
-//! - Multiplexer
-//! - Demultiplexer
-//! 
-//! - Encoder
-//! - Decoder
-//! 
-//! - Priority Encoder
-//! - Priority Decoder
+//! - Arithmetic circuits (base for the ALU)
+//!   - Half Adder
+//!   - Full Adder
+//!   - Half Subtractor
+//!   - Full Subtractor
 //! 
 //! - Comparator
+//! 
+//! - Data Selector
+//!   - Multiplexer
+//!   - Demultiplexer
+//! 
+//! - Arithmetic Logic Unit (ALU)
+//! 
+//! - Signal Converter
+//!   - Encoder (bin to signal) & Priority Encoder
+//!   - Decoder (signal to bin) & Priority Decoder
 //! 
 //! - Parity Generator
 //! - Parity Checker
 //! 
-//! - Arithmetic Logic Unit
 //! 
-#![allow(dead_code)]
+#![allow(unused)]
 
 // Compare this snippet from src\circuits\sequential.rs:
-// use logic_tracer::gpio::GPIO;
 pub trait Combinational {
     fn calculate(&mut self);
 
@@ -38,53 +37,16 @@ pub trait Combinational {
     // fn get_input_as_u8(&self) -> u8;
     // fn get_output_as_u8(&self) -> u8; (...)
     // fn get_output_as_u32(&self) -> u32;  To make it more generic (bit width)
-
-
 }
 
 
 /// # Half Adder
-#[derive(Debug, Clone)]
+#[derive(Default, Debug, Clone)]
 pub struct HalfAdder {
-    a: bool,
-    b: bool,
-    sum: bool,
-    carry: bool,
+    
 }
 
-impl HalfAdder {
-    // pub fn new() -> Self {
-    //     Self::default()
-    // }
+// todo: CHECK THIS IDEA
 
-    pub fn new_with_input(a: bool, b: bool) -> Self {
-        Self {
-            a,
-            b,
-            sum: a ^ b,
-            carry: a & b,
-        }
-    }
-}
-
-
-impl Combinational for HalfAdder {
-    fn calculate(&mut self) {
-        self.sum = self.a ^ self.b;
-        self.carry = self.a & self.b;
-    }
-
-    fn get_input(&self) -> Vec<bool> {
-        vec![self.a, self.b]
-    }
-
-    fn set_input(&mut self, input_line: Vec<bool>) {
-        self.a = input_line[0];
-        self.b = input_line[1];
-    }
-
-    fn get_output(&self) -> bool {
-        self.sum
-    }
-}
-
+// Implement the Combinational ciruits using their functions to calculate the output
+// The output must be a u64 (or u32, u16, u8, etc). This to handle the bit width of the circuit.

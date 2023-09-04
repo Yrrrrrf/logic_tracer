@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="resources/img/algorithm.png" alt="Algorithm" width="192">
+    <img src="resources/img/hex.gif" alt="Algorithm" width="192">
     <div align="center">Logic Tracer</div>
 </h1>
 
@@ -24,25 +24,17 @@ cargo run  # run main
 cargo run --example <example name>
 ```
 
-
 ## [License](LICENSE)
 
 This project is licensed under the terms of the [MIT license](./LICENSE)
-
-## References
-- [iced gui calculator](https://codinginformer.com/blog/rust-iced-calculator-tutorial)
-
-## Must do:
-- Y
 
 ## Roadmap
 - [*] Read a logical proposition
 - [*] Validate brackets
 - [*] Tokenize the proposition
-- [ ] Parse the proposition
-- [ ] Validate the proposition
-- [ ] **Solve proposition** (Shunting Yard Algorithm)
-- [ ] Build the truth table
-- [ ] Build the AST (parse tree)
+- [ ] Parse the proposition (validate)
+- [ ] Build the AST (Shunting Yard Algorithm) (use postfix notation)
+- [ ] **Solve proposition** (evaluate the AST)
+- [ ] Add good looking output (truth table, ast, function, etc.)
 - [ ] Reduce a proposition to its simplest form (boolean algebra) 
-- [ ] Add MathPropositions support
+- [ ] Add MathPropositions support (examples, tests, etc.)

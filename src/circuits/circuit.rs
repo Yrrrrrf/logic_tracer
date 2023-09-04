@@ -18,9 +18,6 @@
 //! - Latch
 //! 
 //! - Register
-// use super::sequential::Sequential;
-// use super::combinational::Combinational;
-
 use super::{sequential::Sequential, combinational::Combinational};
 
 /// This is the main circuit enum.
@@ -82,4 +79,3 @@ impl Circuit {
         }
     }
 }
-

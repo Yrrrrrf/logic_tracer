@@ -21,7 +21,7 @@ use crate::util::terminal::set_fg;
 // add derive
 #[derive(Clone, PartialEq)]
 pub struct Ast {
-    src: Vec<char>,
+    pub src: Vec<char>,
     token_table: Vec<GrammarToken>,
 }
 
@@ -50,17 +50,17 @@ impl Ast {
         // while let Some(c) = src. {
         for c in src.iter() {
             tokens.push(match c {
-                // Operators
-                '^' | '*' | '&' => GrammarToken::Operator(Operator::Logic(LogicOp::And)),
-                '∨' | '|' | '+'=> GrammarToken::Operator(Operator::Logic(LogicOp::Or)),
-                // '!' | '¬' => GrammarToken::Operator(Operator::Logic(LogicOp::NOT)),
-                // '↑' => GrammarToken::Operator(Operator::Logic(LogicOp::NAND)),
-                // '↓' => GrammarToken::Operator(Operator::Logic(LogicOp::NOR)),
-                // '⊕' | '⊻' => GrammarToken::Operator(Operator::Logic(LogicOp::XOR)),
-                // '↔' => GrammarToken::Operator(Operator::Logic(LogicOp::XNOR)),
-                // '→' => GrammarToken::Operator(Operator::Logic(LogicOp::IMPLIES)),
-    
-                // Brackets
+                // if it's a number
+                //* This radix (10) is used to specify the number base
+                //* the base change logic is still on the `prototype` stage
+                '0'..='9' => GrammarToken::Number(c.to_digit(10).unwrap()),
+
+                // if it's part of the alphabet
+                'A'..='Z' | 'a'..='z' => GrammarToken::Variable(*c),  // *c pass the reference of the char
+
+                // ? Grammar Rules --------------------------------------------------------------------------------------------
+
+                // if the char is a bracket
                 '(' => GrammarToken::Brackets(BracketState::OpenParenthesis),
                 ')' => GrammarToken::Brackets(BracketState::CloseParenthesis),
                 '[' => GrammarToken::Brackets(BracketState::OpenSquareBracket),
@@ -68,14 +68,23 @@ impl Ast {
                 '{' => GrammarToken::Brackets(BracketState::OpenCurlyBracket),
                 '}' => GrammarToken::Brackets(BracketState::CloseCurlyBracket),
                 '<' => GrammarToken::Brackets(BracketState::OpenChevron),
-                '>' => GrammarToken::Brackets(BracketState::CloseChevron),
-    
-                // Variables
-                _ => if "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(*c) {GrammarToken::Variable(*c)}
-                else {GrammarToken::Error(c.to_string())}
-                // ^ this code may do the same as the code above (not tested (yet))
-                // 'A'..='Z' | 'a'..='z' | '0'..='9' => tokens.push((GrammarToken::Variable(c.to_string()), c)),
-                // _ => tokens.push((GrammarToken::Error(c.to_string()), c)),
+                '>' => GrammarToken::Brackets(BracketState::CloseChevron),                
+
+                // if it's a logic operator
+                '&' | '∧' => GrammarToken::Operator(LogicOp::And),
+                '|' | '∨' | '+' => GrammarToken::Operator(LogicOp::Or),
+                '!' | '¬' => GrammarToken::Operator(LogicOp::Not),
+                '⊕' | '⊻' => GrammarToken::Operator(LogicOp::XOr),
+                '⊙' => GrammarToken::Operator(LogicOp::XNOr),
+                '↑' => GrammarToken::Operator(LogicOp::NAnd),
+                '↓' => GrammarToken::Operator(LogicOp::NOr),
+                '→' => GrammarToken::Operator(LogicOp::Implies),
+                '↔' => GrammarToken::Operator(LogicOp::IFf),
+
+                // if it's a variable
+                // _ => if "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(*c) {GrammarToken::Variable(*c)}
+                // else {GrammarToken::Error(c.to_string())}
+                _ => GrammarToken::Error(format!("Unvalid char: {}", c)),
             });
         }
         tokens
@@ -121,27 +130,68 @@ impl Ast {
     }
 
 
+    /// Returns the function string of the AST
+    /// 
+    /// The function string is the string that represents the function of the AST
+    /// 
+    /// ### Arguments:
+    /// - `self` - the AST
+    /// 
+    /// ### Returns:
+    /// - `String` - the function string
+    pub fn get_function(&mut self) -> String {
+        // todo: implement function string
+        todo!("Implement Function String")
+    }
+
+
     /// Get infix string
+    /// 
+    /// The infix string is the string that represents the function of the AST in infix notation
+    /// 
+    /// ### Arguments:
+    /// - `self` - the AST
+    /// 
+    /// ### Returns:
+    /// - `String` - the infix string
     pub fn get_infix_string(&mut self) -> String {
         // todo: implement infix string
         todo!("Implement Infix String")
     }
-
+    
     /// Get postfix string
+    /// 
+    /// ### Arguments:
+    /// - `self` - the AST
+    /// 
+    /// ### Returns:
+    /// - `String` - the infix string
     pub fn get_postfix_string(&mut self) -> String {
         // todo: implement postfix string
         todo!("Implement Postfix String")
     }
-
+    
     /// Get prefix string
+    /// 
+    /// ### Arguments:
+    /// - `self` - the AST
+    /// 
+    /// ### Returns:
+    /// - `String` - the infix string
     pub fn get_prefix_string(&mut self) -> String {
         // todo: implement prefix string
         todo!("Implement Prefix String")
     }
 
     /// Get the AST    
+    /// 
+    /// ### Arguments:
+    /// - `self` - the AST
+    /// 
+    /// ### Returns:
+    /// - `String` - the infix string
     // todo: make a better visualization of the AST (binary tree)
-    pub fn get_ast(&mut self) -> String {
+    pub fn get_ast_string(&mut self) -> String {
         // todo: implement AST visualization (binary tree)
         todo!("Implement AST visualization")
     }

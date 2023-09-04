@@ -16,11 +16,11 @@
 #![allow(unused)]
 
 
-// ? Modules ----------------------------------------------------------------------------------------------------------------------
+// ? Pub Lib Modules ----------------------------------------------------------------------------------------------------------
 
 mod components;
 pub use components::*;
-pub use components::operators::Operator;  // Import the Operator enum because it is used in the AST struct
+pub use components::operators::*;  // Import the Operator enum because it is used in the AST struct
 
 mod util;
 pub use util::terminal;
@@ -29,67 +29,92 @@ mod circuits;
 pub use circuits::*;
 
 
-// ? Tests ------------------------------------------------------------------------------------------------------------------------
+// ? Tests --------------------------------------------------------------------------------------------------------------------
 
-mod proto;
+mod proto;  // Hidden module for proto-type tests (for development only)
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
+    // This modules will be used in the tests, not in the library
+    // So it's not necessary to import them in the library
     use crate::ast::Ast;
     use crate::components::proposition::Proposition;
 
     
     use crate::proto::base_change::change_from_base;
 
+
     /// Check if the check_pair_brackets() fn works well.
     #[test]  // Indicates that this is a test
     fn test_pair_brackets() {
-        assert_eq!(Ast::new("A & (B & C)").check_pair_brackets(), true);
-        assert_eq!(Ast::new("A & (B & C) & D").check_pair_brackets(), true);
-        assert_eq!(Ast::new("(a + b) * (c - d)").check_pair_brackets(), true);
-        assert_eq!(Ast::new("(a + b) * (c - d]").check_pair_brackets(), false);
-        assert_eq!(Ast::new("x + y] * [z - w]").check_pair_brackets(), false);
-        assert_eq!(Ast::new("x + y] * [z - w)").check_pair_brackets(), false);
-        assert_eq!(Ast::new("1, 2, 3, 4}").check_pair_brackets(), false);
-        assert_eq!(Ast::new("1, 2, 3, 4]").check_pair_brackets(), false);
-        assert_eq!(Ast::new("html></html>").check_pair_brackets(), false);
-        assert_eq!(Ast::new("html></htm>").check_pair_brackets(), false);
-        assert_eq!(Ast::new("(").check_pair_brackets(), false);
-        assert_eq!(Ast::new("[").check_pair_brackets(), false);
-        assert_eq!(Ast::new("{").check_pair_brackets(), false);
-        assert_eq!(Ast::new("<").check_pair_brackets(), false);
-        assert_eq!(Ast::new("[{()}]").check_pair_brackets(), true);
-        assert_eq!(Ast::new("{[()]}>").check_pair_brackets(), false);
-        assert_eq!(Ast::new(" ").check_pair_brackets(), true);
-        assert_eq!(Ast::new("").check_pair_brackets(), true);
+    vec![
+        ("A & (B & C)", true),
+        ("A & (B & C) & D", true),
+        ("(a + b) * (c - d)", true),
+        ("(a + b) * (c - d]", false),
+        ("x + y] * [z - w]", false),
+        ("x + y] * [z - w)", false),
+        ("1, 2, 3, 4}", false),
+        ("1, 2, 3, 4]", false),
+        ("html></html>", false),
+        ("html></htm>", false),
+        ("(", false),
+        ("[", false),
+        ("{", false),
+        ("<", false),
+        ("[{()}]", true),
+        ("{[()]}>", false),
+        (" ", true),
+        ("", true),
+    ].iter().for_each(|(src, result)| assert_eq!(Ast::new(src).check_pair_brackets(), *result));
     }
 
 
-    #[test]  // Indicates that this is a test
+    /// Test if the notation for the AST is correct.
+    #[test]
+    fn test_ast_notation() {
+        vec![// Test if the AST matches it's prefix, infix and postfix notation
+            ("A+B", "+AB", "A+B", "AB+"),
+            ("", "", "", ""),
+            ("", "", "", ""),
+            ("", "", "", ""),
+            ("", "", "", ""),
+            ("", "", "", ""),
+        ].iter().for_each(|(src, prefix, infix, postfix)| {
+            let mut ast = Ast::new(src);  // Create a new AST
+            assert_eq!(ast.get_prefix_string(), prefix.to_string());
+            assert_eq!(ast.get_infix_string(), infix.to_string());
+            assert_eq!(ast.get_postfix_string(), postfix.to_string());
+        });
+    }
+
+
+    #[test]
     fn test_logic_evalaution() {
-        assert_eq!(Proposition::new("A & B").evaluate_logic(), vec![false, false, false, true]);
-        assert_eq!(Proposition::new("A | B").evaluate_logic(), vec![false, true, true, true]);
-        assert_eq!(Proposition::new("A ^ B").evaluate_logic(), vec![false, true, true, false]);
+        vec![
+            ("A & B", 15),
+            ("A ^ B", 15),
+            ("A | B", 7),
+            ("A", 2),
+            ("A & B & C", 128),
+            ("A + B + C", 255),
+        ].iter().for_each(|(src, result)| assert_eq!(Proposition::new(src).evaluate_logic(), *result));
     }
 
 
-    #[test]  // Indicates that this is a test
+    #[test]
     fn test_math_evaluation() {
-        assert_eq!(Proposition::new("21 + 57").evaluate_math(), vec![78.0]);
-        assert_eq!(Proposition::new("21 - 57").evaluate_math(), vec![-36.0]);
-        assert_eq!(Proposition::new("21 * 57").evaluate_math(), vec![1197.0]);
-    }
+        // 2 variables
+        assert_eq!(Proposition::new("A*B").evaluate_math(vec![2.0, 3.0]), 6.0);
+        assert_eq!(Proposition::new("A/B").evaluate_math(vec![24.0, 6.0]), 4.0);
+        assert_eq!(Proposition::new("A+B").evaluate_math(vec![21.0, 57.0]), 78.0);
+        assert_eq!(Proposition::new("A-B").evaluate_math(vec![21.0, 57.0]), -36.0);
+        assert_eq!(Proposition::new("A*B").evaluate_math(vec![21.0, 57.0]), 1197.0);
+        // 3 variables
+        assert_eq!(Proposition::new("A/B").evaluate_math(vec![21.0, 57.0]), 0.3684210526315789);
+        assert_eq!(Proposition::new("A+B+C").evaluate_math(vec![21.0, 57.0, 12.0]), 90.0);
 
-
-    #[test]  // Indicates that this is a test
-    fn test_kmap() {
-        assert_eq!(Proposition::new("A & B").show_kmap(), Ok(vec![vec![false, false], vec![false, true]]));
-        assert_eq!(Proposition::new("A | B").show_kmap(), Ok(vec![vec![false, true], vec![true, true]]));
-        assert_eq!(Proposition::new("A ^ B").show_kmap(), Ok(vec![vec![false, true], vec![true, false]]));
-        assert_eq!(Proposition::new("A ⊕ B").show_kmap(), Ok(vec![vec![false, true], vec![true, false]]));
-        assert_eq!(Proposition::new("A ⊻ B").show_kmap(), Ok(vec![vec![false, true], vec![true, false]]));
-        assert_eq!(Proposition::new("A ⊼ B").show_kmap(), Ok(vec![vec![false, false], vec![false, false]]));
-        assert_eq!(Proposition::new("A ⊽ B").show_kmap(), Ok(vec![vec![false, false], vec![false, false]]));
+        // todo: some random tests with random numbers..
     }
 
 
@@ -98,7 +123,7 @@ mod tests {
 
     #[test]  // Indicates that this is a test
     fn test_base_change() {
-        vec![  // decimal to binary
+        vec![  // binary to decimal
             ("11011100", "220"),
             ("110011", "51"),
             ("11001100", "204"),

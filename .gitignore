@@ -17,3 +17,4 @@ Cargo.lock
 # project specific files
 resources/data/
 resources/keys/
+# *.gif
