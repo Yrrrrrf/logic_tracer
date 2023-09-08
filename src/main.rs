@@ -15,25 +15,27 @@ use components::*;
 
 // ? Proto: Dev mode <Some test scripts for development (not for production)>
 mod proto;
-use proto::*;
+use proto::{*, base_change::str_to_num_from_base};
 
 fn main() {
     print_app_data();  // Print the app data
     run();  // Run the app
 }
 
+
 /// Run the app
 pub fn run() {
-    // ○ ○
-    // ○ ●
-    // ● ○
-    // ● ●
 
-    // logic_notation::run_prototype();  // Run the prototype
+    // let src = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZaz.";
+    // let src = "9A.3";
+    let src = "C_BA2.2C";
+    let n_base = 2;
+    let new_base = 18;
 
-    // let token_table = ast::AST::new("A&(B|C)|D").get_token_table();  // Evaluate the logic of the proposition
-    // println!("{:#?}", token_table);
+    println!("{} (b{:_>3}) = {} (b{:_>3})", src, n_base, 
+        match str_to_num_from_base(src, n_base, new_base) {
+            Ok(n) => n,
+            Err(e) => {println!("Error: {}", e); return}
+        }, new_base);
 
-    // let mut ast = ast::AST::new("A+B+C+D");
-    // println!("{:#?}", ast.get_token_table());
 }
