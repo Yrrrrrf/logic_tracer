@@ -32,6 +32,7 @@ pub use circuits::*;
 // ? Tests --------------------------------------------------------------------------------------------------------------------
 
 mod proto;  // Hidden module for proto-type tests (for development only)
+pub use proto::*;  // Import the proto-type modules
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
@@ -46,43 +47,43 @@ mod tests {
     /// Check if the check_pair_brackets() fn works well.
     #[test]  // Indicates that this is a test
     fn test_pair_brackets() {
-    vec![
-        ("A & (B & C)", true),
-        ("A & (B & C) & D", true),
-        ("(a + b) * (c - d)", true),
-        ("(a + b) * (c - d]", false),
-        ("x + y] * [z - w]", false),
-        ("x + y] * [z - w)", false),
-        ("1, 2, 3, 4}", false),
-        ("1, 2, 3, 4]", false),
-        ("html></html>", false),
-        ("html></htm>", false),
-        ("(", false),
-        ("[", false),
-        ("{", false),
-        ("<", false),
-        ("[{()}]", true),
-        ("{[()]}>", false),
-        (" ", true),
-        ("", true),
-    ].iter().for_each(|(src, result)| assert_eq!(Ast::new(src).check_pair_brackets(), *result));
+        vec![
+            ("A & (B & C)", true),
+            ("A & (B & C) & D", true),
+            ("(a + b) * (c - d)", true),
+            ("(a + b) * (c - d]", false),
+            ("x + y] * [z - w]", false),
+            ("x + y] * [z - w)", false),
+            ("1, 2, 3, 4}", false),
+            ("1, 2, 3, 4]", false),
+            ("html></html>", false),
+            ("html></htm>", false),
+            ("(", false),
+            ("[", false),
+            ("{", false),
+            ("<", false),
+            ("[{()}]", true),
+            ("{[()]}>", false),
+            (" ", true),
+            ("", true),
+        ].iter().for_each(|(src, result)| assert_eq!(Ast::new(src).check_pair_brackets(), *result));
     }
 
 
     /// Test if the notation for the AST is correct.
     #[test]
     fn test_ast_notation() {
-        vec![// Test if the AST matches it's prefix, infix and postfix notation
-            ("A+B", "+AB", "A+B", "AB+"),
-            ("", "", "", ""),
-            ("", "", "", ""),
-            ("", "", "", ""),
-            ("", "", "", ""),
-            ("", "", "", ""),
-        ].iter().for_each(|(src, prefix, infix, postfix)| {
+        vec![  // Test if the AST matches it's infix, prefix and postfix notation
+            ("A+B", "+AB", "AB+"),
+            ("(X+Y)*Z", "*+XYZ", "XY+Z*"),
+            ("A+(B*C)", "+A*BC", "ABC*+"),
+            ("(A+B)*(C+D)", "*+A B+CD", "AB+CD+*"),
+            ("A*(B+(C*D))", "*A+B*CD", "ABCD*+*"),
+            ("(A*B)+(C*D)", "+*AB*CD", "AB*CD*+"),
+        ].iter().for_each(|(src, prefix, postfix)| {
             let mut ast = Ast::new(src);  // Create a new AST
             assert_eq!(ast.get_prefix_string(), prefix.to_string());
-            assert_eq!(ast.get_infix_string(), infix.to_string());
+            assert_eq!(ast.get_infix_string(), src.to_string());  // src == infix
             assert_eq!(ast.get_postfix_string(), postfix.to_string());
         });
     }
@@ -122,60 +123,63 @@ mod tests {
 
     #[test]  // Indicates that this is a test
     fn test_base_change() {
+        vec![  // vec![src_base, new_base, src, result]
+            // bin -> dec
+            (2, 10, "11011100", "220"),
+            (2, 10, "110011", "51"),
+            (2, 10, "11001100", "204"),
+            (2, 10, "11110011", "243"),
+            (2, 10, "1100111", "103"),
+            // dec -> bin
+            (10, 2, "197", "11000101"),
+            (10, 2, "253", "11111101"),
+            (10, 2, "79", "1001111"),
+            (10, 2, "297", "100101001"),
+            (10, 2, "528", "1000010000"),
+            // bin -> hex
+            (2, 16, "100111011", "13B"),
+            (2, 16, "11011011", "DB"),
+            (2, 16, "101111011", "17B"),
+            (2, 16, "11011001", "D9"),
+            (2, 16, "111011101", "1DD"),
+            // hex -> bin
+            (16, 2, "9F", "10011111"),
+            (16, 2, "9BAF", "1001101110101111"),
+            (16, 2, "8BCD", "1000101111001101"),
+            (16, 2, "72BA", "111001010111010"),
+            (16, 2, "987", "100110000111"),
+            (16, 2, "9F27", "1001111100100111"),
+            // bin -> oct
+            (2, 8, "11011001", "331"),
+            (2, 8, "100111001", "471"),
+            (2, 8, "11100110", "346"),
+            (2, 8, "11001100", "314"),
+            (2, 8, "1101110", "156"),
+            // oct -> bin
+            (8, 2, "245", "10100101"),
+            (8, 2, "327", "11010111"),
+            (8, 2, "651", "110101001"),
 
-        pub fn change_from_base(n: u64, n_base: u64, new_base: u64) -> String {
-            let mut n = n;  // copy n
-            let mut result = String::new();  // create an empty string
-            while n > 0 {  // while n is greater than 0
-                let rem = n % new_base;  // get the remainder
-                n /= new_base;  // divide n by the new base
-                // push the remainder to the result string (as a char)
-                result.push("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars().nth(rem as usize).unwrap_or('?'))
-            }
-            result.chars().rev().collect::<String>()  // reverse the result and return it
-        }
+            // ? Decimal numbers test
+            (10, 16, "450.5", "1C2.8"),
+            (10, 16, "8.5", "8.8"),
+            (8, 10, "450.5", "296.625"),
+            (8, 10, "7.5", "7.625"),
+            (2, 10, "1010.1", "10.5"),
+            (2, 10, "1010", "10"),
+            (20, 6, "AA.21", "550.03405012"),
+            (10, 16, "2197.42", "895.6B851EB8"),
+            (16, 10, "9E.D", "158.8125"),
 
-        vec![  // binary to decimal
-            ("11011100", "220"),
-            ("110011", "51"),
-            ("11001100", "204"),
-            ("11110011", "243"),
-            ("1100111", "103"),
-        ].iter().for_each(|(n, r)| assert_eq!(r, &change_from_base(u64::from_str_radix(n, 2).unwrap(), 2, 10)));
-        vec![  // decimal to bin
-            ("197", "11000101"), 
-            ("253", "11111101"), 
-            ("79", "1001111"), 
-            ("297", "100101001"), 
-            ("528", "1000010000")
-        ].iter().for_each(|(n, r)| assert_eq!(r, &change_from_base(u64::from_str_radix(n, 10).unwrap(), 10, 2)));
-        vec![  // bin to hex
-            ("100111011", "13B"),
-            ("11011011", "DB"),
-            ("101111011", "17B"),
-            ("11011001", "D9"),
-            ("111011101", "1DD"),
-        ].iter().for_each(|(n, r)| assert_eq!(r, &change_from_base(u64::from_str_radix(n, 2).unwrap(), 2, 16)));
-        vec![  // hex to bin
-            ("9F", "10011111"),
-            ("9BAF", "1001101110101111"),
-            ("8BCD", "1000101111001101"),
-            ("72BA", "111001010111010"),
-            ("987", "100110000111"),
-            ("9F27", "1001111100100111"),
-        ].iter().for_each(|(n, r)| assert_eq!(r, &change_from_base(u64::from_str_radix(n, 16).unwrap(), 16, 2)));
-        vec![  // binary to octal
-            ("11011001", "331"),
-            ("100111001", "471"),
-            ("11100110", "346"),
-            ("11001100", "314"),
-            ("1101110", "156"),
-        ].iter().for_each(|(n, r)| assert_eq!(r, &change_from_base(u64::from_str_radix(n, 2).unwrap(), 2, 8)));
-        vec![  // octal to binary
-            ("245", "10100101"),
-            ("327", "11010111"),
-            ("651", "110101001"),
-        ].iter().for_each(|(n, r)| assert_eq!(r, &change_from_base(u64::from_str_radix(n, 8).unwrap(), 8, 2)));
+        ].iter().for_each(|(src_base, new_base, src, result)|
+            assert_eq!(str_to_num_from_base(src, *src_base, *new_base).unwrap(), result.to_string()));
+
+        // * To print the results in the terminal
+        // ].iter().for_each(|(src_base, new_base, src, result)|
+        //     println!("{} b{:_>2} = {} b{:_>2}\t{}", src, src_base, 
+        //         str_to_num_from_base(src, *src_base, *new_base).unwrap(), new_base,
+        //         crate::terminal::set_fg(result, if str_to_num_from_base(src, *src_base, *new_base).unwrap() == result.to_string() {"g"} else {"r"})
+        // ));
     }
 
 }

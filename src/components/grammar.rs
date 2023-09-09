@@ -14,7 +14,8 @@ use crate::components::operators::*;
 pub enum GrammarToken {
     Operator(LogicOp),  // TODO: CHANGE THIS TO A GENERIC OPERATOR ENUM
     Variable(char),  // {A-Za-z0-9}
-    Number(u32),  // {0-9}
+    // Number can be an integer or a float, so. The Number Enum contains the float value of the number
+    Number(u8),  // Number can represent a sequence of digits in any base that count as one number (only if it's a valid number)
     Brackets(BracketState),
     Error(String),
 }

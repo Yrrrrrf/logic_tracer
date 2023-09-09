@@ -46,20 +46,13 @@ impl Ast {
     /// 
     fn get_token_table(src: Vec<char>) -> Vec<GrammarToken> {
         let mut tokens = Vec::new();
-    
+
         // while let Some(c) = src. {
         for c in src.iter() {
             tokens.push(match c {
-                // if it's a number
-                //* This radix (10) is used to specify the number base
-                //* the base change logic is still on the `prototype` stage
-                '0'..='9' => GrammarToken::Number(c.to_digit(10).unwrap()),
-
-                // if it's part of the alphabet
+                // if the char is a number or a variable
+                '0'..='9' => GrammarToken::Number(c.to_string().parse::<u8>().unwrap()),
                 'A'..='Z' | 'a'..='z' => GrammarToken::Variable(*c),  // *c pass the reference of the char
-
-                // ? Grammar Rules --------------------------------------------------------------------------------------------
-
                 // if the char is a bracket
                 '(' => GrammarToken::Brackets(BracketState::OpenParenthesis),
                 ')' => GrammarToken::Brackets(BracketState::CloseParenthesis),
@@ -69,7 +62,6 @@ impl Ast {
                 '}' => GrammarToken::Brackets(BracketState::CloseCurlyBracket),
                 '<' => GrammarToken::Brackets(BracketState::OpenChevron),
                 '>' => GrammarToken::Brackets(BracketState::CloseChevron),                
-
                 // if it's a logic operator
                 '&' | '∧' => GrammarToken::Operator(LogicOp::And),
                 '|' | '∨' | '+' => GrammarToken::Operator(LogicOp::Or),
@@ -80,26 +72,11 @@ impl Ast {
                 '↓' => GrammarToken::Operator(LogicOp::NOr),
                 '→' => GrammarToken::Operator(LogicOp::Implies),
                 '↔' => GrammarToken::Operator(LogicOp::IFf),
-
-                // if it's a variable
-                // _ => if "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(*c) {GrammarToken::Variable(*c)}
-                // else {GrammarToken::Error(c.to_string())}
                 _ => GrammarToken::Error(format!("Unvalid char: {}", c)),
             });
         }
         tokens
         
-    }
-
-
-    /// ? This function makes the function of the **Parser**.
-    /// Parse the input string.
-    /// 
-    /// This function will parse the input string and create the AST.
-    pub fn parse(&mut self) -> Result<(), String> {
-        self.check_pair_brackets();
-        // Ok(AST::new(self.src))
-        Ok(())
     }
 
 
@@ -158,7 +135,8 @@ impl Ast {
         // todo: implement infix string
         todo!("Implement Infix String")
     }
-    
+
+
     /// Get postfix string
     /// 
     /// ### Arguments:
@@ -170,6 +148,7 @@ impl Ast {
         // todo: implement postfix string
         todo!("Implement Postfix String")
     }
+    
     
     /// Get prefix string
     /// 
@@ -183,6 +162,7 @@ impl Ast {
         todo!("Implement Prefix String")
     }
 
+
     /// Get the AST    
     /// 
     /// ### Arguments:
@@ -195,7 +175,6 @@ impl Ast {
         // todo: implement AST visualization (binary tree)
         todo!("Implement AST visualization")
     }
-
 
 }
 

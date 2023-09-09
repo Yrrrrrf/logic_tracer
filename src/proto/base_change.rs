@@ -1,91 +1,230 @@
-/// This function reads a string with the form: `[A-Za-z\d]+(\.[A-Za-z\d]+)?`.
-/// 
-/// Where:
-/// - `[A-Za-z\d]+`  ->  Any number of letters or numbers (at least one)
-/// - `(\.[A-Za-z\d]+)?`  ->  Optional: A dot followed by dot and any number of letters or numbers (at least one)
-/// 
-/// And returns a number in the base specified.
-/// 
-/// The considered alphabet is: `0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.
-/// So the maximum base is 62. Even though the function can handle any base up to 256, the alphabet is limited to 62 characters.
-/// 
-/// # Arguments:
-/// - src: `&str` - The string to convert to a number
-/// - src_base: [`u8`] - The base of the source number 
-/// - new_base: [`u8`] - The base of the new number
-/// 
-/// # Returns:
-/// - [`f64`] - The number in the new base
+/// Converts a string in the given base to a number in a new base.
+///
+/// The input string must have the form `[A-Za-z\d]+(\.[A-Za-z\d]+)?`, where:
+///
+/// - `[A-Za-z\d]+` represents any number of letters or digits (at least one).
+/// - `(\.[A-Za-z\d]+)?` represents an optional decimal part, which consists of a dot followed by any number of letters or digits (at least one).
+///
+/// The function supports bases up to 62, which means that the input string can contain any of the following characters: `0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.
+///
+/// # Arguments
+///
+/// - `src` - A string to convert to a number.
+/// - `src_base` - The base of the source number.
+/// - `new_base` - The base of the new number.
+///
+/// # Returns
+///
+/// A string that represents the number in the new base, or an error message if the input is invalid.
+///
+/// # Examples
+///
+/// ```
+/// use base_change::str_to_num_from_base;
+///
+/// let result = str_to_num_from_base("1010", 2, 16);
+/// assert_eq!(result, Ok("A".to_string()));
+/// ```
+///
+/// # Errors
+///
+/// The function returns an error message if any of the following conditions are met:
+///
+/// - The input bases are not between 2 and 62.
+/// - The input string contains an invalid character for the given base.
+///
+/// # Implementation details
+///
+/// The function first validates the input bases and characters, and then converts the input string to its base 10 equivalent. It then converts the integer part of the number to the new base using the `int_b10_dst` function, and adds the decimal part of the number to the new number if it exists. Finally, it returns the new number as a string.
 pub fn str_to_num_from_base(src: &str, src_base: u8, new_base: u8) -> Result<String, String> {
-    if src_base < 2 || src_base > 62 || new_base < 2 || new_base > 62 {return Err("Base must be between 2 and 62".to_string())}  // * Check if the base is between 2 and 62
     // src.chars().for_each(|c| println!("{} -> {:?}", c, digit_value(c)));  // Print the value of all the chars in the string
-
-    /// This function converts any character to its numerical value
-    /// 
-    /// The function can interpret any character in the Alphabet as a digit
-    /// - `0..9` ->  0.. 9
-    /// - `A..Z` -> 10..35
-    /// - `a..z` -> 36..61
-    fn digit_value(c: char) -> Result<u8, String> {  // Function to convert a digit character to its numerical value
-        if c.is_ascii_digit() {Ok(c as u8 - '0' as u8)  // If the character is a digit, return it's value
-        } else if c.is_ascii_uppercase() {Ok(c as u8 - 'A' as u8 + 10)  // If c is uppercase
-        } else if c.is_ascii_lowercase() {Ok(c as u8 - 'a' as u8 + 36)  // If c is lowercase
-        } else if c == '.' {Ok(255)  // 255 is the value of the dot
-        // * Here we could add more characters to the alphabet (to support bases up to 256)
-        } else {return Err(format!("Invalid char in src string: {}", c))}  // If c is not a valid character, return an error
+    //* Validate the bases
+    // The maximum base is 62 because the alphabet is limited to 62 characters
+    if src_base < 2 || src_base > 62 || new_base < 2 || new_base > 62 {
+        return Err("Invalid base (must be between 2 & 62)".to_string())
     }
-
-    // * Convert the src string to base 10 float (integer + decimal)
-    let mut parts = src.split('.');  // Split the string in two parts: integer and decimal
-    let integer = parts.next().unwrap_or("");  // Get the integer part
-    let decimal = parts.next().unwrap_or("");  // Get the decimal part
-    if parts.next().is_some() {return Err("Invalid string: more than one dot".to_string())}  // Return an error
-
-    // If any element of the integer part is greater than the base, return an error
-    if integer.chars().any(|c| digit_value(c).unwrap_or(0) >= src_base) {return Err("Invalid char on integer part".to_string())}
-    if decimal.chars().any(|c| digit_value(c).unwrap_or(0) >= src_base) {return Err("Invalid char on decimal part".to_string())}
-
-    println!("{}.{}", integer, if decimal.is_empty() {"0"} else {decimal});  // Print the number
-
-    // * Integer part
-    let mut n = 0.0;  // Create a variable to store the integer part of the number
-    for (i, c) in integer.chars().rev().enumerate() {  // For each character in the string
-        let digit = digit_value(c)?;  // Get the value of the digit
-        let digit = digit as f64 * (src_base as f64).powi(i as i32);  // Convert the digit to base 10
-        n += digit;  // Add the digit to the number
+    //* Validate that all the characters in the string are valid for the given base
+    if src.chars().any(|c| digit_value(c).unwrap_or(0) >= src_base) {
+        return Err("Invalid character for the given base".to_string())
     }
-    println!("  N -> {}", n);  // From Natural part to base 10
+    let mut src = src.chars();  // Create an iterator for the string
+    //* Get base 10 equivalent of the number
+    let b10_int = src_int_b10(&src.by_ref().take_while(|c| c != &'.' && c != &',').collect::<String>(), src_base);
+    let b10_dec = src_dec_b10(&src.by_ref().collect::<String>(), src_base);
+    //* Convert the integer part of the number to the new base
+    let mut new_number = int_b10_dst(b10_int, new_base);
 
-    // * Decimal part
-    let mut d = 0.0;  // Create a variable to store the decimal part of the number
-    for (i, c) in decimal.chars().enumerate() {  // For each character in the string
-        let digit = digit_value(c)?;  // Get the value of the digit
-        let digit = digit as f64 * (src_base as f64).powi(-(i as i32 + 1));  // Convert the digit to base 10
-        d += digit;  // Add the digit to the number
+    if b10_dec > 0.00001 {  // If the decimal part of the number is greater than 0
+        new_number.push('.');  // Add a dot to the new number
+        new_number.push_str(&dec_b10_dst(b10_dec, new_base));  // Add the decimal part of the number to the new number
+        // remove the last 000000's from the number
+        new_number = new_number.chars().rev().skip_while(|c| c == &'0').collect::<String>().chars().rev().collect::<String>();
     }
-    println!("  D -> {:}", d);  // From Decimal part to base 10
+    // remove the last 000000's from the number
+    Ok(new_number)  // Return the new number
+}
 
-    // * Convert the number to the new base
-    let mut n = n as u64;  // Convert the number to an integer ()
+
+/// Converts a character to its numerical value in the given base.
+///
+/// The function can interpret any character in the alphabet as a digit, where:
+///
+/// - `0..9` ->  0.. 9
+/// - `A..Z` -> 10..35
+/// - `a..z` -> 36..61
+///
+/// # Arguments
+///
+/// - `c` - A character to convert to a number.
+///
+/// # Returns
+///
+/// An `Option<u8>` that represents the numerical value of the character, or `None` if the character is not a valid digit.
+///
+/// # Examples
+///
+/// ```
+/// use base_change::digit_value;
+///
+/// let result = digit_value('A');
+/// assert_eq!(result, Some(10));
+/// ```
+fn digit_value(c: char) -> Option<u8> {  // Function to convert a digit character to its numerical value
+    match c {  // Match the character
+        '0'..='9' => Some(c as u8 - '0' as u8),
+        'A'..='Z' => Some(c as u8 - 'A' as u8 + 10),
+        'a'..='z' => Some(c as u8 - 'a' as u8 + 36),
+        _ => None  // If c is not a valid character, return an error
+    }
+}
+
+
+/// Converts the integer part of a number from the given source base to base 10.
+///
+/// # Arguments
+///
+/// - `src` - A string slice that represents the integer part of the number to convert.
+/// - `src_base` - An unsigned 8-bit integer that represents the source base of the number to convert.
+///
+/// # Return
+///
+/// An unsigned 32-bit integer that represents the integer part of the number in base 10.
+///
+/// # Panics
+///
+/// This function will panic if the input string contains an invalid character for the given source base.
+///
+/// # Examples
+///
+/// ```
+/// use base_change::src_int_b10;
+///
+/// assert_eq!(src_int_b10("1010", 2), 10);
+/// ```
+pub fn src_int_b10(src: &str, src_base: u8) -> u32 {
+    let mut n = 0;  // Create a variable to store the integer part of the number
+    for (i, c) in src.chars().rev().enumerate() {
+        let digit = digit_value(c).unwrap_or_else(|| panic!("Invalid character: {}", c));
+        let digit = digit as u32 * (src_base as u32).pow(i as u32);
+        n += digit;
+    }
+    n
+}
+
+
+/// Converts an integer from base 10 to the given destination base and returns the result as a string.
+///
+/// # Arguments
+///
+/// - `n` - An unsigned 32-bit integer that represents the integer to convert.
+/// - `dst_base` - An unsigned 8-bit integer that represents the destination base of the conversion.
+///
+/// # Returns
+///
+/// A string that represents the integer in the destination base.
+///
+/// # Examples
+///
+/// ```
+/// use base_change::int_b10_dst;
+///
+/// assert_eq!(int_b10_dst(42, 16), "2A");
+/// ```
+pub fn int_b10_dst(n: u32, dst_base: u8) -> String {
+    let mut n = n;  // Create a variable to store the integer part of the number
     let mut new_number = String::new();  // Create a string to store the new number
-    
-    // * Integer part (new base)
     while n > 0 {  // While the number is greater than 0
-        let digit = n % new_base as u64;  // Get the remainder of the division
+        let digit = n % dst_base as u32;  // Get the remainder of the division
         let digit = if digit < 10 {digit as u8 + '0' as u8} else {digit as u8 - 10 + 'A' as u8};  // Convert the digit to a char
         new_number.insert(0, digit as char);  // Insert the digit at the beginning of the string
-        n /= new_base as u64;  // Divide the number by the base
+        n /= dst_base as u32;  // Divide the number by the base
     }
-    new_number.push('.');  // Add a dot to the string
+    new_number  // Return the new number in the new base as a string
+}
 
-    // * Decimal part (new base) (Also define the number of decimals to calculate)
-    for _ in 0..10 { // This define the number of decimals to calculate (more decimals equals less exactitude)
-        let digit = (d * new_base as f64) as u8;  // Get the remainder of the division
+
+/// Converts the decimal part of a number from the given source base to base 10.
+///
+/// # Arguments
+///
+/// - `src` - A string slice that represents the decimal part of the number to convert.
+/// - `src_base` - An unsigned 8-bit integer that represents the source base of the number to convert.
+///
+/// # Returns
+///
+/// A float that represents the decimal part of the number in base 10.
+///
+/// # Panics
+///
+/// This function will panic if the input string contains an invalid character for the given source base.
+///
+/// # Examples
+///
+/// ```
+/// use base_change::src_dec_b10;
+///
+/// assert_eq!(src_dec_b10("1010", 2), 0.625);
+/// ```
+pub fn src_dec_b10(src: &str, src_base: u8) -> f64 {
+    let mut d = 0.0;  // Create a variable to store the decimal part of the number
+    for (i, c) in src.chars().enumerate() {
+        let digit = digit_value(c).unwrap_or_else(|| panic!("Invalid character: {}", c));
+        let digit = digit as f64 * (src_base as f64).powi(-(i as i32 + 1));  // Calculate the value of the digit in base 10
+        d += digit;  // Add the digit value to the decimal part of the number
+    }
+    d  // Return the decimal part of the number in base 10 as a float
+}
+
+
+/// Converts a decimal number from base 10 to the given destination base and returns the result as a string.
+///
+/// `Note`: This function is not very precise.
+/// It can only handle 8 exact decimals. Then it starts to lose precision.
+/// 
+/// # Arguments
+///
+/// - `d` - A float that represents the decimal number to convert.
+/// - `dst_base` - An unsigned 8-bit integer that represents the destination base of the conversion.
+///
+/// # Returns
+///
+/// A string that represents the decimal number in the destination base.
+///
+/// # Examples
+///
+/// ```
+/// use base_change::dec_b10_dst;
+///
+/// assert_eq!(dec_b10_dst(0.625, 2), "101");
+/// ```
+pub fn dec_b10_dst(mut d: f64, dst_base: u8) -> String {
+    let mut new_number = String::new();  // Create a string to store the new number
+
+    for _ in 0..8 { // This defines the number of decimals to calculate (more decimals equals less exactitude)
+        let digit = (d * dst_base as f64) as u8;  // Get the integer part of the division
         let digit = if digit < 10 {digit as u8 + '0' as u8} else {digit as u8 - 10 + 'A' as u8};  // Convert the digit to a char
-        new_number.push(digit as char);  // Insert the digit at the beginning of the string
-        d = (d * new_base as f64) % 1.0;  // Get the remainder of the division (the new decimal part) and store it in d
+        new_number.push(digit as char);  // Insert the digit at the end of the string
+        d = (d * dst_base as f64) % 1.0;  // Get the remainder of the division (the new decimal part) and store it in d
     }
-
-    Ok(new_number)  // Return the new number in the new base as a string
-
+    new_number  // Return the new number in the new base as a string
 }
