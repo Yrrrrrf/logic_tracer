@@ -6,7 +6,7 @@
 
 // ? Import modules -----------------------------------------------------------------------------------------------------------
 mod util;
-use crate::util::*;  // terminal mod & print_app_data() fn
+use crate::{util::*, components::proposition::Proposition};  // terminal mod & print_app_data() fn
 
 // APP COMPONENTS (MODULES)
 mod components;
@@ -14,9 +14,8 @@ use components::*;
 
 // ? Proto: Dev mode
 mod proto;
-use logic_tracer::ast::Ast;
-use proto::{*, base_change::str_to_num_from_base};
-use util::terminal::set_fg;
+use proto::{*, base_change::*};
+use util::*;
 
 
 // ? Main ---------------------------------------------------------------------------------------------------------------------
@@ -48,19 +47,25 @@ pub fn run() {
     // );
 
 
-    vec![  // (infix, prefix, postfix)
-        ("eekke", "fmfdkodfmo", ""),
-        ("", "", "")
-    ].iter().for_each(|(infix, prefix, postfix)|
-    {
-        let mut ast = Ast::new(infix);
-        println!("{}\n\tPrefix: {}\n\tPostfix: {}", set_fg(&format!("Infix: {}",infix), "g"), prefix, postfix);
-        println!("\tPrefix: {}", set_fg(&ast.get_prefix_string(), "b"));
-        println!("\tPostfix: {}", set_fg(&ast.get_postfix_string(), "b"));
-    });
+    // // Sum 2 numbers in bin
+    // let mut a = "10111010";
+    // let mut b = "11011101";
+    // // sum the equivalent numbers in base 10
+    // let a_b10 = src_int_b10(a, 2);
+    // let b_b10 = src_int_b10(b, 2);
+    // let sum = a_b10 + b_b10;
+    // println!("{} + {} = {}", a_b10, b_b10, sum);
+    // // convert the sum to bin
+    // let mut sum_bin = int_b10_dst(sum, 2);
+    // println!("{} + {} = {}", a, b, sum_bin);
 
 
+    use logic_tracer::grammar::*;
+    use logic_tracer::grammar::GrammarToken::*;
+    use logic_tracer::operators::*;
+
+    let prop = Proposition::new("A + b + c + d + e + f + g + h + i + j + k");
+    println!("{}", prop);
 
 
 }
-
