@@ -29,7 +29,7 @@ impl GrammarToken {
             '.' => GrammarToken::Number(10),  // * Decimal point
             '(' | ')' | '[' | ']' | '{' | '}' | '<' | '>' => GrammarToken::BracketState(c),
             // * OPERATORS
-            // Logic Operators
+            // Logic Operators  
             '&' | '*' | '⋅' | '∧' => GrammarToken::Operator('*'),  // * AND or MULTIPLY
             '+' | '|' => GrammarToken::Operator('+'),  // * OR or ADD (SUM)
             '!' | '¬' => GrammarToken::Operator('!'),  // * NOT or FACTORIAL

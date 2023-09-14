@@ -170,8 +170,7 @@ mod tests {
             (16, 10, "9E.D", "158.8125"),
 
         ].iter().for_each(|(src_base, new_base, src, result)|
-            println!(""))
-            // assert_eq!(str_to_num_from_base(src, *src_base, *new_base).unwrap(), result.to_string()));
+            assert_eq!(str_to_num_from_base(src, *src_base, *new_base).unwrap(), result.to_string()));
 
         // * To print the results in the terminal
         // ].iter().for_each(|(src_base, new_base, src, result)|

@@ -68,4 +68,24 @@ pub fn run() {
     println!("{}", prop);
 
 
+    // regex = (\d\w)* *[\*\+\!\-] *(\d|\d\w)+
+    // temp regex
+
+    // 2b + 3a
+    // 5 * 4
+    // 1 + 2 * 3
+    // a4 * (6 + 2) // bad
+    // (32 + 21c) * 7c
+    // 9 + 12 * 2
+    // (5 + 3) * (6 - 2)
+    // 10 * 3 + 7
+    // 2 + 2 + 2 + 2 + 2
+    // 4 * 5 * 6
+    // use a bitwise operator
+    let mut a = 0b10111010;
+    let mut b = 0b11011101;
+    println!("{:b} + {:x} = {:o}", a, b, a ^ b);
+
+
+
 }

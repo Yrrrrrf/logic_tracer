@@ -2,6 +2,7 @@
 /// 
 /// This module contains utility functions that are used throughout the program.
 pub mod terminal;
+pub mod files;
 
 
 /// Reads the Cargo.toml file and prints the app data
@@ -24,3 +25,4 @@ pub fn print_app_data() {
     }
     println!();  // Print a newline (for spacing)
 }
+

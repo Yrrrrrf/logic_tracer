@@ -67,6 +67,7 @@ impl Operator for LogicOp {
     }
 }
 
+
 /// Formats a `LogicOp` value for user-facing output.
 ///
 /// The `Display` trait is used to format a value using the [`format!`] macro.
@@ -154,6 +155,7 @@ impl Operator for MathOp {
     }
 }
 
+
 /// Formats a `MathOp` value for user-facing output.
 ///
 /// The `Display` trait is used to format a value using the [`format!`] macro.
@@ -183,3 +185,4 @@ impl std::fmt::Display for MathOp {
         )
     }    
 }
+

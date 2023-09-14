@@ -3,9 +3,9 @@
 // Import necessary modules and dependencies if needed.
 /// The `Propositions` enum represents different logical propositions.
 
-use std::fmt;
+use std::{fmt, f32::consts::E};
 
-use crate::grammar::GrammarToken;
+use crate::{grammar::GrammarToken, util::terminal::set_fg};
 
 /// The `Proposition` struct represents a logical proposition.
 /// 
@@ -49,10 +49,35 @@ impl Proposition {
             .collect::<Vec<char>>();
         // * PARSER -> TokenTable
         match check_pair_brackets(src) {
-            true  => Proposition {token_table: trimmed.iter().map(|c| GrammarToken::new(*c)).collect::<Vec<GrammarToken>>()},  
-            false => Proposition::default(),  // return an empty proposition if the brackets are not paired
-        }
+            true  => {
+                match validate_prop_grammar(&trimmed) {  // If the grammar is valid, return the proposition
+                    true => return Proposition {token_table: trimmed.iter()
+                        .map(|c| GrammarToken::new(*c)).collect::<Vec<GrammarToken>>()},
+                    false => println!("{}", set_fg(&"Invalid Grammar", "r")),
+                }
+            }
+            false => println!("{}", set_fg(&"Unpaired Brackets", "r")),
+        }  // return an empty anything is not valid
+        Proposition::default()  // empty proposition
     }
+
+
+
+    fn test(&self) -> Result<Proposition, String> {
+        // Ok(Proposition::default())
+        Err("".to_string())
+    }
+
+
+    fn test2(&self) -> Proposition {
+        match self.test() {
+            Ok(_) => return Proposition::default(),
+            Err(_) => println!("Error"),
+        };
+        Proposition::default()
+    }
+
+
 
 
     /// Evaluate the proposition using the rules of BOOLEAN ALGEBRA.
@@ -134,8 +159,8 @@ impl Proposition {
         // todo: implement postfix string
         todo!("Implement Postfix String")
     }
-    
-    
+
+
     /// Get prefix string
     /// 
     /// ### Arguments:
@@ -148,7 +173,9 @@ impl Proposition {
         todo!("Implement Prefix String")
     }
 
+
     // ? VIEW FUNCTIONS (KMAP, TRUTH TABLE, ETC.) ===========================
+
 
     /// Get the AST    
     /// 
@@ -236,4 +263,41 @@ pub fn check_pair_brackets(src: &str) -> bool {
         }
     }
     stack.is_empty()  // If the stack is empty at the end, all brackets are properly paired
+}
+
+
+
+// Validates the grammar as a proposition
+// This should be used after the brackets are paired
+// Validates the prpoposition to be logic and mathematically correct
+pub fn validate_prop_grammar(token_table: &Vec<char>) -> bool {
+    // match all the tokens
+
+    // This function will validate the sequence to be a valid proposition
+    // This sequence is valid by the regex: `^([A-Z]|\(|\)|\[|\]|&|\||!|>|<|=|\+|\-|\*|\/|\^|\%|\.)+$`
+    for c in token_table {
+        match c {
+
+
+
+
+
+
+
+
+
+
+
+
+
+            _ => (),  // do nothing
+        }
+
+
+    }
+
+
+
+
+    true
 }
