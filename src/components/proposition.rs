@@ -33,14 +33,15 @@ impl Proposition {
     /// # Examples
     ///
     /// ```
-    /// use crate::{Proposition, GrammarToken};
+    /// use logic_tracer::grammar::GrammarToken::{self, *};
+    /// use logic_tracer::proposition::Proposition;
     ///
-    /// let prop = Proposition::new("A & B");
-    /// assert_eq!(prop.token_table, vec![
-    ///     GrammarToken::Variable('A'),
-    ///     GrammarToken::And,
-    ///     GrammarToken::Variable('B'),
-    /// ]);
+    /// assert_eq!(Proposition::new("A & B").token_table, 
+    ///     [Variable('A'), Operator('*'), Variable('B')]);
+    /// assert_eq!(Proposition::new("A + B").token_table, 
+    ///     [Variable('A'), Operator('+'), Variable('B')]);
+    /// assert_eq!(Proposition::new("A | B").token_table,
+    ///    [Variable('A'), Operator('+'), Variable('B')]);
     /// ```
     pub fn new(src: & str) -> Proposition {       
         // * LEXER -> Remove all unuseful chars
@@ -52,13 +53,13 @@ impl Proposition {
             true  => {
                 match validate_prop_grammar(&trimmed) {  // If the grammar is valid, return the proposition
                     true => return Proposition {token_table: trimmed.iter()
-                        .map(|c| GrammarToken::new(*c)).collect::<Vec<GrammarToken>>()},
+                        .map(|c| GrammarToken::from(*c)).collect::<Vec<GrammarToken>>()},
                     false => println!("{}", set_fg(&"Invalid Grammar", "r")),
                 }
             }
             false => println!("{}", set_fg(&"Unpaired Brackets", "r")),
         }  // return an empty anything is not valid
-        Proposition::default()  // empty proposition
+        Proposition::default()  // empty proposition if the input is not valid
     }
 
 
@@ -243,7 +244,6 @@ impl fmt::Display for Proposition {
 /// Also check if the brackets are in the correct order
 /// 
 /// This funciton evaluates: parenthesis, square brackets, curly brackets and chevrons
-/// All of those are described on the [`BracketState`] enum
 pub fn check_pair_brackets(src: &str) -> bool {
     let mut stack: Vec<char> = Vec::new();
     for char in src.chars().collect::<Vec<char>>() {

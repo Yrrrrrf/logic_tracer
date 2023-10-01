@@ -5,23 +5,32 @@
 
 
 // ? Import modules -----------------------------------------------------------------------------------------------------------
-mod util;
-use crate::{util::*, components::proposition::Proposition};  // terminal mod & print_app_data() fn
+// Extern crates
+use log::{LevelFilter, warn, info, debug, trace, error};
 
-// APP COMPONENTS (MODULES)
+// ? Own modules
+mod util;  // some util functions to startup a rust application
+use util::*;  // terminal mod & print_app_data() fn
+
 mod components;
 use components::*;
 
 // ? Proto: Dev mode
 mod proto;
-use proto::{*, base_change::*};
-use util::*;
+use proto::{
+    base_change::*,
+    hashing::*,
+    encryption::*,
+    logic_notation::*,
+};
 
 
 // ? Main ---------------------------------------------------------------------------------------------------------------------
 
 fn main() {
-    print_app_data();  // Print the app data
+    print_app_data();  // Read the Cargo.toml file and print the app data (name, version, authors)
+    RLog::init_logger(LevelFilter::Trace);  // Initialize the logger with the given log level
+
     run();  // Run the app
 }
 
@@ -29,22 +38,27 @@ fn main() {
 /// Run the app
 pub fn run() {
 
-    // vec![
-    //     (10, 16, "450.5", "1C2.8"),
-    //     (10, 16, "8.5", "8.8"),
-    //     (8, 10, "450.5", "296.625"),
-    //     (8, 10, "7.5", "7.625"),
-    //     (2, 10, "1010.1", "10.5"),
-    //     (2, 10, "1010", "10"),
-    //     (20, 6, "AA.21", "550.03405012"),
-    //     (10, 16, "2197.42", "895.6B851EB8"),
-    //     (16, 10, "9E.D", "158.8125"),
-    // ].iter().for_each(|(src_base, new_base, src, result)|
-    //     println!("{} b{:_>2} -> {} b{:_>2}\t{}", src, src_base, 
-    //         str_to_num_from_base(src, *src_base, *new_base).unwrap(), new_base,
-    //         terminal::set_fg(result, if str_to_num_from_base(src, *src_base, *new_base).unwrap() == result.to_string() {"g"} else {"r"})
-    //     )
-    // );
+    vec![
+        (10, 2, "450.5", "111000010.1"),
+        (10, 2, "8.5", "1000.1"),
+        (10, 8, "450.5", "702.4"),
+        (10, 8, "7.5", "7.4"),
+        (10, 16, "450.5", "1C2.8"),
+        (10, 16, "8.5", "8.8"),
+        (8, 10, "450.5", "296.625"),
+        (8, 10, "7.5", "7.625"),
+        (2, 10, "1010.1", "10.5"),
+        (2, 10, "1010", "10"),
+        (20, 6, "AA.21", "550.03405012"),
+        (10, 16, "2197.42", "895.6B851EB8"),
+        (16, 10, "9E.D", "158.8125"),
+
+    ].iter().for_each(|(src_base, new_base, src, result)|
+        println!("{} b{:_>2} -> {} b{:_>2}\t{}", src, src_base, 
+            str_to_num_from_base(src, *src_base, *new_base).unwrap(), new_base,
+            terminal::set_fg(result, if str_to_num_from_base(src, *src_base, *new_base).unwrap() == result.to_string() {"g"} else {"r"})
+        )
+    );
 
 
     // // Sum 2 numbers in bin
@@ -60,12 +74,12 @@ pub fn run() {
     // println!("{} + {} = {}", a, b, sum_bin);
 
 
-    use logic_tracer::grammar::*;
-    use logic_tracer::grammar::GrammarToken::*;
-    use logic_tracer::operators::*;
+    // use logic_tracer::grammar::*;
+    // use logic_tracer::grammar::GrammarToken::*;
+    // use logic_tracer::operators::*;
 
-    let prop = Proposition::new("A + b + c + d + e + f + g + h + i + j + k");
-    println!("{}", prop);
+    // let prop = Proposition::new("A + b + c + d + e + f + g + h + i + j + k");
+    // println!("{}", prop);
 
 
     // regex = (\d\w)* *[\*\+\!\-] *(\d|\d\w)+
@@ -82,9 +96,15 @@ pub fn run() {
     // 2 + 2 + 2 + 2 + 2
     // 4 * 5 * 6
     // use a bitwise operator
-    let mut a = 0b10111010;
-    let mut b = 0b11011101;
-    println!("{:b} + {:x} = {:o}", a, b, a ^ b);
+    // let mut a = 0b10111010;
+    // let mut b = 0b11011101;
+    // println!("{:b} + {:x} = {:o}", a, b, a ^ b);
+
+
+    // let src = "10111010";
+
+    // let h = hashing::hash(&src);
+    // println!("hash({}) => {}", src, h);
 
 
 

@@ -26,9 +26,10 @@ use crate::util::terminal::set_fg;
 ///   - `Ok(())` indicates success in creating the file and writing the content.
 ///   - `Err(io::Error)` contains an error if the file cannot be created or written.
 ///
-/// # Example
-///
-/// ```
+/// # Examples
+/// ```rust
+/// use util::files::create_file;
+/// 
 /// let path = ".";
 /// let filename = "example.txt";
 /// let content = "Hello, Rust!";

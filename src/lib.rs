@@ -22,8 +22,7 @@ mod components;
 pub use components::*;
 pub use components::operators::*;  // Import the Operator enum because it is used in the AST struct
 
-mod util;
-pub use util::terminal;
+pub mod util;  // ^ THIS SHOULD BE PRIVATE, BUT IT'S PUBLIC FOR TESTING PURPOSES
 
 mod circuits;
 // pub use circuits::*;
@@ -33,6 +32,7 @@ mod circuits;
 mod proto;  // Hidden module for proto-type tests (for development only)
 // pub use proto::*;  // Make visible (for documentation) the proto-type module
 
+
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
     // This modules will be used in the tests, not in the library
@@ -40,7 +40,6 @@ mod tests {
     use crate::components::proposition::Proposition;
     
     use crate::proto::base_change::*;
-
 
     /// Check if the check_pair_brackets() fn works well.
     #[test]  // Indicates that this is a test
@@ -159,6 +158,14 @@ mod tests {
             (8, 2, "651", "110101001"),
 
             // ? Decimal numbers test
+            // These aproximate numbers are not exact because of the floating point precision
+            // So the result is not exact, but it's close enough
+            // The str_to_num_from_base() fn returns the last number that is not 0. So the result is not exact
+            // Example: 0.102000 -> 0.102 (the last 0s are not returned)
+            (10, 2, "450.5", "111000010.1"),
+            (10, 2, "8.5", "1000.1"),
+            (10, 8, "450.5", "702.4"),
+            (10, 8, "7.5", "7.4"),
             (10, 16, "450.5", "1C2.8"),
             (10, 16, "8.5", "8.8"),
             (8, 10, "450.5", "296.625"),

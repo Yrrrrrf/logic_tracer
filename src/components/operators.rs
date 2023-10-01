@@ -116,16 +116,15 @@ impl std::fmt::Display for LogicOp {
 ///
 /// | Operator           | Symbol | ASCII | Unicode |
 /// | ------------------ | ------ | ----- | ------- |
-/// | **Addition**       |   +    |  43   | U+002B  |
-/// | **Subtraction**    |   -    |  45   | U+002D  |
-/// | **Multiplication** |   *    |  42   | U+002A  |
-/// | **Division**       |   /    |  47   | U+002F  |
-/// | **Modulo**         |   %    |  37   | U+0025  |
-/// | **Exponentiation** |   ^    |  94   | U+005E  |
+/// | **Addition**       |   +    |   43  | U+002B  |
+/// | **Subtraction**    |   -    |   45  | U+002D  |
+/// | **Multiplication** |   *    |   42  | U+002A  |
+/// | **Division**       |   /    |   47  | U+002F  |
+/// | **Modulo**         |   %    |   37  | U+0025  |
+/// | **Exponentiation** |   ^    |   94  | U+005E  |
 /// | **Square Root**    |   √    |  8730 | U+221A  |
-/// | **Factorial**      |   !    |  33   | U+0021  |
+/// | **Factorial**      |   !    |   33  | U+0021  |
 /// | **Absolute Value** |   \|   |  124  | U+007C  |
-/// ```
 #[derive(Debug, Clone, PartialEq)]
 pub enum MathOp {
     Add,

@@ -12,7 +12,7 @@ use crate::{components::operators::*, util::terminal::*};
 // ? Logic Tokens ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /// The LogicToken Enum describes all the possible tokens that can be recognized by the ['Lexer'].
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum GrammarToken {
     Operator(char),
     Variable(char),  // {A-Za-z0-9}
@@ -22,7 +22,7 @@ pub enum GrammarToken {
 }
 
 impl GrammarToken {
-    pub fn new(c: char) -> GrammarToken {
+    pub fn from(c: char) -> GrammarToken {
         match c {
             'A'..='Z' | 'a'..='z' => GrammarToken::Variable(c),
             '0'..='9' => GrammarToken::Number(c.to_digit(10).unwrap() as u8),
@@ -40,7 +40,7 @@ impl GrammarToken {
             '→' => GrammarToken::Operator(c),  // IMPLIES
             '↔' => GrammarToken::Operator(c),  // IFF
             // Math Operators
-            '/' | '÷' => GrammarToken::Operator('/'),  // DIVIDE
+            '/' => GrammarToken::Operator('/'),  // DIVIDE
             '-' => GrammarToken::Operator(c),  // SUBTRACT
             '%' => GrammarToken::Operator(c),  // MODULO
             '√' => GrammarToken::Operator(c),  // SQUARE ROOT

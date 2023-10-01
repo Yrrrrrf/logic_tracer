@@ -1,6 +1,4 @@
-//! Terminal related scripts
-
-// ? Command Line Interface (CLI) related scripts  --------------------------------------------------------------------------------
+// ? Command Line Interface (CLI) related scripts  -------------------------------------------------    -------------------------------
 
 /// Return a string with the color set
 /// 
@@ -45,8 +43,8 @@ pub fn set_bg(string: &str, fg: &str) -> String {  // Set background color
         "y" | "yellow" => format!("\x1b[43m{}\x1b[0m", string),  // Yellow
         _ => string.to_string(),  // White (default)
     }
-    // now the same but 
 }
+
 
 
 // ? Ask for input  ---------------------------------------------------------------------------------------------------------------
