@@ -6,7 +6,7 @@
 
 use core::fmt;
 
-use crate::util::terminal::set_fg;
+use dev_utils::terminal::set_fg;
 
 // create the Operator dyn trait
 // This trait is used to implement the eval() function
@@ -184,4 +184,3 @@ impl std::fmt::Display for MathOp {
         )
     }    
 }
-

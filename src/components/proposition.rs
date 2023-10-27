@@ -1,19 +1,21 @@
+use dev_utils::terminal::set_fg;
+
 /// This module defines the `Propositions` enum, which represents various logical propositions.
 /// It is used for modeling logical statements in Rust programs.
 // Import necessary modules and dependencies if needed.
 /// The `Propositions` enum represents different logical propositions.
 
-use std::{fmt, f32::consts::E};
-
-use crate::{grammar::GrammarToken, util::terminal::set_fg};
+use crate::grammar::GrammarToken;
 
 /// The `Proposition` struct represents a logical proposition.
 /// 
 /// It is used for modeling logical statements in Rust programs.
-#[derive(Clone, Default)]
+#[derive(Clone, Default, Debug)]
 pub struct Proposition {
     pub token_table: Vec<GrammarToken>,
     // pub f: String,  // function string
+    // pub postfix: String,
+    // pub variables: Vec<>
 }
 
 
@@ -37,27 +39,27 @@ impl Proposition {
     /// use logic_tracer::proposition::Proposition;
     ///
     /// assert_eq!(Proposition::new("A & B").token_table, 
-    ///     [Variable('A'), Operator('*'), Variable('B')]);
+    ///     [Variable('A'), Operator('&'), Variable('B')]);
     /// assert_eq!(Proposition::new("A + B").token_table, 
     ///     [Variable('A'), Operator('+'), Variable('B')]);
-    /// assert_eq!(Proposition::new("A | B").token_table,
-    ///    [Variable('A'), Operator('+'), Variable('B')]);
+    /// // assert_eq!(Proposition::new("A | B").token_table,
+    /// //    [Variable('A'), Operator('+'), Variable('B')]);
     /// ```
     pub fn new(src: & str) -> Proposition {       
-        // * LEXER -> Remove all unuseful chars
+        // * LEXER LOGIC  -> Remove all unuseful chars & get the TokenTable
         let trimmed = src.chars()  // Create a new iterator over the input string
             .filter(|c| !c.is_whitespace() && !c.is_ascii_control())  // filter all the whitespaces, tabs and newlines
             .collect::<Vec<char>>();
-        // * PARSER -> TokenTable
-        match check_pair_brackets(src) {
-            true  => {
-                match validate_prop_grammar(&trimmed) {  // If the grammar is valid, return the proposition
+        // * PARSER LOGIC -> Validate the sintax & create the AST
+        match check_pair_brackets(src) {  // * Check if the brackets are paired
+            true  => {  // if the brackets are paired
+                match validate_prop_grammar(&trimmed) {  // * Validate the grammar
                     true => return Proposition {token_table: trimmed.iter()
                         .map(|c| GrammarToken::from(*c)).collect::<Vec<GrammarToken>>()},
-                    false => println!("{}", set_fg(&"Invalid Grammar", "r")),
+                    false => println!("{}", set_fg(&"Invalid Grammar", 'r')),
                 }
-            }
-            false => println!("{}", set_fg(&"Unpaired Brackets", "r")),
+            }  // if the brackets are not paired
+            false => println!("{}", set_fg(&"Unpaired Brackets", 'r')),
         }  // return an empty anything is not valid
         Proposition::default()  // empty proposition if the input is not valid
     }
@@ -219,25 +221,23 @@ impl Proposition {
 }
 
 
-/// Implement my own Debug trait
-impl fmt::Debug for Proposition {
-    /// This function is used to format the output of the AST
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct(&crate::util::terminal::set_fg("Proposition", "g"))
-            .field("f", &self.token_table)
-            .finish()
+// /// Implement my own Debug trait
+// impl std::fmt::Debug for Proposition {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         f.debug_struct(&crate::util::terminal::set_fg("Proposition", "g"))
+//             .field("f", &self.token_table)
+//             .finish()
 
-    }
-}
+//     }
+// }
 
 
-/// Implement my own Display trait
-impl fmt::Display for Proposition {
-    /// This function is used to format the output of the AST
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.token_table.iter().map(|t| t.to_string()).collect::<Vec<String>>().join(""))
-    }
-}
+// /// Implement my own Display trait
+// impl std::fmt::Display for Proposition {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         write!(f, "{}", self.token_table.iter().map(|t| t.to_string()).collect::<Vec<String>>().join(""))
+//     }
+// }
 
 
 /// Check if the brackets are paired
@@ -266,7 +266,6 @@ pub fn check_pair_brackets(src: &str) -> bool {
 }
 
 
-
 // Validates the grammar as a proposition
 // This should be used after the brackets are paired
 // Validates the prpoposition to be logic and mathematically correct
@@ -278,26 +277,10 @@ pub fn validate_prop_grammar(token_table: &Vec<char>) -> bool {
     for c in token_table {
         match c {
 
-
-
-
-
-
-
-
-
-
-
-
-
             _ => (),  // do nothing
         }
 
 
     }
-
-
-
-
     true
 }

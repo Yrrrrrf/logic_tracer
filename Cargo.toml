@@ -8,14 +8,11 @@ authors = ["Yrrrrrf"]
 edition = "2021"
 
 exclude = [
-    ".vscode*",
-    "examples/*",
-    "resources/*",
-    "target",
-    ".gitignore",
-    "Cargo.lock",
-    "LICENSE",
-    "README.md",
+    ".vscode*",  # editor config
+    "resources/data/*",  # data files (csv, json, etc)
+    "target",  # build directory (compiled code)
+    ".gitignore",  # ignore gitignore file
+    "Cargo.lock",  # lock file (dependency versions)
     ]  # exclude these files from the package
 
 # COMPILE OPTIMIZATION ------------------------------------------------------------------------
@@ -30,4 +27,8 @@ opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 # DEPENDENCIES --------------------------------------------------------------------------------
 
 [dependencies]
-log = "*"  # Logging (https://docs.rs/log/latest/log/)
+log = "0.4.*"  # Logging (https://docs.rs/log/latest/log/)
+dev_utils = "0.*"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
+
+# ^ These is a temporal dependency, it will be removed in the future
+regex = "1.*"  # Regular expressions (https://docs.rs/regex/latest/regex/)
