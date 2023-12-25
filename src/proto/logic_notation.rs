@@ -1,4 +1,4 @@
-use dev_utils::terminal;
+// use dev_utils::;
 use regex::Regex;
 
 // regex = (\d\w)* *[\*\+\!\-] *(\d|\d\w)+
@@ -255,7 +255,8 @@ pub fn test_var_regex() {
     // let variable_pattern = match Regex::new("\\d*[A-Za-z](_\\d+)?") {  // Variables with a coheficient (a constant in front)
     let variable_pattern = match Regex::new("[A-Za-z](_\\d+)?") {  // Variables only
         Ok(pattern) => pattern,  // if the pattern is valid
-        Err(err) => {println!("{} {}", terminal::set_fg("Error: ", 'r'), err); return;}
+        // Err(err) => {println!("{} {}", terminal::set_fg("Error: ", 'r'), err); return;}
+        Err(err) => {println!("{}", "Error: "); return;}
     };
         // \d * get any number in front of the term (0 or more)
         // ([A-Za-z](_\d+)?)*
@@ -267,8 +268,10 @@ pub fn test_var_regex() {
             // ? 0 or 1 times (could be more than just a number)
 
             variables.iter().for_each(|term| println!("{:>16} -> {}", match variable_pattern.is_match(term) {
-        true => terminal::set_fg("valid" ,"g"),  // * These means that these sequences contains at least one term
-        false => terminal::set_fg("invalid" ,"r")  // The sequence is not a term
+        // true => terminal::set_fg("valid" ,"g"),  // * These means that these sequences contains at least one term
+        // false => terminal::set_fg("invalid" ,"r")  // The sequence is not a term
+        true => "valid",  // * These means that these sequences contains at least one term
+        false => "invalid"  // The sequence is not a term
     }, term));
 
     println!("All the extracted sequences (variables) of each term:");

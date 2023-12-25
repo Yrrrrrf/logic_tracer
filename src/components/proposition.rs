@@ -1,10 +1,9 @@
-use dev_utils::terminal::set_fg;
+//! This module defines the `Propositions` enum, which represents various logical propositions.
+//! It is used for modeling logical statements in Rust programs.
+//! Import necessary modules and dependencies if needed.
+//! The `Propositions` enum represents different logical propositions.
 
-/// This module defines the `Propositions` enum, which represents various logical propositions.
-/// It is used for modeling logical statements in Rust programs.
-// Import necessary modules and dependencies if needed.
-/// The `Propositions` enum represents different logical propositions.
-
+use dev_utils::console::format::set_fg;
 use crate::grammar::GrammarToken;
 
 /// The `Proposition` struct represents a logical proposition.
@@ -45,42 +44,19 @@ impl Proposition {
     /// // assert_eq!(Proposition::new("A | B").token_table,
     /// //    [Variable('A'), Operator('+'), Variable('B')]);
     /// ```
-    pub fn new(src: & str) -> Proposition {       
-        // * LEXER LOGIC  -> Remove all unuseful chars & get the TokenTable
-        let trimmed = src.chars()  // Create a new iterator over the input string
-            .filter(|c| !c.is_whitespace() && !c.is_ascii_control())  // filter all the whitespaces, tabs and newlines
-            .collect::<Vec<char>>();
-        // * PARSER LOGIC -> Validate the sintax & create the AST
-        match check_pair_brackets(src) {  // * Check if the brackets are paired
-            true  => {  // if the brackets are paired
-                match validate_prop_grammar(&trimmed) {  // * Validate the grammar
-                    true => return Proposition {token_table: trimmed.iter()
-                        .map(|c| GrammarToken::from(*c)).collect::<Vec<GrammarToken>>()},
-                    false => println!("{}", set_fg(&"Invalid Grammar", 'r')),
-                }
-            }  // if the brackets are not paired
-            false => println!("{}", set_fg(&"Unpaired Brackets", 'r')),
-        }  // return an empty anything is not valid
-        Proposition::default()  // empty proposition if the input is not valid
+    pub fn new(src: &str) -> Result<Proposition, &str> {
+        // Lexer -> Remove all unuseful chars & get the TokenTable
+        let trimmed: Vec<char> = src.chars()
+            .filter(|c| !c.is_whitespace() && !c.is_ascii_control()).collect(); // Remove all unuseful chars
+        // Parser -> Validate the sintax & create the AST
+        check_pair_brackets(&trimmed)?;  // Check if the brackets are paired and in the correct order or return an error
+        validate_prop_grammar(&trimmed)?;  // Validate the grammar of the proposition or return an error
+
+        Ok(Proposition { 
+            token_table: trimmed.iter().map(|c| GrammarToken::from(*c)).collect(),
+            ..Default::default()
+        })
     }
-
-
-
-    fn test(&self) -> Result<Proposition, String> {
-        // Ok(Proposition::default())
-        Err("".to_string())
-    }
-
-
-    fn test2(&self) -> Proposition {
-        match self.test() {
-            Ok(_) => return Proposition::default(),
-            Err(_) => println!("Error"),
-        };
-        Proposition::default()
-    }
-
-
 
 
     /// Evaluate the proposition using the rules of BOOLEAN ALGEBRA.
@@ -221,66 +197,42 @@ impl Proposition {
 }
 
 
-// /// Implement my own Debug trait
-// impl std::fmt::Debug for Proposition {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         f.debug_struct(&crate::util::terminal::set_fg("Proposition", "g"))
-//             .field("f", &self.token_table)
-//             .finish()
-
-//     }
-// }
-
-
-// /// Implement my own Display trait
-// impl std::fmt::Display for Proposition {
-//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//         write!(f, "{}", self.token_table.iter().map(|t| t.to_string()).collect::<Vec<String>>().join(""))
-//     }
-// }
-
-
 /// Check if the brackets are paired
 /// Also check if the brackets are in the correct order
-/// 
-/// This funciton evaluates: parenthesis, square brackets, curly brackets and chevrons
-pub fn check_pair_brackets(src: &str) -> bool {
+pub fn check_pair_brackets(src: &Vec<char>) -> Result<bool, &'static str> {
     let mut stack: Vec<char> = Vec::new();
-    for char in src.chars().collect::<Vec<char>>() {
+    let brackets: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
+
+    for char in src.clone() {
         match char {
-            '(' | '[' | '{' | '<' => stack.push(char),  // push the opening bracket to the stack
-            ')' | ']' | '}' | '>' => {  // if it is a closing bracket
-                if stack.is_empty() {return false;}  // if the stack is empty, return false
-                let top = stack.pop().unwrap();  // pop the top element from the stack
-                if !((top == '(' && char == ')')  // if the top element is not the same as the closing bracket
-                    || (top == '[' && char == ']')
-                    || (top == '{' && char == '}')
-                    || (top == '<' && char == '>')) {
-                    return false;  // if the brackets are not paired, return false
+            ch if brackets.iter().any(|(open, _)| open == &ch) => stack.push(char),
+            ch if brackets.iter().any(|(_, close)| close == &ch) => {
+                if let Some(top) = stack.pop() {
+                    if brackets.iter().any(|&(open, close)| open == top && close == ch) {
+                        continue;  // If the brackets are paired, continue
+                    }
                 }
+                return Err("Unpaired Brackets");
             }
-            _ => (),  // do nothing if it is not a bracket
+            _ => (),
         }
     }
-    stack.is_empty()  // If the stack is empty at the end, all brackets are properly paired
+    Ok(stack.is_empty())
 }
 
 
 // Validates the grammar as a proposition
 // This should be used after the brackets are paired
 // Validates the prpoposition to be logic and mathematically correct
-pub fn validate_prop_grammar(token_table: &Vec<char>) -> bool {
+pub fn validate_prop_grammar(token_table: &Vec<char>) -> Result<bool, &'static str> {
     // match all the tokens
 
     // This function will validate the sequence to be a valid proposition
     // This sequence is valid by the regex: `^([A-Z]|\(|\)|\[|\]|&|\||!|>|<|=|\+|\-|\*|\/|\^|\%|\.)+$`
     for c in token_table {
         match c {
-
             _ => (),  // do nothing
         }
-
-
     }
-    true
+    Ok(true)
 }

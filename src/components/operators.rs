@@ -1,186 +1,110 @@
 //! # Logic Operators
 //! 
-//! This module contains the behavior of the Operations that can be used in the application.
+//! This module contains the behavior of the operations that can be used in the application.
 //! 
-//! Rust itself implements some of the logic gates, but not all of them.
+//! Rust itself implements some of the logic gates, but not all of them. This module
+//! extends Rust's capabilities by providing additional logic and mathematical operators.
 
 use core::fmt;
+use dev_utils::console::format::set_fg;
 
-use dev_utils::terminal::set_fg;
 
-// create the Operator dyn trait
-// This trait is used to implement the eval() function
+/// A trait for operators that can be formatted and debugged.
+///
+/// This trait is used to implement the `to_string` method for operator enums,
+/// allowing them to be easily converted to their string representation.
 pub trait Operator: fmt::Debug + fmt::Display {
     fn to_string(&self) -> String;
 }
 
 
-/// Represents logic operators used for evaluating logical circuits and propositions.
-/// 
-/// This enum contains various logic operators, including bitwise operations and common logical operators.
-/// 
-/// # Bitwise Operators
-/// - `And` (&): Bitwise AND operator.
-/// - `Or` (|): Bitwise OR operator.
-/// - `Not` (!): Bitwise NOT operator.
-/// - `XOr` (^): Bitwise XOR operator.
-/// 
-/// # Common Logical Operators
-/// - `XNOr`: Exclusive NOR operator (⊙).
-/// - `NAnd`: NAND operator (↑).
-/// - `NOr`: NOR operator (↓).
-/// - `Implies`: Implies operator (→).
-/// - `IFf`: If and only if (Iff) operator (↔).
-/// 
-/// The basic logic operators (And, Or, and Not) have alternative symbols that can be used to represent them.
-/// 
-/// | Operator | Alternative Symbol | ASCII Value | Unicode Value |
-/// | :---: | :---: | :---: | :---: |
-/// | And | * | 42 | U+002A |
-/// | And | & | 38 | U+0026 |
-/// | Or | + | 43 | U+002B |
-/// | Or | \| | 124 | U+007C |
-/// | Not | ¬ | 172 | U+00AC |
-/// | Not | ! | 33 | U+0021 |
-/// | XOr | ⊻ | 8859 | U+229B |
-/// | XNOr | ⊙ | 8857 | U+2299 |
-/// | NAnd | ↑ | 8593 | U+2191 |
-/// | NOr | ↓ | 8595 | U+2193 |
-/// | Implies | → | 8594 | U+2192 |
-/// | IFf | ↔ | 8596 | U+2194 |
-#[derive(Debug, Clone, PartialEq)]
-pub enum LogicOp {
-    And,
-    Or,
-    Not,
-    XOr,
-    XNOr,
-    NAnd,
-    NOr,
-    Implies,
-    IFf,
+/// Macro to implement the `Operator` and `Display` traits for enums.
+///
+/// This macro simplifies the process of implementing these traits for
+/// different operator enums by automatically generating the necessary code.
+macro_rules! impl_operator_traits {
+    ($enum_name:ident, {$($variant:ident => $str:expr),* $(,)?}) => {
+        // Implementation of the Operator trait
+        impl Operator for $enum_name {
+            fn to_string(&self) -> String {
+                match self {
+                    $( $enum_name::$variant => $str.to_string(), )*
+                }
+            }
+        }
+
+        // Implementation of the Display trait
+        impl std::fmt::Display for $enum_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                write!(f, "{}", set_fg(
+                    match self {
+                        $( $enum_name::$variant => $str, )*
+                    }, "b")
+                )
+            }    
+        }
+    };
 }
 
-impl Operator for LogicOp {
-    fn to_string(&self) -> String {
-        ToString::to_string(&self)
+
+/// Macro to define enums and implement `Operator` and `Display` traits.
+///
+/// This macro facilitates the creation of enums representing operators,
+/// and automatically implements the `Operator` and `Display` traits for them.
+macro_rules! define_operator_enum {
+    ($enum_name:ident, {$($variant:ident => $str:expr),* $(,)?}) => {
+        #[derive(Debug, Clone, PartialEq)]
+        pub enum $enum_name {
+            $($variant,)*
+        }
+
+        impl $enum_name {
+            pub fn from(c: char) -> Option<$enum_name> {
+                match c {
+                    $( c => Some($enum_name::$variant), )*
+                    _ => None,
+                }
+            }
+        }
+
+        impl_operator_traits!($enum_name, {$($variant => $str),*});
+    };
+}
+
+
+// Enum representing various logic operators.
+//
+// This enum includes both basic and complex logic operators,
+// each associated with a specific symbol for display.
+define_operator_enum! {
+    LogicOp, {
+        And => "&",  // AND 0001
+        Or => "|",  // OR 0111
+        Not => "!",  // Negation 0->1, 1->0
+        NAnd => "↑",  // Negated AND  1110
+        NOr => "↓",  // Negated OR  1000
+        XOr => "^",  // Exclusive OR  0110
+        XNOr => "⊙",  // Exclusive NOR  1001 (Negated XOR)
+        Implies => "→",  // Implication  0110  (A -> B)  (If A then B)
+        IFf => "↔",  // If and only if  1001  (A <-> B)  (A is equivalent to B)
     }
 }
 
 
-/// Formats a `LogicOp` value for user-facing output.
-///
-/// The `Display` trait is used to format a value using the [`format!`] macro.
-///
-/// # Examples
-///
-/// ```
-/// use crate::LogicOp;
-///
-/// let op = LogicOp::And;
-/// assert_eq!(format!("{}", op), "\u{001b}[34m&\u{001b}[0m");
-/// ```
-impl std::fmt::Display for LogicOp {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", set_fg(
-            match self {  // Match the operator to the symbol
-                LogicOp::And => "&",
-                LogicOp::Or => "|",
-                LogicOp::Not => "!",
-                LogicOp::XOr => "^",
-                LogicOp::XNOr => "⊙",
-                LogicOp::NAnd => "↑",
-                LogicOp::NOr => "↓",
-                LogicOp::Implies => "→",
-                LogicOp::IFf => "↔",
-            }, "b")
-        )
-    }    
-}
-
-
-/// This enum represents various mathematical operators that can be used in calculations.
-///
-/// # Examples
-///
-/// ```
-/// use logic_tracer::MathOp;
-///
-/// let op = MathOp::Add;
-/// assert_eq!(op, MathOp::Add);
-/// ```
-///
-/// # ASCII and Unicode Values
-///
-/// Here are the ASCII and Unicode values for each operator:
-///
-/// | Operator           | Symbol | ASCII | Unicode |
-/// | ------------------ | ------ | ----- | ------- |
-/// | **Addition**       |   +    |   43  | U+002B  |
-/// | **Subtraction**    |   -    |   45  | U+002D  |
-/// | **Multiplication** |   *    |   42  | U+002A  |
-/// | **Division**       |   /    |   47  | U+002F  |
-/// | **Modulo**         |   %    |   37  | U+0025  |
-/// | **Exponentiation** |   ^    |   94  | U+005E  |
-/// | **Square Root**    |   √    |  8730 | U+221A  |
-/// | **Factorial**      |   !    |   33  | U+0021  |
-/// | **Absolute Value** |   \|   |  124  | U+007C  |
-#[derive(Debug, Clone, PartialEq)]
-pub enum MathOp {
-    Add,
-    Subtract,
-    Multiply,
-    Divide,
-    Modulo,
-    Power,
-    Root,
-    Factorial,
-    SomeOtherMathOp,
-}
-
-impl Operator for MathOp {
-    fn to_string(&self) -> String {
-        match self {
-            MathOp::Add => "ADD",
-            MathOp::Subtract => "SUB",
-            MathOp::Multiply => "MUL",
-            MathOp::Divide => "DIV",
-            MathOp::Modulo => "MOD",
-            MathOp::Power => "PWR",
-            MathOp::Root => "ROOT",
-            MathOp::Factorial => "FAC",
-            _ => "UNKNOWN",
-        }.to_string()
+// Enum representing various mathematical operators.
+//
+// This enum covers a range of common mathematical operations,
+// such as addition, subtraction, and more, each with its own symbol.
+define_operator_enum! {
+    MathOp, {
+        Add => "+",
+        Subtract => "-",
+        Multiply => "*",
+        Divide => "/",
+        Modulo => "%",
+        Power => "^",
+        Root => "√",
+        Factorial => "!",
+        SomeOtherMathOp => "UNKNOWN",
     }
-}
-
-
-/// Formats a `MathOp` value for user-facing output.
-///
-/// The `Display` trait is used to format a value using the [`format!`] macro.
-///
-/// # Examples
-///
-/// ```
-/// use logic_tracer::MathOp;
-/// 
-/// let op = MathOp::Add;
-/// assert_eq!(format!("{}", op), "\u{001b}[34m+\u{001b}[0m");
-/// ```
-impl std::fmt::Display for MathOp {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", set_fg(
-            match self {  // Match the operator to the symbol
-                MathOp::Add => "+",
-                MathOp::Subtract => "-",
-                MathOp::Multiply => "*",
-                MathOp::Divide => "/",
-                MathOp::Modulo => "%",
-                MathOp::Power => "^",
-                MathOp::Root => "√",
-                MathOp::Factorial => "!",
-                _ => "UNKNOWN",
-            }, "b")
-        )
-    }    
 }
