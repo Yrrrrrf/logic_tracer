@@ -65,3 +65,50 @@ impl std::fmt::Display for GrammarToken {
         // )
     }
 }
+
+
+
+
+// create the public struct Term that contains a sequence of GrammarTokens
+#[derive(Clone, Debug, PartialEq)]
+pub struct Term {
+    pub tokens: Vec<GrammarToken>,
+}
+
+impl Term {
+    pub fn new() -> Term {
+        Term {
+            tokens: Vec::new(),
+        }
+    }
+
+    pub fn from(tokens: Vec<GrammarToken>) -> Term {
+        Term {
+            tokens,
+        }
+    }
+
+    pub fn push(&mut self, token: GrammarToken) {
+        self.tokens.push(token);
+    }
+
+    pub fn pop(&mut self) -> Option<GrammarToken> {
+        self.tokens.pop()
+    }
+
+    pub fn len(&self) -> usize {
+        self.tokens.len()
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.tokens.is_empty()
+    }
+
+    pub fn clear(&mut self) {
+        self.tokens.clear();
+    }
+
+    pub fn to_string(&self) -> String {
+        self.tokens.iter().map(|token| token.to_string()).collect::<String>()
+    }
+}

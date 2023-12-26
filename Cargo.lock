@@ -14,8 +14,6 @@ dependencies = [
 [[package]]
 name = "dev_utils"
 version = "0.0.11"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1745619d33b46dc0055f5219ad71d441cd9d6e4013de927291563df7e8bf445"
 dependencies = [
  "log",
 ]

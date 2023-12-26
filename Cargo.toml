@@ -28,8 +28,8 @@ opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 
 [dependencies]
 log = "0.4.*"  # Logging (https://docs.rs/log/latest/log/)
-dev_utils = "0.0.*"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
-# dev_utils = { path = "./../dev_utils" }
+# dev_utils = "0.0.*"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
+dev_utils = { path = "./../dev_utils" }
 
 # ^ These is a temporal dependency, it will be removed in the future
 regex = "1.*"  # Regular expressions (https://docs.rs/regex/latest/regex/)
