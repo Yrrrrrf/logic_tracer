@@ -7,81 +7,56 @@
 use dev_utils::console::format::set_fg;
 use crate::components::operators::*;
 
-// ? Logic Tokens ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /// The LogicToken Enum describes all the possible tokens that can be recognized by the 'Lexer'.
 #[derive(Clone, Debug, PartialEq)]
-pub enum GrammarToken {
-    Variable(char),  // {A-Za-z0-9}
-    Number(char),  // Number can represent a sequence of digits in any base that count as one number (only if it's a valid number)í
-    Dot(),  // Dot is used to separate the integer part from the decimal part of a number
-    // todo: change the inpit of Operator from char to <LogicOperator or MathOperator>
-    // todo: thir to allow the use of the same char for different operators
-    Operator(char),  // {+,-,*,/,%,^,√,!,¬,∧,∨,⊻,⊙,↑,↓,→,↔,=,≠,>,<,≥,≤}
-    Invalid(char)  // Any other char
+pub enum GrammarToken<T> where T: Operator {
+// pub enum GrammarToken<T> where T: Operator {
+    Variable(char),  // Any letter from A to Z (uppercase or lowercase)
+    Number(char),  // Represent a sequence of digits in any base that count as one number
+    UnderScore(),  // Used to add a "Subterm" to a term (e.g. A_1, A_2, A_3, ...)
+    Dot(),  // Separate the integer part from the decimal part of a number
+    Operator(T),  // {+,-,*,/,%,^,√,!,¬,∧,∨,⊻,⊙,↑,↓,→,↔,=,≠,>,<,≥,≤}
+    Invalid(char)  //* Any other char that is not recognized by the 'Lexer'
 }
 
-impl GrammarToken {
-    pub fn from(c: char) -> GrammarToken {
+impl<T> GrammarToken<T> where T: Operator {
+    fn from_char(c: char, op_converter: impl Fn(char) -> Option<T>) -> GrammarToken<T> {
         match c {
             'A'..='Z' | 'a'..='z' => GrammarToken::Variable(c),
             '0'..='9' => GrammarToken::Number(c),
-            '.' => GrammarToken::Dot(),  // Only one dot is allowed per number
-            // '(' | ')' | '[' | ']' | '{' | '}' | '<' | '>' => GrammarToken::BracketState(c),
-            // * OPERATORS
-            // Logic Operators
-            '&' | '*' | '⋅' | '∧' => GrammarToken::Operator(c),  // * AND or MULTIPLY
-            '+' | '|' => GrammarToken::Operator(c),  // * OR or ADD (SUM)
-            '!' | '¬' => GrammarToken::Operator(c),  // * NOT or FACTORIAL
-            '^' | '⊻' => GrammarToken::Operator(c),  // * XOR or POWER
-            '⊙' => GrammarToken::Operator(c),  // XNOR (Exclusive NOR)
-            '↑' => GrammarToken::Operator(c),  // NAND
-            '↓' => GrammarToken::Operator(c),  // NOR
-            '→' => GrammarToken::Operator(c),  // IMPLIES
-            '↔' => GrammarToken::Operator(c),  // IFF
-            // Math Exlusive Operators
-            '/' => GrammarToken::Operator(c),  // DIVIDE
-            '-' => GrammarToken::Operator(c),  // SUBTRACT
-            '%' => GrammarToken::Operator(c),  // MODULO
-            '√' => GrammarToken::Operator(c),  // SQUARE ROOT
-            // * Any other char
-            _ => GrammarToken::Invalid(c),  // Invalid chars
+            '_' => GrammarToken::UnderScore(),
+            '.' => GrammarToken::Dot(),
+            _ => match op_converter(c) {
+                Some(op) => GrammarToken::Operator(op),
+                None => GrammarToken::Invalid(c),
+            },
         }
     }
 }
 
+impl GrammarToken<LogicOp> {
+    pub fn from(c: char) -> GrammarToken<LogicOp> {
+        GrammarToken::<LogicOp>::from_char(c, LogicOp::from)
+    }
+}
 
-// impl the Display trait for GrammarToken
-impl std::fmt::Display for GrammarToken {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.to_string())  // * Use the to_string() method to format the GrammarToken
-        // write!(f, "{}", match self {
-        //     GrammarToken::Operator(op) => op,
-        //     GrammarToken::Variable(var) => var,
-        //     GrammarToken::Number(num) => num,
-        //     // GrammarToken::BracketState(bracket) => bracket.to_string(),
-        //     GrammarToken::Invalid(c) => c,
-        //     }.to_string()
-        // )
+impl GrammarToken<MathOp> {
+    pub fn from(c: char) -> GrammarToken<MathOp> {
+        GrammarToken::<MathOp>::from_char(c, MathOp::from)
     }
 }
 
 
-// create the public struct Term that contains a sequence of GrammarTokens
+
+
 #[derive(Clone, Debug, PartialEq)]
-pub struct Term {
-    pub tokens: Vec<GrammarToken>,
+pub struct Term<T> where T: Operator {
+    pub tokens: Vec<GrammarToken<T>>,
 }
 
-impl Term {
-    pub fn from(tokens: Vec<GrammarToken>) -> Term {
-        Term {tokens}
-    }
-
-}
-
-impl Default for Term {
-    fn default() -> Self {
-        Term {tokens: vec![GrammarToken::Number('0')]}
+impl<T> Term<T> where T: Operator {
+    pub fn from(tokens: Vec<GrammarToken<T>>) -> Term<T> {
+        Term { tokens }
     }
 }
