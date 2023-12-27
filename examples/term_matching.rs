@@ -18,7 +18,7 @@ fn main() {
     RLog::init_logger(log::LevelFilter::Debug);
 
     // Compiles the regular expression used for matching mathematical expressions
-    let re = Regex::new(r"!?(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?").unwrap();
+    let re = Regex::new(r"(!|-)?(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?").unwrap();
 
     vec![  // A vector of test expressions to validate against the regex
         "!a",
@@ -27,7 +27,7 @@ fn main() {
         "!7d_23", 
         "a_3", 
         "!b", 
-        "2.3c_2", 
+        "-2.3c_2", 
         "!9d_43", 
         "e", 
         "!f_5",

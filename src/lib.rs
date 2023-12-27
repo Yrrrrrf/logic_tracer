@@ -28,6 +28,8 @@ mod circuits;
 mod proto;  // Hidden module for proto-type tests (for development only)
 pub use proto::*;  // Make visible (for documentation) the proto-type module
 
+mod error;
+
 // ? Tests --------------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]  // Only compiles when running tests
