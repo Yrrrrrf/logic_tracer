@@ -4,7 +4,6 @@
 //! The `Propositions` enum represents different logical propositions.
 
 use dev_utils::console::format::set_fg;
-use crate::grammar::GrammarToken;
 
 // /// The `Proposition` struct represents a logical proposition.
 // /// 
@@ -129,7 +128,9 @@ enum MathExpr {
 }
 
 impl Proposition for MathExpr {
-    fn new(src: &str) -> Self where Self: Sized {
+    // The where Self: Sized is needed to allow the use of the Self type in the enum
+    // fn new(src: &str) -> Self where Self: Sized {
+    fn new(src: &str) -> Self {
         MathExpr::Constant(0.0)
         // Implementation...
     }

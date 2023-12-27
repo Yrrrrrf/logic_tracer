@@ -13,7 +13,13 @@ use log::LevelFilter;
 
 // Internal modules
 mod components;
-use components::*;
+use components::{
+    operators::*,  // LogicOp, MathOp, RelOp (RelOp is: Relation Operator)
+    // A RELATION OPERATOR IS: =, ≠, >, <, ≥, ≤
+    proposition::*,
+    grammar::*,
+    // circuits::*,
+};
 // * Prototyped modules (Not ready for production)
 mod proto;
 use proto::logic_notation::*;
@@ -24,29 +30,8 @@ fn main() {
     print_app_data(file!());    
     RLog::init_logger(LevelFilter::Trace);
 
-    // log::trace!("Starting the program");
 
 
-    // ? Features
-    // logic_notation::test_logic();  // * [OK]
-    // logic_notation::test_var_regex();  // ! [FAIL]
-
-    // logic_notation::test_logic_operators_regex();  // ^ [ pending ]
-
-
-    println!("AS CHAR: {}", 10 as char);
-    println!("AS NUM:  {}", 10);
-
-
-    // let infix_expression = "(A + B) * C";
-    // let infix_expression = "(1 + 4) * 2";
-    // let postfix_expression = infix_to_postfix(infix_expression);
-    // println!("Infix: {}", infix_expression);
-    // println!("Postfix: {}", &postfix_expression);
-
-    // // let postfix_expression = "12 3 4 * +";
-    // let result = evaluate_postfix(&postfix_expression);
-    // println!("Postfix: {}", postfix_expression);
-    // println!("Result: {}", result);
+    
 
 }

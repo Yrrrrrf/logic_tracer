@@ -34,8 +34,8 @@ mod error;
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
-    // This modules will be used in the tests, not in the library. So it's not necessary to import them in the library
-    use crate::components::proposition::Proposition;
+    // //  This modules will be used in the tests, not in the library. So it's not necessary to import them in the library
+    // use crate::components::proposition::Proposition;
 
     // /// Check if the check_pair_brackets() fn works well.
     // #[test]  // Indicates that this is a test
