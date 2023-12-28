@@ -5,62 +5,13 @@
 
 use dev_utils::console::format::set_fg;
 
-// /// The `Proposition` struct represents a logical proposition.
-// /// 
-// /// It is used for modeling logical statements in Rust programs.
-// #[derive(Clone, Default, Debug)]
-// pub struct Proposition {
-//     pub token_table: Vec<GrammarToken>,
-//     // pub f: String,  // function string
-//     // pub postfix: String,
-//     // pub variables: Vec<>
-// }
+use crate::{Operator, LogicOp, MathOp, RelOp};
+use crate::components::grammar::GrammarToken;
 
-
-// impl Proposition {
-//     /// Creates a new `Proposition` from the given source string.
-//     ///
-//     /// If the input string contains unpaired brackets, the function returns an empty `Proposition`.
-//     ///
-//     /// # Arguments
-//     ///
-//     /// - `src` - A reference to a string slice containing the source string to parse.
-//     ///
-//     /// # Returns
-//     /// 
-//     /// - `Proposition` - A new `Proposition` instance.
-//     /// 
-//     /// # Examples
-//     ///
-//     /// ```
-//     /// use logic_tracer::grammar::GrammarToken::{self, *};
-//     /// use logic_tracer::proposition::Proposition;
-//     ///
-//     /// assert_eq!(Proposition::new("A & B").token_table, 
-//     ///     [Variable('A'), Operator('&'), Variable('B')]);
-//     /// assert_eq!(Proposition::new("A + B").token_table, 
-//     ///     [Variable('A'), Operator('+'), Variable('B')]);
-//     /// // assert_eq!(Proposition::new("A | B").token_table,
-//     /// //    [Variable('A'), Operator('+'), Variable('B')]);
-//     /// ```
-//     pub fn new(src: &str) -> Result<Proposition, &str> {
-//         // Lexer -> Remove all unuseful chars & get the TokenTable
-//         let trimmed: Vec<char> = src.chars()
-//             .filter(|c| !c.is_whitespace() && !c.is_ascii_control()).collect(); // Remove all unuseful chars
-//         // Parser -> Validate the sintax & create the AST
-//         check_pair_brackets(&trimmed)?;  // Check if the brackets are paired and in the correct order or return an error
-//         validate_prop_grammar(&trimmed)?;  // Validate the grammar of the proposition or return an error
-
-//         Ok(Proposition { 
-//             token_table: trimmed.iter().map(|c| GrammarToken::from(*c)).collect(),
-//             ..Default::default()
-//         })
-//     }
-// }
 
 /// Check if the brackets are paired
 /// Also check if the brackets are in the correct order
-pub fn check_pair_brackets(src: &Vec<char>) -> Result<bool, &'static str> {
+pub fn check_pair_brackets(src: &Vec<char>) -> bool {
     let mut stack: Vec<char> = Vec::new();
     let brackets: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
 
@@ -73,21 +24,19 @@ pub fn check_pair_brackets(src: &Vec<char>) -> Result<bool, &'static str> {
                         continue;  // If the brackets are paired, continue
                     }
                 }
-                return Err("Unpaired Brackets");
+                return false;  // If the brackets are not paired, return false
             }
             _ => (),
         }
     }
-    Ok(stack.is_empty())
+    stack.is_empty()
 }
-
-
-
 
 // ? DEFINE THE PROPOSITONS TRAIT =============================================
 
-// Base trait for common functionality
-pub trait Proposition {
+// // Base trait for common functionality
+pub trait PropositionTrait {
+
     fn new(src: &str) -> Self where Self: Sized;
     // fn get_function(&self) -> String;
     // todo: add this methods to the trait
@@ -97,7 +46,7 @@ pub trait Proposition {
 }
 
 // Inherit from the base trait and add specific methods
-pub trait LogicProposition: Proposition {
+pub trait LogicPTrait: PropositionTrait {
     fn evaluate(&self, variables: Vec<bool>) -> bool;
     // Logic-specific methods
     fn get_truth_table_string(&self) -> String;
@@ -106,87 +55,58 @@ pub trait LogicProposition: Proposition {
     // fn get_ast_string(&self) -> String;  // get the AST of the proposition
 }
 
-// Inherit from the base trait and add specific methods
-pub trait MathProposition: Proposition {
-    fn evaluate(&self) -> f64;
-    // /// Get the plot points of the function
-    // fn get_plot_points(&self, x_range: (f64, f64), delta: f64) -> Vec<(f64, f64)>;
-    // Math-specific methods
+
+// // Inherit from the base trait and add specific methods
+// pub trait MathPTrait: PropositionTrait {
+//     fn evaluate(&self) -> f64;
+//     // /// Get the plot points of the function
+//     // fn get_plot_points(&self, x_range: (f64, f64), delta: f64) -> Vec<(f64, f64)>;
+//     // Math-specific methods
+// }
+
+// ? PROPOSITIONS ========================================================
+
+// * Logic Propositions
+#[derive(Debug, Clone, PartialEq)]
+pub struct LogicProposition {
+    token_table: Vec<GrammarToken<LogicOp>>,
+    function: String,
+    variables: Vec<char>,
 }
 
-// ? MATH PROPOSITIONS ========================================================
+impl LogicProposition {
+    pub fn new(src: impl Into<String>) -> Result<Self, &'static str> {
 
-// The MathExpr use the - operator to negate the expression value.
+        // * Lexical analysis
+        let src_vec: Vec<char> = src.into().chars()  // Remove whitespace and control characters from the expression
+            .filter(|c| !c.is_whitespace() && !c.is_ascii_control()).collect();
 
-enum MathExpr {
-    Add(Box<MathExpr>, Box<MathExpr>),
-    Subtract(Box<MathExpr>, Box<MathExpr>),
-    Multiply(Box<MathExpr>, Box<MathExpr>),
-    Divide(Box<MathExpr>, Box<MathExpr>),
-    Constant(f64),
-    // ... other mathematical operations and variables
-}
+        // * Syntactic analysis
+        match check_pair_brackets(&src_vec) {
+            true => (),
+            false => Err("The brackets are not paired")?,
+        }
+        // match src_vec.iter().any(|c| !c.is_ascii_alphabetic()) {
+        //     true => (),
+        //     false => Err("The proposition must contain at least one variable")?,
+        // }
 
-impl Proposition for MathExpr {
-    // The where Self: Sized is needed to allow the use of the Self type in the enum
-    // fn new(src: &str) -> Self where Self: Sized {
-    fn new(src: &str) -> Self {
-        MathExpr::Constant(0.0)
-        // Implementation...
+        // * Semantic analysis
+        // match check_syntax(&src_vec) {
+        //     true => (),
+        //     false => Err("The proposition is not valid")?,
+        // }
+
+        // * Build the proposition (Parse the expression)
+        let token_table: Vec<GrammarToken<LogicOp>> = src_vec.iter()
+            .map(|c| GrammarToken::<LogicOp>::from(*c)).collect::<Vec<GrammarToken<LogicOp>>>();
+
+        Ok(Self {
+            token_table,
+            function: "".to_string(),  // todo: add the function field
+            variables: vec![],  // todo: add the variables field
+        })
     }
 
-    // fn get_function(&self) -> String {
-    //     // Common implementation...
-    // }
 }
 
-// Implement evaluation logic for mathematical expressions
-impl MathProposition for MathExpr {
-    fn evaluate(&self) -> f64 {
-        0.0
-        // ... implement evaluation logic
-    }
-}
-
-
-// ? LOGIC PROPOSITIONS =======================================================
-
-// The LogicExpr use the ! operator to negate the expression.
-
-enum LogicExpr {
-    And(Box<LogicExpr>, Box<LogicExpr>),
-    Or(Box<LogicExpr>, Box<LogicExpr>),
-    Not(Box<LogicExpr>),
-    Variable(bool), // Could be more complex in actual implementation
-    // ... other logical operations
-}
-
-impl Proposition for LogicExpr {
-    fn new(src: &str) -> Self where Self: Sized {
-        LogicExpr::Variable(false)
-        // Implementation...
-    }
-
-    // fn get_function(&self) -> String {
-    //     // Common implementation...
-    // }
-
-}
-
-// Implement evaluation logic for logical expressions
-impl LogicProposition for LogicExpr {
-    fn evaluate(&self, variables: Vec<bool>) -> bool {
-        false
-        // ... implement evaluation logic
-    }
-
-    fn get_truth_table_string(&self) -> String {
-        "s".to_string()
-        // Specific implementation...
-    }
-
-    fn get_kmap_string(&self) -> String {
-        "s".to_string()
-        // Specific implementation...
-    }
-}

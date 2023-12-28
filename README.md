@@ -5,7 +5,7 @@
 </h1>
 
 [<img alt="github" src="https://img.shields.io/badge/github-Yrrrrrf%2Flogic__tracer-58A6FF?style=for-the-badge&logo=github" height="24">](https://github.com/Yrrrrrf/logic_tracer)
-[<img alt="crates.io" src="https://img.shields.io/crates/v/logic__tracer.svg?style=for-the-badge&logo=rust" height="24">](https://crates.io/crates/logic_tracer)
+[<img alt="crates.io" src="https://img.shields.io/crates/v/logic_tracer.svg?style=for-the-badge&logo=rust" height="24">](https://crates.io/crates/logic_tracer)
 [<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-logic__tracer-66c2a5?style=for-the-badge&labelColor=555555" height="24">](https://docs.rs/logic_tracer)
 
 Logic Traces is a simple crate that reads a logical proposition and interprets it to **build the truth table and the AST of the proposition**.  

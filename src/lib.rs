@@ -20,7 +20,11 @@
 
 mod components;
 pub use components::*;
-pub use components::operators::*;  // Import the Operator enum because it is used in the AST struct
+pub use components::{
+    proposition::*,
+    operators::*,
+    grammar::*,
+};
 
 mod circuits;
 // pub use circuits::*;
@@ -34,34 +38,35 @@ mod error;
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
-    // //  This modules will be used in the tests, not in the library. So it's not necessary to import them in the library
-    // use crate::components::proposition::Proposition;
+    //  This modules will be used in the tests, not in the library. So it's not necessary to import them in the library
+    use crate::proposition::check_pair_brackets;
 
-    // /// Check if the check_pair_brackets() fn works well.
-    // #[test]  // Indicates that this is a test
-    // fn test_pair_brackets() {
-    //     vec![
-    //         ("A & (B & C)", true),
-    //         ("A & (B & C) & D", true),
-    //         ("(a + b) * (c - d)", true),
-    //         ("(a + b) * (c - d]", false),
-    //         ("x + y] * [z - w]", false),
-    //         ("x + y] * [z - w)", false),
-    //         ("1, 2, 3, 4}", false),
-    //         ("1, 2, 3, 4]", false),
-    //         ("html></html>", false),
-    //         ("html></htm>", false),
-    //         ("<html></htm>", true),
-    //         ("(", false),
-    //         ("[", false),
-    //         ("{", false),
-    //         ("<", false),
-    //         ("[{()}]", true),
-    //         ("{[()]}>", false),
-    //         (" ", true),
-    //         ("", true),
-    //     ].iter().for_each(|(src, result)| assert_eq!(crate::proposition::check_pair_brackets(src), *result));
-    // }
+    /// Check if the check_pair_brackets() fn works well.
+    #[test]  // Indicates that this is a test
+    fn test_pair_brackets() {
+        vec![
+            ("A & (B & C)", true),
+            ("A & (B & C) & D", true),
+            ("(a + b) * (c - d)", true),
+            ("(a + b) * (c - d]", false),
+            ("x + y] * [z - w]", false),
+            ("x + y] * [z - w)", false),
+            ("1, 2, 3, 4}", false),
+            ("1, 2, 3, 4]", false),
+            ("html></html>", false),
+            ("html></htm>", false),
+            ("<html></htm>", true),
+            ("(", false),
+            ("[", false),
+            ("{", false),
+            ("<", false),
+            ("[{()}]", true),
+            ("{[()]}>", false),
+            (" ", true),
+            ("", true),
+        ].iter().for_each(|(src, result)| 
+            assert_eq!(check_pair_brackets(&src.chars().collect::<Vec<char>>()), *result));
+    }
 
 
     // /// Test if the notation for the AST is correct.

@@ -1,19 +1,20 @@
 [package]
 name = "logic_tracer"
-version = "0.0.2"
-description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
-license = "MIT"
-repository = "https://github.com/Yrrrrrf/logic_tracer"
-authors = ["Yrrrrrf"]
+version = "0.0.4"
 edition = "2021"
+repository = "https://github.com/Yrrrrrf/logic_tracer"
+description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
+authors = ["Yrrrrrf"]
+license = "MIT"
+readme = "README.md"
+keywords = ["logic", "proposition", "truth_table", "calculator"]
 
-exclude = [
+exclude = [  # Exclude these files from the package
     ".vscode*",  # editor config
-    "resources/data/*",  # data files (csv, json, etc)
-    "target",  # build directory (compiled code)
-    ".gitignore",  # ignore gitignore file
+    "resources/*",  # data files (csv, json, etc)
+    "target/",  # build directory (compiled code)
     "Cargo.lock",  # lock file (dependency versions)
-    ]  # exclude these files from the package
+    ]
 
 # COMPILE OPTIMIZATION ------------------------------------------------------------------------
 # where 1 is the lowest and 3 is the highest level of optimization

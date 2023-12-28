@@ -23,7 +23,6 @@ use components::{
 // * Prototyped modules (Not ready for production)
 mod proto;
 use proto::logic_notation::*;
-
 // ? Main ---------------------------------------------------------------------------------------------------------------------
 
 fn main() {
@@ -31,7 +30,13 @@ fn main() {
     RLog::init_logger(LevelFilter::Trace);
 
 
+    // let prop: Proposition<LogicOp> = Proposition::new("A & B | C ! D + E"); // Change the type of LogicOp
+    let my_proposition = LogicProposition::new("yo^%ur_input_string");
 
-    
-
+    println!("Proposition: {:?}", my_proposition);
 }
+
+
+
+
+

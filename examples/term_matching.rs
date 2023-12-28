@@ -10,7 +10,7 @@ use regex::Regex;
 
 /// This fn test the regex matching functionality.
 ///
-/// The regex used is: `!?(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?`
+/// The regex used is: `(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?`
 /// 
 /// It matches any string in the form of a TERM (negator + number + variable + sub variable).
 fn main() {
@@ -18,7 +18,7 @@ fn main() {
     RLog::init_logger(log::LevelFilter::Debug);
 
     // Compiles the regular expression used for matching mathematical expressions
-    let re = Regex::new(r"(!|-)?(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?").unwrap();
+    let re = Regex::new(r"(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?").unwrap();
 
     vec![  // A vector of test expressions to validate against the regex
         "!a",
@@ -40,7 +40,7 @@ fn main() {
         "n_9", 
         "!7o", 
         "2p_10", 
-        "3x+!9b-6t",
+        "3x+!9b-6t_3t_4R_4",
         "@",
     ].iter().for_each(|s| {
         let mut result_string = String::new();
@@ -53,7 +53,7 @@ fn main() {
         });
         result_string.push_str(&s[last_end..]);  // Append any remaining part of the string after the last match
         println!("{s:16} -> {result_string}");
-        // re.captures_iter(s).for_each(|cap| println!("\t{}",set_fg(cap.get(0).unwrap().as_str(), 'g')));  // Print each capture in green
+        re.captures_iter(s).for_each(|cap| println!("\t{}",set_fg(cap.get(0).unwrap().as_str(), 'g')));  // Print each capture in green
     });
 
 }

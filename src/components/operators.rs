@@ -1,49 +1,75 @@
-//! # Logic Operators
+//! This module contains the definition of the `Operator` trait and its implementations.
 //! 
-//! This module contains the behavior of the operations that can be used in the application.
-//! 
-//! Rust itself implements some of the logic gates, but not all of them. This module
-//! extends Rust's capabilities by providing additional logic and mathematical operators.
+//! The `Operator` trait is used to represent operators in the expression.
+//! It is implemented for various enums, each representing a different type of operator.
+use std::fmt;
 
-use core::fmt;
-use dev_utils::console::format::set_fg;
+
+// /// Enum representing the associativity of an operator.
+// /// 
+// /// The associativity determines the order in which operators are evaluated.
+// /// 
+// /// For example, the expression `1 + 2 + 3` can be evaluated in two ways:
+// /// 
+// /// - Left-to-right: `(1 + 2) + 3 = 3 + 3 = 6`
+// /// - Right-to-left: `1 + (2 + 3) = 1 + 5 = 6`
+// /// 
+// /// - `Add` operator is left-to-right, so the first
+// /// - `Subtract` operator is right-to-left, so the second
+// /// - `Multiply` operator is left-to-right, so the first
+// /// - `Divide` operator is right-to-left, so the second
+// pub enum Associativity {
+//     LeftToRight,
+//     RightToLeft,
+//     None,
+// }
+
+
+
+
+
+
+// trait OperatorFromChar {
+//     fn from_char(c: char) -> Option<Self> where Self: Sized;
+// }
+
+
 
 
 /// A trait for operators that can be formatted and debugged.
 ///
 /// This trait is used to implement the `to_string` method for operator enums,
 /// allowing them to be easily converted to their string representation.
-// pub trait Operator: fmt::Debug + fmt::Display {
-pub trait Operator: fmt::Debug {
+// pub trait Operator: fmt::Debug + fmt::Display + OperatorFromChar {
+pub trait Operator: fmt::Debug + fmt::Display {
     fn to_string(&self) -> String;
+    // // fn evaluate(&self, operands: &[OperandType]) -> Result<OperandType, Error>;
+    // fn precedence(&self) -> usize;
+    // fn associativity(&self) -> Associativity;
+    // fn is_binary(&self) -> bool;
+    // fn is_unary(&self) -> bool;
 }
 
 
-// /// Macro to implement the `Operator` and `Display` traits for enums.
-// ///
-// /// This macro simplifies the process of implementing these traits for
-// /// different operator enums by automatically generating the necessary code.
+/// Macro to implement the `Operator` and `Display` traits for enums.
+///
+/// This macro simplifies the process of implementing these traits for
+/// different operator enums by automatically generating the necessary code.
 macro_rules! impl_operator_traits {
     ($enum_name:ident, {$($variant:ident => $str:expr),* $(,)?}) => {
         // Implementation of the Operator trait
         impl Operator for $enum_name {
             fn to_string(&self) -> String {
-                match self {
-                    $( $enum_name::$variant => $str.to_string(), )*
-                }
+                match self {$( $enum_name::$variant => $str.to_string(), )*}
             }
         }
-
         // Implementation of the Display trait
-        // impl std::fmt::Display for $enum_name {
-        //     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        //         write!(f, "{}", set_fg(
-        //             match self {
-        //                 $( $enum_name::$variant => $str, )*
-        //             }, "b")
-        //         )
-        //     }    
-        // }
+        impl std::fmt::Display for $enum_name {
+            fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                match self {$( $enum_name::$variant => write!(f, "{}", $str), )*}
+            }    
+        }
+
     };
 }
 
@@ -58,18 +84,16 @@ macro_rules! define_operator_enum {
         pub enum $enum_name {
             $($variant,)*
         }
-
+        // Implementation of the From trait
         impl $enum_name {
             pub fn from(c: char) -> Option<$enum_name> {
                 match c {
-                    $(
-                        $( $str )|* => Some($enum_name::$variant),
-                    )*
+                    $( $( $str => Some($enum_name::$variant), )* )*
                     _ => None,
                 }
             }
         }
-
+        // Implementation of the Operator trait and Display trait
         impl_operator_traits!($enum_name, {$($variant => stringify!($variant)),*});
     };
 }
@@ -93,7 +117,6 @@ define_operator_enum! {
         IFf => ['↔'],  // 8596 | U+2194
     }
 }
-
 
 // Enum representing various mathematical operators.
 //
