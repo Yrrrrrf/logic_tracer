@@ -23,7 +23,7 @@ pub use components::*;
 pub use components::{
     proposition::*,
     operators::*,
-    grammar::*,
+    alphabet::*,
 };
 
 mod circuits;

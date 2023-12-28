@@ -17,7 +17,7 @@ use components::{
     operators::*,  // LogicOp, MathOp, RelOp (RelOp is: Relation Operator)
     // A RELATION OPERATOR IS: =, ≠, >, <, ≥, ≤
     proposition::*,
-    grammar::*,
+    alphabet::*,
     // circuits::*,
 };
 // * Prototyped modules (Not ready for production)
@@ -31,12 +31,8 @@ fn main() {
 
 
     // let prop: Proposition<LogicOp> = Proposition::new("A & B | C ! D + E"); // Change the type of LogicOp
-    let my_proposition = LogicProposition::new("yo^%ur_input_string");
+    // let my_proposition = LogicProposition::new("^!U()");
+    let my_proposition = LogicProposition::new("^!()");
 
     println!("Proposition: {:?}", my_proposition);
 }
-
-
-
-
-

@@ -21,19 +21,22 @@ Also implements the [Shunting Yard Algorithm](https://en.wikipedia.org/wiki/Shun
 cargo run  # run the project
 ```
 
-## [Examples](./examples/README.md)
+## Examples
 
+Check the [examples](./examples/) direcotry to see how to use the crate.
 ```bash
 cargo run --example <example name>
 ```
 
 ## Roadmap
-- [x] Validate brackets
-- [x] Validate terms (only numbers, variables, variable with subindex)
-- [ ] Validate Logical Operators (and, or, not, implies, iff)
-- [ ] Read a logical proposition
-- [ ] Tokenize the proposition
-- [ ] Parse the proposition (validate)
+- [x] Validate Input Tokens (only valid tokens)
+    - [x] Variables (only letters)
+    - [x] Logical Operators (and, or, not, implies, iff)
+    - [x] Mathematical Operators (add, sub, mul, div, pow)
+    - [ ] Terms (only numbers, variables, variable with subindex)
+- [x] Read a logical proposition
+- [x] Tokenize the proposition
+- [ ] Parse the proposition (make sure it is valid)
 - [ ] Build the AST (Shunting Yard Algorithm) (use postfix notation)
 - [ ] **Solve proposition** (evaluate the AST)
 - [ ] Add good looking output (truth table, ast, function, etc.)
@@ -45,8 +48,6 @@ cargo run --example <example name>
 
 ----
 
-## [License](LICENSE)
+## License
 
 This project is licensed under the terms of the [MIT license](./LICENSE)
-
-`note for me: use cargo publish to publish the crate`

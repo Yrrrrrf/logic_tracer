@@ -5,8 +5,8 @@
 
 use dev_utils::console::format::set_fg;
 
-use crate::{Operator, LogicOp, MathOp, RelOp};
-use crate::components::grammar::GrammarToken;
+
+use crate::{components::alphabet::Token, LogicOp};
 
 
 /// Check if the brackets are paired
@@ -36,8 +36,7 @@ pub fn check_pair_brackets(src: &Vec<char>) -> bool {
 
 // // Base trait for common functionality
 pub trait PropositionTrait {
-
-    fn new(src: &str) -> Self where Self: Sized;
+    fn new(src: impl Into<String>) -> Result<Self, &'static str> where Self: Sized;
     // fn get_function(&self) -> String;
     // todo: add this methods to the trait
     // fn get_postfix_string(&self) -> String;
@@ -69,37 +68,42 @@ pub trait LogicPTrait: PropositionTrait {
 // * Logic Propositions
 #[derive(Debug, Clone, PartialEq)]
 pub struct LogicProposition {
-    token_table: Vec<GrammarToken<LogicOp>>,
+    token_table: Vec<Token<LogicOp>>,
     function: String,
     variables: Vec<char>,
 }
 
-impl LogicProposition {
-    pub fn new(src: impl Into<String>) -> Result<Self, &'static str> {
+impl PropositionTrait for LogicProposition {
+    fn new(src: impl Into<String>) -> Result<Self, &'static str> {
 
         // * Lexical analysis
         let src_vec: Vec<char> = src.into().chars()  // Remove whitespace and control characters from the expression
             .filter(|c| !c.is_whitespace() && !c.is_ascii_control()).collect();
 
-        // * Syntactic analysis
-        match check_pair_brackets(&src_vec) {
-            true => (),
-            false => Err("The brackets are not paired")?,
+        let token_table: Vec<Token<LogicOp>> = src_vec.iter()
+            .map(|c| Token::<LogicOp>::from(*c)).collect();
+
+        // if token_table.iter().any(|token| token.is_invalid()) {
+        if token_table.iter().any(|token| matches!(token, Token::Invalid(_))) {
+            Err("The proposition contains invalid tokens")?;
         }
-        // match src_vec.iter().any(|c| !c.is_ascii_alphabetic()) {
-        //     true => (),
-        //     false => Err("The proposition must contain at least one variable")?,
-        // }
+
+        // * Syntactic analysis
+        if !check_pair_brackets(&src_vec) {
+            return Err("The brackets are not paired");
+        }
+        if !src_vec.iter().any(|c| c.is_ascii_alphabetic() || c.is_ascii_digit()) {
+            return Err("The proposition must contain at least one variable");
+        }
+        
 
         // * Semantic analysis
-        // match check_syntax(&src_vec) {
-        //     true => (),
-        //     false => Err("The proposition is not valid")?,
+        // if !check_syntax(&src_vec) {
+        //     return Err("The proposition is not valid");
         // }
 
         // * Build the proposition (Parse the expression)
-        let token_table: Vec<GrammarToken<LogicOp>> = src_vec.iter()
-            .map(|c| GrammarToken::<LogicOp>::from(*c)).collect::<Vec<GrammarToken<LogicOp>>>();
+
 
         Ok(Self {
             token_table,
@@ -107,6 +111,19 @@ impl LogicProposition {
             variables: vec![],  // todo: add the variables field
         })
     }
-
 }
 
+impl LogicPTrait for LogicProposition {
+    fn evaluate(&self, variables: Vec<bool>) -> bool {
+        false
+    }
+
+    fn get_truth_table_string(&self) -> String {
+        "".to_string()
+    }
+
+    fn get_kmap_string(&self) -> String {
+        "".to_string()
+    }
+
+}

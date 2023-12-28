@@ -5,7 +5,7 @@ use dev_utils::{
     log::rlog::RLog,
 };
 use logic_tracer::{
-    grammar::GrammarToken, 
+    alphabet::Token, 
     LogicOp, 
     MathOp
 };
@@ -36,10 +36,10 @@ fn main() {
         println!("\nSource Expression: {}", expression);  // Print the source expression
 
         println!("Logic: {:?}",  // Parse as a Logic Expression
-            src.iter().map(|c| GrammarToken::<LogicOp>::from(*c)).collect::<Vec<GrammarToken<LogicOp>>>()
+            src.iter().map(|c| Token::<LogicOp>::from(*c)).collect::<Vec<Token<LogicOp>>>()
         );
         println!("Math: {:?}",  // Parse as a Math Expression
-            src.iter().map(|c| GrammarToken::<MathOp>::from(*c)).collect::<Vec<GrammarToken<MathOp>>>()
+            src.iter().map(|c| Token::<MathOp>::from(*c)).collect::<Vec<Token<MathOp>>>()
         );
 
     }

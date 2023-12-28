@@ -25,15 +25,9 @@ use std::fmt;
 // }
 
 
-
-
-
-
 // trait OperatorFromChar {
 //     fn from_char(c: char) -> Option<Self> where Self: Sized;
 // }
-
-
 
 
 /// A trait for operators that can be formatted and debugged.

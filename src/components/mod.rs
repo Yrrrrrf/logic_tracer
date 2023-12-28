@@ -1,3 +1,4 @@
-pub mod grammar;  // tokens used in the lexer and parser (token_stream)
-pub mod operators;  // operators used in the parser
-pub mod proposition;  // logical proposition
+pub mod alphabet;  // alphabet of the language (All possible tokens)
+pub mod operators;  // operators of the language (LogicOp, MathOp, RelOp)
+pub mod grammar;  // Grammar rules used by the parser
+pub mod proposition;  // proposition builder (Proposition)
