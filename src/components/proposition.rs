@@ -3,10 +3,13 @@
 //! Import necessary modules and dependencies if needed.
 //! The `Propositions` enum represents different logical propositions.
 
-use dev_utils::console::format::set_fg;
-
-
-use crate::{components::alphabet::Token, LogicOp, BracketType, MathOp, Operator};
+use crate::{
+    BracketType, 
+    Operator,
+    LogicOp, 
+    MathOp, 
+    Token, 
+};
 
 
 pub fn check_pair_brackets<T>(tokens: &[Token<T>]) -> bool 

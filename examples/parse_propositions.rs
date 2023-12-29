@@ -5,9 +5,9 @@ use dev_utils::{
     log::rlog::RLog,
 };
 use logic_tracer::{
-    alphabet::Token, 
     LogicOp, 
-    MathOp
+    MathOp,
+    Token, 
 };
 
 

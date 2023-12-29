@@ -19,29 +19,22 @@
 // ? Lib Modules ----------------------------------------------------------------------------------------------------------
 
 mod components;
-pub use components::*;
 pub use components::{
     proposition::*,
     operators::*,
     alphabet::*,
+    grammar::*,
 };
 
 mod circuits;
 // pub use circuits::*;
 
-mod proto;  // Hidden module for proto-type tests (for development only)
-pub use proto::*;  // Make visible (for documentation) the proto-type module
-
-mod error;
+// mod error;
 
 // ? Tests --------------------------------------------------------------------------------------------------------------------
 
 #[cfg(test)]  // Only compiles when running tests
 mod tests {
-    //  This modules will be used in the tests, not in the library. So it's not necessary to import them in the library
-    use crate::proposition::check_pair_brackets;
-
-    /// Check if the check_pair_brackets() fn works well.
     #[test]  // Indicates that this is a test
     fn test_pair_brackets() {
         // vec![
