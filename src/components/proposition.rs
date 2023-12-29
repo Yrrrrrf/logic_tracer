@@ -6,32 +6,13 @@
 use dev_utils::console::format::set_fg;
 
 
-use crate::{components::alphabet::Token, LogicOp, BracketType};
+use crate::{components::alphabet::Token, LogicOp, BracketType, MathOp, Operator};
 
 
-/// Check if the brackets are paired
-/// Also check if the brackets are in the correct order
-// pub fn check_pair_brackets(src: &Vec<char>) -> bool {
-//     let mut stack: Vec<char> = Vec::new();
-//     let brackets: [(char, char); 4] = [('(', ')'), ('[', ']'), ('{', '}'), ('<', '>')];
-
-//     for char in src.clone() {
-//         match char {
-//             ch if brackets.iter().any(|(open, _)| open == &ch) => stack.push(char),
-//             ch if brackets.iter().any(|(_, close)| close == &ch) => {
-//                 if let Some(top) = stack.pop() {
-//                     if brackets.iter().any(|&(open, close)| open == top && close == ch) {
-//                         continue;  // If the brackets are paired, continue
-//                     }
-//                 }
-//                 return false;  // If the brackets are not paired, return false
-//             }
-//             _ => (),
-//         }
-//     }
-//     stack.is_empty()
-// }
-pub fn check_pair_brackets(tokens: &[Token<LogicOp>]) -> bool {
+pub fn check_pair_brackets<T>(tokens: &[Token<T>]) -> bool 
+where
+    T: Operator, // Ensure T is an Operator, which is a requirement for Token<T>
+{
     let mut stack: Vec<BracketType> = Vec::new();
 
     for token in tokens {
@@ -53,9 +34,10 @@ pub fn check_pair_brackets(tokens: &[Token<LogicOp>]) -> bool {
 }
 
 
+
 // ? DEFINE THE PROPOSITONS TRAIT =============================================
 
-// // Base trait for common functionality
+// Base trait for common functionality
 pub trait PropositionTrait {
     fn new(src: impl Into<String>) -> Result<Self, &'static str> where Self: Sized;
     // fn get_function(&self) -> String;
@@ -76,66 +58,76 @@ pub trait LogicPTrait: PropositionTrait {
 }
 
 
-// // Inherit from the base trait and add specific methods
-// pub trait MathPTrait: PropositionTrait {
-//     fn evaluate(&self) -> f64;
-//     // /// Get the plot points of the function
-//     // fn get_plot_points(&self, x_range: (f64, f64), delta: f64) -> Vec<(f64, f64)>;
-//     // Math-specific methods
-// }
+// Inherit from the base trait and add specific methods
+pub trait MathPTrait: PropositionTrait {
+    fn evaluate(&self) -> f64;
+    // /// Get the plot points of the function
+    // fn get_plot_points(&self, x_range: (f64, f64), delta: f64) -> Vec<(f64, f64)>;
+    // Math-specific methods
+}
 
 // ? PROPOSITIONS ========================================================
 
-// * Logic Propositions
-#[derive(Debug, Clone, PartialEq)]
-pub struct LogicProposition {
-    token_table: Vec<Token<LogicOp>>,
-    function: String,
-    variables: Vec<char>,
-}
-
-impl PropositionTrait for LogicProposition {
-    fn new(src: impl Into<String>) -> Result<Self, &'static str> {
-        let mut has_variable = false;
-        let mut has_number = false;
-        let mut token_table = Vec::new();
-
-        // * Lexical analysis: Streamline character processing and token creation
-        for c in src.into().chars().filter(|c| !c.is_whitespace() && !c.is_ascii_control()) {
-            let token = Token::<LogicOp>::from(c);
-            if matches!(token, Token::Invalid(_)) {
-                println!("Invalid token: {c} at position {}\n", token_table.len());
-                return Err("The proposition contains invalid tokens")?;
-            }
-
-            if matches!(token, Token::Variable(_)) {has_variable = true} // It contains at least one variable
-            if matches!(token, Token::Number(_)) {has_number = true;}  // It contains at least one number
-            token_table.push(token);
+macro_rules! impl_proposition {
+    ($prop_type:ident, $op_type:ty) => {
+        // Define the struct
+        #[derive(Debug, Clone, PartialEq)]
+        pub struct $prop_type {
+            token_table: Vec<Token<$op_type>>,
+            function: String,
+            variables: Vec<char>,
         }
 
-        // * Syntactic analysis (Parsing)
-        if !check_pair_brackets(&token_table) {return Err("The brackets are not paired")?;}
-        if !(has_variable || has_number) {return Err("The proposition must contain at least one variable/number")?;}
+        // Implement the PropositionTrait
+        impl PropositionTrait for $prop_type {
+            fn new(src: impl Into<String>) -> Result<Self, &'static str> {
+                let mut has_variable = false;
+                let mut has_number = false;
+                let mut token_table = Vec::new();
 
-        Ok(Self {
-            token_table,
-            function: "".to_string(),  // todo: add the function field
-            variables: vec![],  // todo: add the variables field
-        })
-    }
+                for c in src.into().chars().filter(|c| !c.is_whitespace() && !c.is_ascii_control()) {
+                    let token = Token::<$op_type>::from(c);
+                    if matches!(token, Token::Invalid(_)) {
+                        println!("Invalid token: '{c}' at position {}\n", token_table.len());
+                        return Err("The proposition contains invalid tokens");
+                    }
+                    if matches!(token, Token::Variable(_)) {has_variable = true}
+                    if matches!(token, Token::Number(_)) {has_number = true;}
+                    token_table.push(token);
+                }
+
+                if !check_pair_brackets(&token_table) {
+                    return Err("The brackets are not paired");
+                }
+                if !(has_variable || has_number) {
+                    return Err("The proposition must contain at least one variable/number");
+                }
+
+                Ok(Self {
+                    token_table,
+                    function: "".to_string(),
+                    variables: vec![],
+                })
+            }
+        }
+    };
 }
 
-impl LogicPTrait for LogicProposition {
-    fn evaluate(&self, variables: Vec<bool>) -> bool {
-        false
-    }
+impl_proposition!(LogicProposition, LogicOp);
+impl_proposition!(MathProposition, MathOp);
 
-    fn get_truth_table_string(&self) -> String {
-        "".to_string()
-    }
 
-    fn get_kmap_string(&self) -> String {
-        "".to_string()
-    }
+// impl LogicPTrait for LogicProposition {
+//     fn evaluate(&self, variables: Vec<bool>) -> bool {
+//         false
+//     }
 
-}
+//     fn get_truth_table_string(&self) -> String {
+//         "".to_string()
+//     }
+
+//     fn get_kmap_string(&self) -> String {
+//         "".to_string()
+//     }
+
+// }

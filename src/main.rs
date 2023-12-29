@@ -30,9 +30,9 @@ fn main() {
     RLog::init_logger(LevelFilter::Trace);
 
 
-    // let prop: Proposition<LogicOp> = Proposition::new("A & B | C ! D + E"); // Change the type of LogicOp
-    // let my_proposition = LogicProposition::new("^!U()");
-    let my_proposition = LogicProposition::new("^!(A@#$)");
+    // let my_proposition_a = LogicProposition::new("A & B | C ! D + E");
+    let my_proposition_b = MathProposition::new("A & B | C ! D + E");
 
-    println!("{:#?}", my_proposition.unwrap());
+    // println!("{:?}", my_proposition_a.unwrap());
+    println!("{:?}", my_proposition_b);
 }
