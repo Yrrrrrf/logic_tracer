@@ -32,7 +32,7 @@ fn main() {
 
     // let prop: Proposition<LogicOp> = Proposition::new("A & B | C ! D + E"); // Change the type of LogicOp
     // let my_proposition = LogicProposition::new("^!U()");
-    let my_proposition = LogicProposition::new("^!()");
+    let my_proposition = LogicProposition::new("^!(A@#$)");
 
-    println!("Proposition: {:?}", my_proposition);
+    println!("{:#?}", my_proposition.unwrap());
 }

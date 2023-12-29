@@ -81,7 +81,7 @@ impl Token<MathOp> {
 
 
 /// Represents types of brackets.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq, Copy)]
 pub enum BracketType {
     Parenthesis,  // ()
     Square,       // []
