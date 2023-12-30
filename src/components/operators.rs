@@ -36,6 +36,8 @@ use std::fmt;
 /// allowing them to be easily converted to their string representation.
 // pub trait Operator: fmt::Debug + fmt::Display + OperatorFromChar {
 pub trait Operator: fmt::Debug + fmt::Display {
+    const NEGATOR: Self;
+
     fn to_string(&self) -> String;
     // // fn evaluate(&self, operands: &[OperandType]) -> Result<OperandType, Error>;
     // fn precedence(&self) -> usize;
@@ -50,9 +52,12 @@ pub trait Operator: fmt::Debug + fmt::Display {
 /// This macro simplifies the process of implementing these traits for
 /// different operator enums by automatically generating the necessary code.
 macro_rules! impl_operator_traits {
-    ($enum_name:ident, {$($variant:ident => $str:expr),* $(,)?}) => {
+    ($enum_name:ident, {$($variant:ident => $str:expr),* $(,)?}, $negator:expr) => {
         // Implementation of the Operator trait
         impl Operator for $enum_name {
+
+            const NEGATOR: $enum_name = $negator;
+
             fn to_string(&self) -> String {
                 match self {$( $enum_name::$variant => $str.to_string(), )*}
             }
@@ -73,13 +78,14 @@ macro_rules! impl_operator_traits {
 /// This macro facilitates the creation of enums representing operators,
 /// and automatically implements the `Operator` and `Display` traits for them.
 macro_rules! define_operator_enum {
-    ($enum_name:ident, {$($variant:ident => [$($str:expr),* $(,)?]),* $(,)?}) => {
+    ($enum_name:ident, {$($variant:ident => [$($str:expr),* $(,)?]),* $(,)?}, $negator:expr) => {
         #[derive(Debug, Clone, PartialEq)]
         pub enum $enum_name {
             $($variant,)*
         }
+
         // Implementation of the From trait
-        impl $enum_name {
+        impl $enum_name {    
             pub fn from(c: char) -> Option<$enum_name> {
                 match c {
                     $( $( $str => Some($enum_name::$variant), )* )*
@@ -88,7 +94,7 @@ macro_rules! define_operator_enum {
             }
         }
         // Implementation of the Operator trait and Display trait
-        impl_operator_traits!($enum_name, {$($variant => stringify!($variant)),*});
+        impl_operator_traits!($enum_name, {$($variant => stringify!($variant)),*}, $negator);
     };
 }
 
@@ -109,7 +115,7 @@ define_operator_enum! {
         NOr => ['↓'],  // 8595 | U+2193
         Implies => ['→'],  // 8594 | U+2192
         IFf => ['↔'],  // 8596 | U+2194
-    }
+    }, LogicOp::Not
 }
 
 // Enum representing various mathematical operators.
@@ -127,7 +133,7 @@ define_operator_enum! {
         Power => ['^'],  // 94 | U+005E
         Root => ['√'],  // 8730 | U+221A
         Factorial => ['!'],  // 33 | U+0021
-    }
+    }, MathOp::Subtract
 }
 
 /// Enum representing various relation operators.
@@ -140,11 +146,12 @@ define_operator_enum! {
 define_operator_enum!{
     RelOp, {
         // ASQII CODE | UNICODE
+        
         Equal => ['='],  // 61 | U+003D
         NotEqual => ['≠'],  // 8800 | U+2260
         LessThan => ['<'],  // 60 | U+003C
         GreaterThan => ['>'],  // 62 | U+003E
         LessThanOrEqual => ['≤'],  // 8804 | U+2264
         GreaterThanOrEqual => ['≥'],  // 8805 | U+2265
-    }
+    }, RelOp::Equal
 }

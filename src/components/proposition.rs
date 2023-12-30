@@ -16,23 +16,20 @@ pub fn check_pair_brackets<T>(tokens: &[Token<T>]) -> bool
 where
     T: Operator, // Ensure T is an Operator, which is a requirement for Token<T>
 {
-    let mut stack: Vec<BracketType> = Vec::new();
+    let mut stack = Vec::new();
 
-    for token in tokens {
-        match token {
-            Token::OpenBracket(bracket_type) => stack.push(*bracket_type),
-            Token::CloseBracket(bracket_type) => {
-                match (stack.pop(), bracket_type) {
-                    (Some(opening), BracketType::Parenthesis) if opening == BracketType::Parenthesis => (),
-                    (Some(opening), BracketType::Square) if opening == BracketType::Square => (),
-                    (Some(opening), BracketType::Curly) if opening == BracketType::Curly => (),
-                    _ => return false,
-                }
+    tokens.iter().for_each(|token| match token {
+        Token::OpenBracket(bracket_type) => stack.push(*bracket_type),
+        Token::CloseBracket(bracket_type) => {
+            match (stack.pop(), bracket_type) {
+                (Some(opening), BracketType::Parenthesis) if opening == BracketType::Parenthesis => (),
+                (Some(opening), BracketType::Square) if opening == BracketType::Square => (),
+                (Some(opening), BracketType::Curly) if opening == BracketType::Curly => (),
+                _ => return (),
             }
-            _ => (),
         }
-    }
-
+        _ => (),
+    });
     stack.is_empty()
 }
 
@@ -40,7 +37,6 @@ where
 
 // ? DEFINE THE PROPOSITONS TRAIT =============================================
 
-// Base trait for common functionality
 pub trait PropositionTrait {
     fn new(src: impl Into<String>) -> Result<Self, &'static str> where Self: Sized;
     // fn get_function(&self) -> String;
@@ -76,8 +72,8 @@ macro_rules! impl_proposition {
         // Define the struct
         #[derive(Debug, Clone, PartialEq)]
         pub struct $prop_type {
-            token_table: Vec<Token<$op_type>>,
-            function: String,
+            pub token_table: Vec<Token<$op_type>>,
+            pub function: String,
             variables: Vec<char>,
         }
 
@@ -119,18 +115,19 @@ macro_rules! impl_proposition {
 impl_proposition!(LogicProposition, LogicOp);
 impl_proposition!(MathProposition, MathOp);
 
+impl LogicProposition {
+    /// Syntactic Analysis
+    pub fn parse_proposition() {
+        // This regex represents a possible Term Negator+(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?
 
-// impl LogicPTrait for LogicProposition {
-//     fn evaluate(&self, variables: Vec<bool>) -> bool {
-//         false
-//     }
+        // Regex explanation:
+        // 1. Term Negator: !?
+        // 2. Number: (\d+(\.\d+)?)? (can be a float or an integer)
+        // 3. Variable: [a-zA-Z](\_\d+)? (can be a single letter or a letter with an underscore and a number)
+        // There can be many variables on the same term, but only one number (At the beginning of the term)
+        // 
 
-//     fn get_truth_table_string(&self) -> String {
-//         "".to_string()
-//     }
+    }
 
-//     fn get_kmap_string(&self) -> String {
-//         "".to_string()
-//     }
 
-// }
+}

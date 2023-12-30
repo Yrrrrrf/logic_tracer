@@ -12,15 +12,7 @@ Logic Traces is a simple crate that reads a logical proposition and interprets i
 
 Makes use of regular expressions are used to validate the input and to tokenize the proposition.  
 Also implements the [Shunting Yard Algorithm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) (not yet) to build the AST.
-
-## Setup
-- Use `cargo build` to build the project
-- Use `cargo test` to run the tests
--To run the project, use the command:
-```bash
-cargo run  # run the project
-```
-
+s
 ## Examples
 
 Check the [examples](./examples/) direcotry to see how to use the crate.
