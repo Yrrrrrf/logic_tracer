@@ -35,7 +35,7 @@ use std::fmt;
 /// This trait is used to implement the `to_string` method for operator enums,
 /// allowing them to be easily converted to their string representation.
 // pub trait Operator: fmt::Debug + fmt::Display + OperatorFromChar {
-pub trait Operator: fmt::Debug + fmt::Display {
+pub trait Operator: fmt::Debug + fmt::Display + PartialEq {
     const NEGATOR: Self;
 
     fn to_string(&self) -> String;
@@ -92,6 +92,13 @@ macro_rules! define_operator_enum {
                     _ => None,
                 }
             }
+
+            pub fn to_char(&self) -> char {
+                match self {
+                    $( $enum_name::$variant => stringify!($variant).chars().next().unwrap(), )*
+                }
+            }
+
         }
         // Implementation of the Operator trait and Display trait
         impl_operator_traits!($enum_name, {$($variant => stringify!($variant)),*}, $negator);
@@ -118,6 +125,7 @@ define_operator_enum! {
     }, LogicOp::Not
 }
 
+
 // Enum representing various mathematical operators.
 //
 // This enum covers a range of common mathematical operations,
@@ -135,6 +143,7 @@ define_operator_enum! {
         Factorial => ['!'],  // 33 | U+0021
     }, MathOp::Subtract
 }
+
 
 /// Enum representing various relation operators.
 /// 

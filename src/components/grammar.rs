@@ -14,58 +14,46 @@ use crate::components::{
 
 
 #[derive(Clone, Debug, PartialEq)]
+pub enum TokenOrTerm<T> where T: Operator {
+    SingleToken(Token<T>),
+    Term(Term<T>),
+}
+
+
+#[derive(Clone, Debug, PartialEq)]
 pub struct Term<T> where T: Operator {
     pub tokens: Vec<Token<T>>,
 }
 
 impl<T> Term<T> where T: Operator {
-    pub fn from(tokens: Vec<Token<T>>) -> Term<T> {
-        Term { tokens }
+    pub fn from(tokens: Vec<Token<T>>) -> Self {
+        Self {tokens,}
     }
 
-    pub fn parse_term(src: &str) -> Result<Vec<Token<T>>, &'static str> {
-        let mut tokens = Vec::new();
-        let mut chars = src.chars().peekable();
-
-        // Parse Negator (if exists)
-        if let Some(&'!') = chars.peek() {
-            chars.next(); // Consume '!'
-            tokens.push(Token::Operator(T::NEGATOR));
-        }
-
-        // Parse Number (if exists)
-        while let Some(&c) = chars.peek() {
-            if c.is_digit(10) || c == '.' {
-                chars.next(); // Consume the digit or dot
-                tokens.push(Token::Number(c));
-            } else {
-                break;
-            }
-        }
-
-        // Parse Variable
-        if let Some(c) = chars.next() {
-            if c.is_alphabetic() {
-                tokens.push(Token::Variable(c));
-                if let Some('_') = chars.next() {
-                    tokens.push(Token::UnderScore());
-                    while let Some(&c) = chars.peek() {
-                        if c.is_digit(10) {
-                            chars.next(); // Consume the digit
-                            tokens.push(Token::Number(c));
-                        } else {
-                            break;
+    pub fn parse_from_tokens_vec(src_tokens: Vec<Token<T>>) -> Vec<TokenOrTerm<T>> {
+        let mut iter = src_tokens.into_iter().peekable();
+        let mut result_tokens = Vec::new();
+    
+        while let Some(token) = iter.next() {
+            let mut term_tokens = Vec::new();  // Collect tokens for a term
+            match &token {  // Start building a term if the token is a negator, number, or variable
+                Token::Operator(op) if *op == T::NEGATOR => term_tokens.push(token),
+                Token::Number(_) => term_tokens.push(token),
+                Token::Variable(_) => {  // Add the variable and continue adding to term if there's an underscore followed by numbers
+                    term_tokens.push(token);
+                    // Continue adding to term if there's an underscore followed by numbers
+                    if iter.peek() == Some(&Token::UnderScore()) {
+                        term_tokens.push(iter.next().unwrap()); // Consume the underscore
+                        while iter.peek().map_or(false, |t| matches!(t, Token::Number(_))) {
+                            term_tokens.push(iter.next().unwrap()); // Consume the number
                         }
                     }
+                    result_tokens.push(TokenOrTerm::Term(Term::from(term_tokens)));  // Add the collected term
                 }
-            } else {
-                return Err("Invalid token in term");
+                _ => result_tokens.push(TokenOrTerm::SingleToken(token)),
             }
         }
-
-        Ok(tokens)
+        result_tokens
     }
-
-
-
+    
 }

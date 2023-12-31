@@ -9,42 +9,102 @@ use crate::{
     LogicOp, 
     MathOp, 
     Token, 
+    Term,
 };
 
 
-pub fn check_pair_brackets<T>(tokens: &[Token<T>]) -> bool 
+/// Checks if the brackets in a given slice of tokens are correctly paired.
+///
+/// This function iterates through the slice of tokens and uses a stack to keep track
+/// of the open brackets. It checks for three conditions:
+/// 1. If the bracket types of the open and close brackets match.
+/// 2. If there is an unmatched closing bracket.
+/// 3. If there is an unmatched opening bracket.
+///
+/// # Arguments
+/// - `tokens` - A slice of [`Token<T>`] where `T` must implement the `Operator` trait.
+///
+/// # Returns
+/// - [`Ok(())`] if all brackets are correctly paired.
+/// - [`Err(String)`] if there is a mismatch or an unmatched bracket, with a message indicating the issue.
+///
+/// # Type Parameters
+/// - `T`: The type parameter constrained by the `Operator` trait, used in [`Token<T>`].
+///
+/// # Errors
+/// This function returns an error if:
+/// - There is a mismatch in the type of brackets.
+/// - An opening bracket is not closed.
+/// - A closing bracket does not have a matching opening bracket.
+fn check_pair_brackets<T>(tokens: &[Token<T>]) -> Result<(), String>
 where
-    T: Operator, // Ensure T is an Operator, which is a requirement for Token<T>
+    T: Operator,
 {
     let mut stack = Vec::new();
 
-    tokens.iter().for_each(|token| match token {
-        Token::OpenBracket(bracket_type) => stack.push(*bracket_type),
-        Token::CloseBracket(bracket_type) => {
-            match (stack.pop(), bracket_type) {
-                (Some(opening), BracketType::Parenthesis) if opening == BracketType::Parenthesis => (),
-                (Some(opening), BracketType::Square) if opening == BracketType::Square => (),
-                (Some(opening), BracketType::Curly) if opening == BracketType::Curly => (),
-                _ => return (),
-            }
+    for (i, token) in tokens.iter().enumerate() {
+        match token {
+            Token::OpenBracket(bracket_type) => stack.push((bracket_type, i)),
+            Token::CloseBracket(bracket_type) => {
+                match stack.pop() {
+                    Some((open_bracket_type, open_index)) => {
+                        if open_bracket_type != bracket_type {
+                            Err(format!("Mismatched brackets at positions {} and {}", open_index, i))?
+                        }
+                    },
+                    None => {Err(format!("Unmatched closing bracket at position {}", i))?}
+                }
+            },
+            _ => (),  // Ignore non-bracket tokens
         }
-        _ => (),
-    });
-    stack.is_empty()
+    }
+    match stack.pop() {
+        Some((_, open_index)) => Err(format!("Unmatched opening bracket at position {}", open_index))?,
+        None => Ok(()),
+    }
 }
 
 
+/// Checks if the provided token slice contains any variable or number tokens.
+///
+/// This function iterates through the slice of tokens and verifies if there are any
+/// tokens that are either variables or numbers. It's useful for validating the presence
+/// of these types of tokens in scenarios where their existence is necessary for further processing.
+///
+/// # Arguments
+/// - `tokens` - A slice of [`Token<T>`] where `T` must implement the `Operator` trait.
+///
+/// # Returns
+/// - [`Ok(())`] if the slice contains at least one variable or number token.
+/// - [`Err(String)`] if no variable or number tokens are found.
+///
+/// # Type Parameters
+/// - `T`: The type parameter constrained by the `Operator` trait, used in [`Token<T>`].
+///
+/// # Errors
+/// This function returns an error if no variable or number tokens are present in the slice.
+fn check_var_and_num<T>(tokens: &[Token<T>]) -> Result<(), String>
+where
+    T: Operator,
+{
+    match tokens.iter().any(|token| matches!(token, Token::Variable(_) | Token::Number(_))) {
+        true => Ok(()),
+        false => Err("No variables or numbers found".to_string())?,
+    }
+}
 
-// ? DEFINE THE PROPOSITONS TRAIT =============================================
+
+// ? PROPOSITONS TRAITS =============================================
 
 pub trait PropositionTrait {
-    fn new(src: impl Into<String>) -> Result<Self, &'static str> where Self: Sized;
+    fn new(src: impl Into<String>) -> Result<Self, String> where Self: Sized;
     // fn get_function(&self) -> String;
     // todo: add this methods to the trait
     // fn get_postfix_string(&self) -> String;
     // fn get_prefix_string(&self) -> String;
     // fn get_infix_string(&self) -> String;
 }
+
 
 // Inherit from the base trait and add specific methods
 pub trait LogicPTrait: PropositionTrait {
@@ -65,42 +125,30 @@ pub trait MathPTrait: PropositionTrait {
     // Math-specific methods
 }
 
-// ? PROPOSITIONS ========================================================
+// ? PROPOSITIONS IMPL ========================================================
 
 macro_rules! impl_proposition {
     ($prop_type:ident, $op_type:ty) => {
-        // Define the struct
         #[derive(Debug, Clone, PartialEq)]
         pub struct $prop_type {
             pub token_table: Vec<Token<$op_type>>,
             pub function: String,
-            variables: Vec<char>,
+            variables: Vec<Term<$op_type>>,
         }
 
         // Implement the PropositionTrait
         impl PropositionTrait for $prop_type {
-            fn new(src: impl Into<String>) -> Result<Self, &'static str> {
-                let mut has_variable = false;
-                let mut has_number = false;
+            fn new(src: impl Into<String>) -> Result<Self, String> {
                 let mut token_table = Vec::new();
 
-                for c in src.into().chars().filter(|c| !c.is_whitespace() && !c.is_ascii_control()) {
+                for (i, c) in src.into().chars().enumerate().filter(|&(_, c)| !c.is_whitespace() && !c.is_ascii_control()) {
                     let token = Token::<$op_type>::from(c);
-                    if matches!(token, Token::Invalid(_)) {
-                        println!("Invalid token: '{c}' at position {}\n", token_table.len());
-                        return Err("The proposition contains invalid tokens");
-                    }
-                    if matches!(token, Token::Variable(_)) {has_variable = true}
-                    if matches!(token, Token::Number(_)) {has_number = true;}
+                    if let Token::Invalid(_) = token {Err(format!("Invalid token: '{c}' at position {i}"))?}
                     token_table.push(token);
                 }
 
-                if !check_pair_brackets(&token_table) {
-                    return Err("The brackets are not paired");
-                }
-                if !(has_variable || has_number) {
-                    return Err("The proposition must contain at least one variable/number");
-                }
+                check_pair_brackets(&token_table)?; 
+                check_var_and_num(&token_table)?;
 
                 Ok(Self {
                     token_table,
@@ -128,6 +176,5 @@ impl LogicProposition {
         // 
 
     }
-
 
 }

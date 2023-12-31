@@ -1,13 +1,17 @@
 //! The grammar defines the sequence of tokens that are valid for the language.
-//! 
-//! It includes BracketState to pair the opening and closing brackets.
-//! 
-//! Then Grammar Token is the main function of the Parser.
+//!
+//! This file contains the core components for tokenizing expressions, including
+//! the definition of different token types and bracket types. It uses macros to
+//! efficiently implement functionality across similar types.
+
 use dev_utils::console::format::set_fg;
 use crate::components::operators::*;
 
-
-/// The LogicToken Enum describes all the possible tokens that can be recognized by the 'Lexer'.
+/// Represents the different types of tokens that can be recognized by the Lexer.
+///
+/// Each token type is associated with a specific character or set of characters
+/// in the parsed text. These tokens are fundamental in the parsing and interpretation
+/// of expressions in the language.
 #[derive(Clone, Debug, PartialEq)]
 pub enum Token<T> where T: Operator {
     Variable(char),  // Any letter from A to Z (uppercase or lowercase)
@@ -20,73 +24,88 @@ pub enum Token<T> where T: Operator {
     Invalid(char),  //* Any other char that is not recognized by the 'Lexer'
 }
 
-impl<T> Token<T> where T: Operator {
-    pub fn from_char(c: char, op_converter: impl Fn(char) -> Option<T>) -> Token<T> {
-        Self::from_bracket(c).unwrap_or_else(|| match c {
-            'A'..='Z' | 'a'..='z' => Token::Variable(c),
-            '0'..='9' => Token::Number(c),
-            '_' => Token::UnderScore(),
-            '.' => Token::Dot(),
-            _ => match op_converter(c) {
-                Some(op) => Token::Operator(op),
-                None => Token::Invalid(c),
-            },
-        })
-    }
 
+// Macro implementation details...
 
-    pub fn from_bracket(c: char) -> Option<Token<T>> {
-        match c {
-            '(' => Some(Token::OpenBracket(BracketType::Parenthesis)),
-            ')' => Some(Token::CloseBracket(BracketType::Parenthesis)),
-            '[' => Some(Token::OpenBracket(BracketType::Square)),
-            ']' => Some(Token::CloseBracket(BracketType::Square)),
-            '{' => Some(Token::OpenBracket(BracketType::Curly)),
-            '}' => Some(Token::CloseBracket(BracketType::Curly)),
-            _ => None,
+/// The `impl_token` macro simplifies the implementation of common methods for
+/// different token types.
+///
+/// This macro provides a generic way to implement methods like `from_char`,
+/// `from_bracket`, and `to_char`, reducing the redundancy in the code.
+macro_rules! impl_token {
+    ($token_type:ident, $op_type:ty) => {
+        impl $token_type<$op_type> {
+            pub fn from(c: char) -> Self {
+                // Moved logic from `from_char` here
+                Self::from_bracket(c).unwrap_or_else(|| match c {
+                    'A'..='Z' | 'a'..='z' => $token_type::Variable(c),
+                    '0'..='9' => $token_type::Number(c),
+                    '_' => $token_type::UnderScore(),
+                    '.' => $token_type::Dot(),
+                    _ => match <$op_type>::from(c) {
+                        Some(op) => $token_type::Operator(op),
+                        None => $token_type::Invalid(c),
+                    },
+                })
+            }
+
+            // Assuming `from_bracket` is part of the implementation
+            fn from_bracket(c: char) -> Option<Self> {
+                // Logic for brackets (remains the same as your original)
+                match c {
+                    '(' => Some($token_type::OpenBracket(BracketType::Parenthesis)),
+                    ')' => Some($token_type::CloseBracket(BracketType::Parenthesis)),
+                    '[' => Some($token_type::OpenBracket(BracketType::Square)),
+                    ']' => Some($token_type::CloseBracket(BracketType::Square)),
+                    '{' => Some($token_type::OpenBracket(BracketType::Curly)),
+                    '}' => Some($token_type::CloseBracket(BracketType::Curly)),
+                    _ => None,
+                }
+            }
+
+            fn to_char(&self) -> char {
+                match self {
+                    $token_type::Variable(c) | $token_type::Number(c) | $token_type::Invalid(c) => *c,
+                    $token_type::CloseBracket(bracket_type) => bracket_type.to_char().1,
+                    $token_type::OpenBracket(bracket_type) => bracket_type.to_char().0,
+                    $token_type::Operator(op) => op.to_char(),
+                    $token_type::UnderScore() => '_',
+                    $token_type::Dot() => '.',
+                }
+            }
         }
-    }
-
-    // pub fn to_char(&self) -> char {
-    //     match self {
-    //         Token::Variable(c) => *c,
-    //         Token::Number(c) => *c,
-    //         Token::UnderScore() => '_',
-    //         Token::Dot() => '.',
-    //         Token::Operator(op) => op.to_string().chars().next().unwrap(),
-    //         Token::OpenBracket(bracket_type) => bracket_type.to_char(),
-    //         Token::CloseBracket(bracket_type) => bracket_type.to_char(),
-    //         Token::Invalid(c) => *c,
-    //     }
-    // }
-
-    // This is a helper function, to it should probably be private
-    // Also it should be moved to the 'Lexer' module
-    pub fn is_invalid(&self) -> bool {
-        matches!(self, Token::Invalid(_))
-    }
+    };
 }
 
-impl Token<LogicOp> {
-    pub fn from(c: char) -> Self {
-        Token::<LogicOp>::from_char(c, LogicOp::from)
-    }
+impl_token!(Token, LogicOp);
+impl_token!(Token, MathOp);
+
+
+
+/// Represents the different types of brackets recognized by the Lexer.
+///
+/// This enum, along with the associated `bracket_type_and_to_char` macro,
+/// provides a structured way to handle various bracket types, such as parentheses,
+/// square brackets, and curly brackets.
+macro_rules! bracket_type_and_to_char {
+    ($($bracket_type:ident => ($open_char:expr, $close_char:expr)),*) => {
+        #[derive(Clone, Debug, PartialEq, Copy)]
+        pub enum BracketType {
+            $($bracket_type),*,
+        }
+
+        impl BracketType {
+            pub fn to_char(&self) -> (char, char) {
+                match self {
+                    $(BracketType::$bracket_type => ($open_char, $close_char),)*
+                }
+            }
+        }
+    };
 }
 
-impl Token<MathOp> {
-    pub fn from(c: char) -> Self {
-        Token::<MathOp>::from_char(c, MathOp::from)
-    }
-}
-
-
-/// Represents types of brackets.
-#[derive(Clone, Debug, PartialEq, Copy)]
-pub enum BracketType {
-    Parenthesis,  // ()
-    Square,       // []
-    Curly,        // {}
-    // This shouldn't be used because
-    // It can be confused with the less than and greater than operators
-    // Angle,        // <> 
+bracket_type_and_to_char! {
+    Parenthesis => ('(', ')'),
+    Square => ('[', ']'),
+    Curly => ('{', '}')
 }
