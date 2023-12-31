@@ -14,24 +14,28 @@ use logic_tracer::{
     LogicOp,
     Operator,
     Term,
+    BracketType,
 };
 
 
 fn main() {
-    print_app_data(file!());    
-    RLog::init_logger(LevelFilter::Trace);
+    // print_app_data(file!());    
+    // RLog::init_logger(LevelFilter::Trace);
 
-    let my_proposition = LogicProposition::new("}");
     // let my_proposition = LogicProposition::new("{[AB + C_2!D_3 + E_4D_5D_2]}");
 
-    println!("{:#?}", my_proposition)
+    // todo: fix this propositions
+    // let my_proposition = LogicProposition::new("++a");
+    // let my_proposition = LogicProposition::new("(b_)3+a+v+!a");
+    
+    // ? testing proposition
+    let my_proposition = LogicProposition::new("(b_3+a+v+!a");
+    // let my_proposition = LogicProposition::new("++a");
+    
+    
+    // println!("{:#?}", my_proposition);
+
     // let test_term = Term::<LogicOp>::parse_from_tokens_vec(
     //     my_proposition.unwrap().token_table.clone());
-
     // println!("{:#?}", test_term)
-
-
-
-
-
 }

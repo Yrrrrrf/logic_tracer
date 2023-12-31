@@ -9,7 +9,8 @@ use crate::{
     LogicOp, 
     MathOp, 
     Token, 
-    Term,
+    Term, TokenOrTerm,
+    // TokenOrTerm,
 };
 
 
@@ -131,8 +132,8 @@ macro_rules! impl_proposition {
     ($prop_type:ident, $op_type:ty) => {
         #[derive(Debug, Clone, PartialEq)]
         pub struct $prop_type {
-            pub token_table: Vec<Token<$op_type>>,
             pub function: String,
+            token_table: Vec<Token<$op_type>>,
             variables: Vec<Term<$op_type>>,
         }
 
@@ -150,6 +151,10 @@ macro_rules! impl_proposition {
                 check_pair_brackets(&token_table)?; 
                 check_var_and_num(&token_table)?;
 
+                let t_1 = Term::<$op_type>::parse_from_tokens_vec(token_table.clone());
+                let t_2 = Term::<$op_type>::parse_proposition(&t_1);
+                println!("{:#?}", t_2);
+
                 Ok(Self {
                     token_table,
                     function: "".to_string(),
@@ -163,18 +168,52 @@ macro_rules! impl_proposition {
 impl_proposition!(LogicProposition, LogicOp);
 impl_proposition!(MathProposition, MathOp);
 
-impl LogicProposition {
-    /// Syntactic Analysis
-    pub fn parse_proposition() {
-        // This regex represents a possible Term Negator+(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?
 
-        // Regex explanation:
-        // 1. Term Negator: !?
-        // 2. Number: (\d+(\.\d+)?)? (can be a float or an integer)
-        // 3. Variable: [a-zA-Z](\_\d+)? (can be a single letter or a letter with an underscore and a number)
-        // There can be many variables on the same term, but only one number (At the beginning of the term)
-        // 
+impl<T> Term<T> where T: Operator {
+    pub fn parse_proposition(proposition: &[TokenOrTerm<T>]) -> Result<bool, String> 
+    where
+        T: Operator,
+    {
+        if proposition.is_empty() {
+            return Err("Empty proposition".to_string());
+        }
 
+        let mut previous_token: Option<&TokenOrTerm<T>> = None;
+
+        for (i, token_or_term) in proposition.iter().enumerate() {
+            match token_or_term {
+                TokenOrTerm::SingleToken(token) => {
+                    // if i == 0 && !matches!(token, Token::OpenBracket(_) | Token::Operator(op) if op == &T::NEGATOR) {
+                    if i == 0 && !matches!(token, Token::OpenBracket(_)) {
+                        return Err("Invalid start of proposition".to_string());
+                    }
+
+                    if let Token::CloseBracket(_) = token {
+                        if i + 1 < proposition.len() {
+                            if let TokenOrTerm::SingleToken(next_token) = &proposition[i + 1] {
+                                if !matches!(next_token, Token::OpenBracket(_) | Token::Operator(_)) {
+                                    return Err(format!("Invalid token following a close bracket at position {}", i));
+                                }
+                            }
+                        }
+                    }
+
+                    if let Token::Operator(_) = token {
+                        if let Some(TokenOrTerm::SingleToken(prev_token)) = previous_token {
+                            if matches!(prev_token, Token::Operator(op) if *op != T::NEGATOR) {
+                                return Err(format!("Invalid sequence of operators at position {}", i));
+                            }
+                        }
+                    }
+                },
+                TokenOrTerm::Term(_) => {
+                    if i == 0 { continue; }
+                },
+            }
+            previous_token = Some(token_or_term);
+        }
+
+        Ok(true)
     }
-
 }
+
