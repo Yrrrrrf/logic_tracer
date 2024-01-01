@@ -49,7 +49,7 @@ macro_rules! impl_token {
             /// Returns a new token of the corresponding type, or `Token::Invalid` if
             /// the character does not match any token type.
             pub fn from(c: char) -> Self {
-                Self::from_bracket_char(c).unwrap_or_else(|| 
+                BracketType::from_char(c).unwrap_or_else(|| 
                     match c {
                     'A'..='Z' | 'a'..='z' => $token_type::Variable(c),
                     '0'..='9' => $token_type::Number(c),
@@ -60,27 +60,6 @@ macro_rules! impl_token {
                         None => $token_type::Invalid(c),
                     },
                 })
-            }
-
-            /// Helper method to create a bracket token from a character.
-            ///
-            /// This method checks if the given character is a recognized opening or closing
-            /// bracket character and returns the corresponding `Token::OpenBracket` or
-            /// `Token::CloseBracket` variant.
-            ///
-            /// # Arguments
-            /// - `c` - The character to check for bracket type.
-            ///
-            /// # Returns
-            /// Returns `Some(Token::OpenBracket)` or `Some(Token::CloseBracket)` if the character
-            /// is a recognized bracket, otherwise returns `None`.
-            fn from_bracket_char(c: char) -> Option<Self> {
-                match c {
-                    '(' | '[' | '{' => Some(Token::OpenBracket(BracketType::from_char(c).unwrap())),
-                    ')' | ']' | '}' => Some(Token::CloseBracket(BracketType::from_char(c).unwrap())),
-                    _ => None,
-                }
-
             }
 
             /// Converts the token to its character representation.
@@ -152,10 +131,10 @@ macro_rules! bracket_type_and_to_char {
             /// # Returns
             /// Returns `Some(BracketType)` if the character matches a known bracket type,
             /// otherwise returns `None`.
-            pub fn from_char(c: char) -> Option<Self> {
+            pub fn from_char<T: Operator>(c: char) -> Option<Token<T>> {
                 match c {
-                    $($open_char => Some(BracketType::$bracket_type),)*
-                    $($close_char => Some(BracketType::$bracket_type),)*
+                    $($open_char => Some(Token::OpenBracket(BracketType::$bracket_type)),)*
+                    $($close_char => Some(Token::CloseBracket(BracketType::$bracket_type)),)*
                     _ => None,
                 }
             }

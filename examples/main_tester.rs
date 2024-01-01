@@ -24,16 +24,16 @@ fn main() {
 
     // let my_proposition = LogicProposition::new("{[AB + C_2!D_3 + E_4D_5D_2]}");
 
-    // todo: fix this propositions
-    // let my_proposition = LogicProposition::new("++a");
+    // todo: Add these to the lib tests
+    // let my_proposition = LogicProposition::new("!a");
     // let my_proposition = LogicProposition::new("(b_)3+a+v+!a");
+    // let my_proposition = LogicProposition::new("+b_2+a+v+!a");
     
     // ? testing proposition
-    let my_proposition = LogicProposition::new("(b_3+a+v+!a");
-    // let my_proposition = LogicProposition::new("++a");
+    let my_proposition = LogicProposition::new("a_+b+!(cd)");
     
     
-    // println!("{:#?}", my_proposition);
+    println!("{:#?}", my_proposition);
 
     // let test_term = Term::<LogicOp>::parse_from_tokens_vec(
     //     my_proposition.unwrap().token_table.clone());

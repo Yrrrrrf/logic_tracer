@@ -35,7 +35,7 @@ use std::fmt;
 /// This trait is used to implement the `to_string` method for operator enums,
 /// allowing them to be easily converted to their string representation.
 // pub trait Operator: fmt::Debug + fmt::Display + OperatorFromChar {
-pub trait Operator: fmt::Debug + fmt::Display + PartialEq {
+pub trait Operator: fmt::Debug + fmt::Display + PartialEq + Clone {
     const NEGATOR: Self;
 
     fn to_string(&self) -> String;
