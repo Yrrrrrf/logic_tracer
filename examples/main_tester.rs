@@ -19,23 +19,45 @@ use logic_tracer::{
 
 
 fn main() {
-    // print_app_data(file!());    
+    print_app_data(file!());    
+    RLog::init_logger(LevelFilter::Info);
+    // RLog::init_logger(LevelFilter::Debug);
     // RLog::init_logger(LevelFilter::Trace);
 
-    // let my_proposition = LogicProposition::new("{[AB + C_2!D_3 + E_4D_5D_2]}");
-
+    // the log important levels are:
+    // - Error (print errors)
+    // - Warn  (print errors and warnings)
+    // - Info  (print errors, warnings and info)
+    // - Debug (print errors, warnings, info and debug)
+    // - Trace (print everything)
+    
     // todo: Add these to the lib tests
-    // let my_proposition = LogicProposition::new("!a");
-    // let my_proposition = LogicProposition::new("(b_)3+a+v+!a");
-    // let my_proposition = LogicProposition::new("+b_2+a+v+!a");
-    
-    // ? testing proposition
-    let my_proposition = LogicProposition::new("a_+b+!(cd)");
-    
-    
-    println!("{:#?}", my_proposition);
+    let test_props = vec![
+        "{[AB + C_2!D_3 + E_4D_5D_2]}",
+        "!a",
+        "(b_)3+a+v+!a",
+        "b_)3+a+v+!a",
+        "+b_2+a+v+!a",
+        "28a_3+b+!(cd)",
+        "!A+",
+        "!A(B+C)",
+        "{{B}}",
+        "![A(B(&(!C)))]",
+        "![A(B(&(!C)))]",
+        "A+1A",
+        "1",
+        "1+A",
+        "2a_3+3b_3",
+        "2.2a_3*3b_3",
+    ];
 
-    // let test_term = Term::<LogicOp>::parse_from_tokens_vec(
-    //     my_proposition.unwrap().token_table.clone());
-    // println!("{:#?}", test_term)
+    // ? Test proposition
+    let my_proposition = LogicProposition::new("2a_3*3b_3");
+    
+    println!("{:?}", my_proposition);
+    // println!("{:#?}", my_proposition);
+    
+    // let test_Compound = Compound::<LogicOp>::parse_from_tokens_vec(
+        //     my_proposition.unwrap().token_table.clone());
+    // println!("{:#?}", test_Compound)
 }

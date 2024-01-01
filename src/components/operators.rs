@@ -7,7 +7,7 @@ use std::fmt;
 
 // /// Enum representing the associativity of an operator.
 // /// 
-// /// The associativity determines the order in which operators are evaluated.
+// /// The associativity deCompoundines the order in which operators are evaluated.
 // /// 
 // /// For example, the expression `1 + 2 + 3` can be evaluated in two ways:
 // /// 

@@ -27,14 +27,14 @@ cargo run --example <example name>
     - [x] Variables (only letters)
     - [x] Logical Operators (and, or, not, implies, iff)
     - [x] Mathematical Operators (add, sub, mul, div, pow)
-    - [x] Terms (only numbers, variables, variable with subindex)
+    - [x] Compounds (only numbers, variables, variable with subindex)
 - [ ] Parse the proposition (make sure it is valid)
 - [ ] Build the AST (Shunting Yard Algorithm) (use postfix notation)
 - [ ] Add notation to the AST (prefix, infix, postfix)
 - [ ] **Solve proposition** (evaluate the AST)
 - [ ] Add good looking output for truth table, ast, function, etc.
 - [ ] Reduce a proposition to its simplest form (boolean algebra) 
-    - [ ] Reagrupate terms (boolean algebra)
+    - [ ] Reagrupate Compounds (boolean algebra)
     - [ ] Apply De Morgan's laws (boolean algebra)
     - [ ] Apply distributive, associative and commutative laws (boolean algebra)
 - [ ] Add more examples
@@ -52,4 +52,4 @@ cargo run --example <example name>
 
 ## License
 
-This project is licensed under the terms of the [MIT license](./LICENSE)
+This project is licensed under the Compounds of the [MIT license](./LICENSE)

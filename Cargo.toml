@@ -1,6 +1,6 @@
 [package]
 name = "logic_tracer"
-version = "0.0.7"
+version = "0.0.8"
 edition = "2021"
 repository = "https://github.com/Yrrrrrf/logic_tracer"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
@@ -31,6 +31,3 @@ opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
 log = "0.4.*"  # Logging (https://docs.rs/log/latest/log/)
 dev_utils = "0.0.*"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
 # dev_utils = { path = "./../dev_utils" }
-
-# ^ These is a temporal dependency, it will be removed in the future
-regex = "1.*"  # Regular expressions (https://docs.rs/regex/latest/regex/)

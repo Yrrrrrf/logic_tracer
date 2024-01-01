@@ -4,7 +4,6 @@
 //! the definition of different token types and bracket types. It uses macros to
 //! efficiently implement functionality across similar types.
 
-use dev_utils::console::format::set_fg;
 use crate::components::operators::*;
 
 // Represents the different types of tokens that can be recognized by the Lexer.
@@ -16,7 +15,7 @@ use crate::components::operators::*;
 pub enum Token<T> where T: Operator {
     Variable(char),  // Any letter from A to Z (uppercase or lowercase)
     Number(char),  // Represent a sequence of digits in any base that count as one number
-    UnderScore(),  // Used to add a "Subterm" to a term (e.g. A_1, A_2, A_3, ...)
+    UnderScore(),  // Used to add a "SubCompound" to a Compound (e.g. A_1, A_2, A_3, ...)
     Dot(),  // Separate the integer part from the decimal part of a number
     Operator(T),  // Any type that implements the ['Operator'] trait
     OpenBracket(BracketType),  // Any type of bracket that opens another level of nesting
@@ -24,8 +23,6 @@ pub enum Token<T> where T: Operator {
     Invalid(char),  //* Any other char that is not recognized by the 'Lexer'
 }
 
-
-// Macro implementation details...
 
 /// The `impl_token` macro simplifies the implementation of common methods for
 /// different token types.
@@ -108,12 +105,6 @@ macro_rules! bracket_type_and_to_char {
         /// The enum variants are defined using the `bracket_type_and_to_char` macro, which
         /// also implements methods for creating a `BracketType` from a character and retrieving
         /// the character pair for a given `BracketType`.
-        ///
-        /// # Variants
-        /// - `Parenthesis`: Represents `(` and `)` characters.
-        /// - `Square`: Represents `[` and `]` characters.
-        /// - `Curly`: Represents `{` and `}` characters.
-        /// - Additional variants can be added as needed for other bracket types.
         #[derive(Clone, Debug, PartialEq, Copy)]
         pub enum BracketType {
             $($bracket_type),*,

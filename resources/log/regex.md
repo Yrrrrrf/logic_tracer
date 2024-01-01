@@ -1,8 +1,8 @@
 # Regex Explanation
 
-## Terms matching
+## Compounds matching
 
-This regular expression **handles all possible TERMS in the expression**. It consists of several parts, each designed to capture a specific element of the expression.
+This regular expression **handles all possible CompoundS in the expression**. It consists of several parts, each designed to capture a specific element of the expression.
 ```rust
 "(!|-)?(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?"
 ```

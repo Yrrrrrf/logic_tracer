@@ -3,13 +3,10 @@
 //! Import necessary modules and dependencies if needed.
 //! The `Propositions` enum represents different logical propositions.
 use crate::{
-    BracketType, 
-    Operator,
     LogicOp, 
     MathOp, 
     Token, 
     Term,
-    TokenOrTerm,
 };
 
 
@@ -63,7 +60,11 @@ macro_rules! impl_proposition {
                 Term::<$op_type>::check_pair_brackets(&token_table)?; 
                 Term::<$op_type>::check_var_and_num(&token_table)?;
                 let function_vec = Term::<$op_type>::group_tokens_into_terms(token_table.clone())?;
-                
+                let parsed_vec = Term::<$op_type>::validate_proposition_structure(&function_vec)?;
+
+                // ^ for debugging
+                log::debug!("Token table: {:#?}", function_vec);
+                log::debug!("Parsed vector: {:#?}", parsed_vec);
 
                 Ok(Self {
                     token_table,
