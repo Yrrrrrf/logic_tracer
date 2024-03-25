@@ -30,8 +30,8 @@ pub enum Token<T> where T: Operator {
 /// This macro provides a generic way to implement methods like `from_char`,
 /// `from_bracket`, and `to_char`, reducing the redundancy in the code.
 macro_rules! impl_token {
-    ($token_type:ident, $op_type:ty) => {
-        impl $token_type<$op_type> {
+    ($op_type:ty) => {
+        impl Token<$op_type> {
             /// Creates a new token from a character.
             ///
             /// This method attempts to create a token corresponding to the given character.
@@ -48,16 +48,16 @@ macro_rules! impl_token {
             pub fn from(c: char) -> Self {
                 BracketType::from_char(c).unwrap_or_else(|| 
                     match c {
-                    'A'..='Z' | 'a'..='z' => $token_type::Variable(c),
-                    '0'..='9' => $token_type::Number(c),
-                    '_' => $token_type::UnderScore(),
-                    '.' => $token_type::Dot(),
+                    'A'..='Z' | 'a'..='z' => Token::Variable(c),
+                    '0'..='9' => Token::Number(c),
+                    '_' => Token::UnderScore(),
+                    '.' => Token::Dot(),
                     _ => match <$op_type>::from(c) {
-                        Some(op) => $token_type::Operator(op),
-                        None => $token_type::Invalid(c),
+                        Some(op) => Token::Operator(op),
+                        None => Token::Invalid(c),
                     },
-                })
-            }
+                }
+            )}
 
             /// Converts the token to its character representation.
             ///
@@ -68,20 +68,22 @@ macro_rules! impl_token {
             /// Returns the character representation of the token.
             fn to_char(&self) -> char {
                 match self {
-                    $token_type::Variable(c) | $token_type::Number(c) | $token_type::Invalid(c) => *c,
-                    $token_type::CloseBracket(bracket_type) => bracket_type.to_char().1,
-                    $token_type::OpenBracket(bracket_type) => bracket_type.to_char().0,
-                    $token_type::Operator(op) => op.to_char(),
-                    $token_type::UnderScore() => '_',
-                    $token_type::Dot() => '.',
+                    Token::Variable(c) | Token::Number(c) | Token::Invalid(c) => *c,
+                    // ^ This two lines below fix the 'return tuple' issue on the 'BracketType' enum
+                    // ^ Just to return the actual char, not the tuple
+                    Token::OpenBracket(bracket_type) => bracket_type.to_char().0,
+                    Token::CloseBracket(bracket_type) => bracket_type.to_char().1,
+                    Token::Operator(op) => op.to_char(),
+                    Token::UnderScore() => '_',
+                    Token::Dot() => '.',
                 }
             }
         }
     };
 }
 
-impl_token!(Token, LogicOp);
-impl_token!(Token, MathOp);
+impl_token!(LogicOp);
+impl_token!(MathOp);
 
 
 /// Represents the different types of brackets recognized by the Lexer.
@@ -138,6 +140,7 @@ macro_rules! bracket_type_and_to_char {
             /// Returns a tuple containing the opening and closing characters for the bracket type.
             pub fn to_char(&self) -> (char, char) {
                 match self {
+                    // todo: Return only the actual char, not the tuple
                     $(BracketType::$bracket_type => ($open_char, $close_char),)*
                 }
             }
@@ -149,4 +152,5 @@ bracket_type_and_to_char! {
     Parenthesis => ('(', ')'),
     Square => ('[', ']'),
     Curly => ('{', '}')
+    // Other => ('/', '\\')
 }

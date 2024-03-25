@@ -7,6 +7,7 @@ This regular expression **handles all possible CompoundS in the expression**. It
 "(!|-)?(\d+(\.\d+)?)?[a-zA-Z](\_\d+)?"
 ```
 
+* equals to rep
 ### Components
 
 - Negator: `(!|-)?`

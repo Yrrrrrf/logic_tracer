@@ -116,12 +116,19 @@ define_operator_enum! {
         And => ['&', '*', '⋅', '∧'],  // 38 | U+0026 _ 42 | U+002A _ 8901 | U+22C5 _ 8743 | U+2227
         Or => ['+', '|'],  // 43 | U+002B _ 124 | U+007C
         Not => ['!', '¬', '\''],  // 33 | U+0021 _ 172 | U+00AC _ 8216 | U+2018
-        XOr => ['^', '⊻'],  // 94 | U+005E _ 8853 | U+22BB
+
+        // XAnd => ['⋈'],  // 8904 | U+22C8  // ^ this really isn't a logic operator, but it's close enough
+        XOr => ['^', '⊻', '⨁'],  // 94 | U+005E _ 8853 | U+22BB _ 10753 | U+2A01  // ^ another way to represent XOR  
         XNOr => ['⊙'],  // 8855 | U+22BD
         NAnd => ['↑'],  // 8593 | U+2191
         NOr => ['↓'],  // 8595 | U+2193
-        Implies => ['→'],  // 8594 | U+2192
-        IFf => ['↔'],  // 8596 | U+2194
+
+
+        // Implies is not the same as Iff, but it's close (it's a one-way implication)
+        // Implies => ['→'],  // 8594 | U+2192
+        // * If is most like a bi-conditional, but it's not the same
+        // Iff => ['⇔'],  // 8660 | U+21D4
+        // IFf => ['↔'],  // 8596 | U+2194
     }, LogicOp::Not
 }
 

@@ -1,9 +1,11 @@
 //! This module provides a regex matching functionality.
 
-use dev_utils::{
-    print_app_data,
-    log::rlog::RLog,
-};
+// use dev_utils::log::rlog::RLog;
+// use dev_utils::{
+//     print_app_data,
+//     log::rlog::RLog,
+// };
+
 use logic_tracer::{
     LogicOp, 
     MathOp,
@@ -12,8 +14,8 @@ use logic_tracer::{
 
 
 fn main() {
-    print_app_data(file!());
-    RLog::init_logger(log::LevelFilter::Debug);
+    // print_app_data(file!());
+    // RLog::init_logger(log::LevelFilter::Debug);
 
     let src_vec = vec![
         // Some math expressions

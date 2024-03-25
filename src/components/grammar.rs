@@ -70,7 +70,7 @@ impl<T> Term<T> where T: Operator {
         Self {tokens,}
     }
 
-
+    // todo: Add examples
     /// Checks if the brackets in a given slice of tokens are correctly paired.
     ///
     /// This function iterates through the slice of tokens and uses a stack to keep track
@@ -94,7 +94,6 @@ impl<T> Term<T> where T: Operator {
     /// - There is a mismatch in the type of brackets.
     /// - An opening bracket is not closed.
     /// - A closing bracket does not have a matching opening bracket.
-    // todo: Add examples
     pub fn check_pair_brackets(tokens: &[Token<T>]) -> Result<(), String> {
         let mut stack = Vec::new();
 
@@ -120,7 +119,7 @@ impl<T> Term<T> where T: Operator {
         }
     }
 
-
+    // todo: Add examples
     /// Checks if the provided token slice contains any variable or number tokens.
     ///
     /// This function iterates through the slice of tokens and verifies if there are any
@@ -139,7 +138,6 @@ impl<T> Term<T> where T: Operator {
     ///
     /// # Errors
     /// This function returns an error if no variable or number tokens are present in the slice.
-    // todo: Add examples
     pub fn check_var_and_num(tokens: &[Token<T>]) -> Result<(), String> {
         match tokens.iter().any(|token| matches!(token, Token::Variable(_) | Token::Number(_))) {
             true => Ok(()),
@@ -147,7 +145,7 @@ impl<T> Term<T> where T: Operator {
         }
     }
 
-
+    // todo: Add examples
     /// Parses a vector of tokens into a vector of tokens or Compounds.
     ///
     /// This function processes a sequence of tokens and groups them into Compounds based on specific rules.
@@ -165,7 +163,6 @@ impl<T> Term<T> where T: Operator {
     /// - A Compound starts with a negator or a number, followed optionally by a variable.
     /// - If a variable is encountered, it checks for an underscore followed by numbers to form a subCompound.
     /// - The Compound ends before the next token that is not part of the Compound (like an operator or a different kind of token).
-    // todo: Add examples
     pub fn group_tokens_into_terms(src_tokens: Vec<Token<T>>) -> Result<Vec<TokenType<T>>, String> {
         let mut iter = src_tokens.into_iter().peekable();
         let mut result_tokens = Vec::new();
@@ -201,7 +198,7 @@ impl<T> Term<T> where T: Operator {
         // Do the 
     }
 
-
+    // todo: Add examples
     /// Parses a proposition and validates its structure according to specific rules.
     ///
     /// This function checks a sequence of tokens or Compounds to ensure they follow the defined syntactical rules
@@ -219,7 +216,6 @@ impl<T> Term<T> where T: Operator {
     /// - The first element must be an open bracket. Other starters (like a lone operator) are invalid.
     /// - A close bracket must be followed by either an open bracket or an operator.
     /// - Operators must not be immediately preceded by another operator, except for the negator.
-    // todo: Add examples
     pub fn validate_proposition_structure(proposition: &[TokenType<T>]) -> Result<bool, String> {
         let mut previous_token: Option<&TokenType<T>> = None;
 

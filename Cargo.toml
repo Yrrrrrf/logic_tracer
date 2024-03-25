@@ -8,13 +8,14 @@ authors = ["Yrrrrrf"]
 license = "MIT"
 readme = "README.md"
 keywords = ["logic", "proposition", "truth_table", "calculator"]
+categories = ["logic", "proposition", "truth_table", "calculator"]
 
 exclude = [  # Exclude these files from the package
     ".vscode*",  # editor config
     "resources/*",  # data files (csv, json, etc)
     "target/",  # build directory (compiled code)
     "Cargo.lock",  # lock file (dependency versions)
-    ]
+]
 
 # COMPILE OPTIMIZATION ------------------------------------------------------------------------
 # where 1 is the lowest and 3 is the highest level of optimization
@@ -22,12 +23,41 @@ exclude = [  # Exclude these files from the package
 [profile.dev]
 opt-level = 0  # no optimizations (fastest compile time, slowest runtime)
 
+[profile.dev.package."*"]
+opt-level = 3  # Optimize the dependencies at the highest level
+# Slower first build, but faster subsequent builds
+
 [profile.release]
 opt-level = 3  # full optimizations (slowest compile time, fastest runtime)
+lto = true  # link-time optimizations (slower compile time, faster runtime)
+# the link-time optimizations means that the compiler will optimize the code
+# across the whole program, not just the current crate
+
 
 # DEPENDENCIES --------------------------------------------------------------------------------
 
 [dependencies]
 log = "0.4.*"  # Logging (https://docs.rs/log/latest/log/)
 dev_utils = "0.0.*"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
-# dev_utils = { path = "./../dev_utils" }
+# dev_utils = { path = "./../dev_utils/dev_utils" }
+
+regex = { version = "1.*", optional = true }  # Regular expressions (https://docs.rs/regex/latest/regex/)
+
+[features]
+default = [
+    "full"
+]  # no features enabled by default
+
+regex_test = [
+    "regex",
+]  # enable the regex feature
+
+# Features are a way to enable or disable parts of your library
+combinational = []  # combinational logic stuff (gates, multiplexers, decoders, etc)
+sequential = []  # sequential logic stuff (flip-flops, registers, counters, etc)
+
+full = [
+    # "combinational",
+    # "sequential",
+    "regex_test",
+]  # all features enabled
