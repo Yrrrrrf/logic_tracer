@@ -42,12 +42,16 @@ cargo run --example <example name>
 - [ ] Improve documentation
 - [ ] Improve the import/export of the crate (to improve it's usability as a library)
 
+### Considerations
+- [ ] Add some parallel computation (to improve the performance)
+
 ### Future
 - [ ] Add comlex math iteration (sums, products, etc.) (to be able to solve more complex propositions)
     - [ ] Test a proposition with complex math iteration
 - [ ] Add combinational logic (multiplexers, decoders, etc.)
 - [ ] Add sequential logic (flip-flops, registers, etc.)
-
+- [ ] Add some geometric demonstration (to be able to solve geometric problems)
+    - \sum_{i=1}^{n} i = \frac{n(n+1)}{2} or smth like that
 ----
 
 ## License

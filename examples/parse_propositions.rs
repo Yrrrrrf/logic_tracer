@@ -6,11 +6,7 @@
 //     log::rlog::RLog,
 // };
 
-use logic_tracer::{
-    LogicOp, 
-    MathOp,
-    Token, 
-};
+use logic_tracer::*;
 
 
 fn main() {
@@ -37,12 +33,12 @@ fn main() {
 
         println!("\nSource Expression: {}", expression);  // Print the source expression
 
-        println!("Logic: {:?}",  // Parse as a Logic Expression
-            src.iter().map(|c| Token::<LogicOp>::from(*c)).collect::<Vec<Token<LogicOp>>>()
-        );
-        println!("Math: {:?}",  // Parse as a Math Expression
-            src.iter().map(|c| Token::<MathOp>::from(*c)).collect::<Vec<Token<MathOp>>>()
-        );
+        // println!("Logic: {:?}",  // Parse as a Logic Expression
+        //     src.iter().map(|c| Token::<LogicOp>::from(*c)).collect::<Vec<Token<LogicOp>>>()
+        // );
+        // println!("Math: {:?}",  // Parse as a Math Expression
+        //     src.iter().map(|c| Token::<MathOp>::from(*c)).collect::<Vec<Token<MathOp>>>()
+        // );
 
     }
     

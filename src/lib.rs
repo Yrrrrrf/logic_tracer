@@ -24,7 +24,11 @@ pub use components::{
     operators::*,
     alphabet::*,
     grammar::*,
+    neo_grammar::*,
+    number::*,
 };
+
+pub use components::number::*;
 
 // mod circuits;
 // pub use circuits::*;

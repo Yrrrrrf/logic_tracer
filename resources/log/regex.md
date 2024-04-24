@@ -14,7 +14,7 @@ This regular expression **handles all possible CompoundS in the expression**. It
     - `!|-`: Matches the negation symbol ! or subtraction operator -. This is not a negator, but it's included in the negator part because it's a valid character in the expression.
     - `?`: Makes the negation symbol optional. This means the expression may or may not start with a !.
 - Coefficient: `(\d+(\.\d+)?)?`
-    - `\d+`: Matches one or more digits. This part is for integer numbers.
+    - `\d+`: Matches one or morwe digits. This part is for integer numbers.
     - `(\.\d+)?`: Captures the decimal part of a number. It's optional.
     - `\.`: Matches the decimal point.
     - `\d+`: Matches one or more digits after the decimal point.

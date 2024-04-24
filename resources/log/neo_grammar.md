@@ -11,35 +11,32 @@ The EBNF is a notation technique for context-free grammars, often used to descri
 <!-- ? -> 0..=1 -->
 <!-- + -> 1..=n -->
 
+$ n \in \mathbb{N} \subset \mathbb{Z} \subset \mathbb{R} \subset \mathbb{C} $
+
 ## Grammar
 ```ebnf
 Expression ::= Term (Operator Term)*;
 
-Term ::= Number?Variable* | AdvancedOperation;
+Term ::= Number?Variable* | AdvancedOperation | GroupedExpression;
 
-Variable ::= Constant | Letter ('_' Natural)?;
+GroupedExpression ::= '(' Expression ')' 
+                    | '[' Expression ']'
+                    | '{' Expression '}'
+                    | '⌈' Expression '⌉'  /* Ceiling brackets */
+                    | '⌊' Expression '⌋'  /* Floor brackets */
+                    | '⟦' Expression '⟧'  /* Double square brackets */
+                    | '⟨' Expression '⟩'  /* Angle brackets */
+                    | '|' Expression '|'; /* Absolute value brackets */
+
+Variable ::= Constant |  Letter ('_' Natural)?;
     Letter ::=;
-    Greek ::=;
-        lowercase ::= 'α' | 'β' | 'γ' | 'δ' | 'ε' | 'ζ' | 'η' | 'θ' | 'ι' | 'κ' | 'λ' | 'μ' | 'ν' | 'ξ' | 'ο' | 'π' | 'ρ' | 'σ' | 'τ' | 'υ' | 'φ' | 'χ' | 'ψ' | 'ω';
-        uppercase ::= 'Α' | 'Β' | 'Γ' | 'Δ' | 'Ε' | 'Ζ' | 'Η' | 'Θ' | 'Ι' | 'Κ' | 'Λ' | 'Μ' | 'Ν' | 'Ξ' | 'Ο' | 'Π' | 'Ρ' | 'Σ' | 'Τ' | 'Υ' | 'Φ' | 'Χ' | 'Ψ' | 'Ω';
-    English ::=;
-        lowercase ::= 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z';
-        uppercase ::= 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
-        Spanish ::= English + ('ñ' | 'Ñ');
-
-
-        <!-- todo: Add the consonants & vowels definition... -->
-        Consonant ::=;
-            Greek ::= lowercase - Vowel;
-            English ::= lowercase - Vowel;
-            Spanish ::= lowercase - Vowel;
-        Vowel ::=;
-            Greek ::= 'α' | 'ε' | 'η' | 'ι' | 'ο' | 'υ' | 'ω';
-            English ::= 'a' | 'e' | 'i' | 'o' | 'u';
-            Spanish ::= 'a' | 'e' | 'i' | 'o' | 'u' | 'á' | 'é' | 'í' | 'ó' | 'ú';
-        <!-- * Add some new alphabets... -->
-
-
+        Greek ::=;
+            lowercase ::= 'α' | 'β' | 'γ' | 'δ' | 'ε' | 'ζ' | 'η' | 'θ' | 'ι' | 'κ' | 'λ' | 'μ' | 'ν' | 'ξ' | 'ο' | 'π' | 'ρ' | 'σ' | 'τ' | 'υ' | 'φ' | 'χ' | 'ψ' | 'ω';
+            uppercase ::= 'Α' | 'Β' | 'Γ' | 'Δ' | 'Ε' | 'Ζ' | 'Η' | 'Θ' | 'Ι' | 'Κ' | 'Λ' | 'Μ' | 'Ν' | 'Ξ' | 'Ο' | 'Π' | 'Ρ' | 'Σ' | 'Τ' | 'Υ' | 'Φ' | 'Χ' | 'Ψ' | 'Ω';
+        English ::=;
+            lowercase ::= 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g' | 'h' | 'i' | 'j' | 'k' | 'l' | 'm' | 'n' | 'o' | 'p' | 'q' | 'r' | 's' | 't' | 'u' | 'v' | 'w' | 'x' | 'y' | 'z';
+            uppercase ::= 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J' | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T' | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z';
+            Spanish ::= English + ('ñ' | 'Ñ');
 
     Constant ::=;
         Math ::=;

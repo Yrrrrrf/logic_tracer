@@ -1,70 +1,67 @@
 #![allow(unused)]
 
-use log::LevelFilter;
+
+use log::{debug, LevelFilter};
 use dev_utils::{
     print_app_data, 
     log::rlog::RLog
 };
-use logic_tracer::{
-    PropositionTrait,
-    Token,
-    MathProposition, 
-    MathOp,
-    LogicProposition,
-    LogicOp,
-    Operator,
-    Term,
-    BracketType,
-};
-
+use logic_tracer::*;
 
 fn main() {
     print_app_data(file!());
-    RLog::init_logger(LevelFilter::Info);
-    // RLog::init_logger(LevelFilter::Debug);
+    // RLog::init_logger(LevelFilter::Info);
+    RLog::init_logger(LevelFilter::Debug);
     // RLog::init_logger(LevelFilter::Trace);
 
-    // the log important levels are:
-    // - Error (print errors)
-    // - Warn  (print errors and warnings)
-    // - Info  (print errors, warnings and info)
-    // - Debug (print errors, warnings, info and debug)
-    // - Trace (print everything)
-    
-    // todo: Add these to the lib tests
-    let test_props = vec![
-        "{[AB + C_2!D_3 + E_4D_5D_2]}",
-        "!a",
-        "(b_)3+a+v+!a",
-        // "b_)3+a+v+!a",
-        // "+b_2+a+v+!a",
-        // "28a_3+b+!(cd)",
-        // "!A+",
-        // "!A(B+C)",
-        // "{{B}}",
-        // "![A(B(&(!C)))]",
-        // "![A(B(&(!C)))]",
-        // "A+1A",
-        // "1",
-        // "1+A",
-        // "2a_3+3b_3",
-        // "2.2a_3*3b_3",
-    ];
 
-    test_props.iter().for_each(|s| {
-        println!("");
-        println!("{:?}", LogicProposition::new(*s));
-        println!("{:?}", MathProposition::new(*s));
+    // * Number types
+    let nums = [
+        "123",
+        "-456",
+        "7.892",
+        "-456.16",
+        // "10.0i",
+    ];
+    nums.iter().for_each(|num| {
+        debug!("{:?}", Number::from(*num).unwrap());
+        // println!("Number: {:?}", Number::from(*num));
+
     });
 
 
-    // ? Test proposition
-    // let my_proposition = LogicProposition::new("2a_3*3b_3");
-    // println!("{:?}", my_proposition);
-    // println!("{:#?}", my_proposition);
+    // * Operator types
+    let ops = [
+        "+",
+        "*",
+        "|",
+        ">=",
+        "!=",
+        "<",
+    ];
+    ops.iter().for_each(|op| {
+            debug!("{:?}", Operator::from(*op).unwrap());
+            // println!("{:#?}", from_op(*op).unwrap());
+        
+    });
 
-    // let my_proposition = MathProposition::new("2a_3*3b_3");
-    // println!("{:?}", my_proposition);
-    // println!("{:#?}", my_proposition);
-    
+
+    // * PrimitiveToken types
+    let tokens = [
+        "A",
+        "C",
+        "D",
+        "-23",
+        "2",
+        "3.0",
+        "3.1223",
+        
+    ];
+
+    tokens.iter().for_each(|token| {
+        // println!("{:?}", PrimitiveToken::from(*token));
+    });
+
+
+
 }

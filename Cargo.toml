@@ -1,6 +1,6 @@
 [package]
 name = "logic_tracer"
-version = "0.0.8"
+version = "0.0.9"
 edition = "2021"
 repository = "https://github.com/Yrrrrrf/logic_tracer"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
