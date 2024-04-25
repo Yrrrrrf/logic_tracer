@@ -25,10 +25,10 @@ pub use components::{
     alphabet::*,
     grammar::*,
     neo_grammar::*,
-    number::*,
+    numbers::*,
 };
 
-pub use components::number::*;
+pub use components::numbers::*;
 
 // mod circuits;
 // pub use circuits::*;

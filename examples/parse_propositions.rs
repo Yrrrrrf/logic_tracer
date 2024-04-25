@@ -1,10 +1,12 @@
 //! This module provides a regex matching functionality.
+#![allow(unused)]
 
 // use dev_utils::log::rlog::RLog;
 // use dev_utils::{
 //     print_app_data,
 //     log::rlog::RLog,
 // };
+
 
 use logic_tracer::*;
 

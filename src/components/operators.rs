@@ -14,7 +14,7 @@ pub trait OperatorTrait: Token {
 
 
 macro_rules! impl_operator_token {
-    ($token_type:ident;
+    ($token_type:ident; $trait_name:ident;
         $($name:ident {  // Enum for the types
             $(
                 $variant:ident => ($($str:expr),+)
@@ -23,11 +23,12 @@ macro_rules! impl_operator_token {
         }),+
         $(,)?
     ) => {
-        declare_enum!(token $token_type; $($name),+);
+        impl_token_type!($token_type; $trait_name; $($name),+);
         $(
-            declare_enum!($name; $($variant),+);
-            
-            impl OperatorTrait for $name {
+            #[derive(Debug, Clone, PartialEq)]
+            pub enum $name { $($variant,)+ }
+
+            impl $trait_name for $name {
                 // cont NEGATOR: Self = $negator
             }
 
@@ -38,24 +39,16 @@ macro_rules! impl_operator_token {
                         _ => None
                     }
                 }
+            
             }
 
         )+
-
-        impl $token_type {
-            pub fn from<S: Into<String> + Copy>(string: S) -> Option<Self> {
-                $(if let Some(value) = $name::from_str(string) {
-                        return Some($token_type::$name(value));
-                })+
-                None  // Return None if none of the types match
-            }
-        }
     };
 
 }
 
 
-impl_operator_token!(Operator;
+impl_operator_token!(Operator; OperatorTrait;
     MathOp {
         Add => ("+"),
         Subtract => ("-"),
@@ -84,4 +77,3 @@ impl_operator_token!(Operator;
         GreaterThanOrEqual => ("≥", ">="),
     }
 );
-

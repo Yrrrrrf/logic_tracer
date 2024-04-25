@@ -1,7 +1,7 @@
 // * Primitive Tokens
 pub mod alphabet;  // alphabet of the language (All possible tokens)
 pub mod operators;  // operators of the language (LogicOp, MathOp, RelOp)
-pub mod number;
+pub mod numbers;
 
 
 // * Grammar Rules

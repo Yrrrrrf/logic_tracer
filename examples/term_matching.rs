@@ -1,5 +1,5 @@
 //! This module provides a regex matching functionality.
-// #![allow(unused)]
+#![allow(unused)]
 
 // use dev_utils::console::format::set_fg;
 
