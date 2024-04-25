@@ -24,16 +24,17 @@ fn main() {
         // "10.0i",
     ];
     nums.iter().for_each(|num| {
+        // call the string as a number...
         if let Some(number) = Number::from(*num) {
             // debug!("{:?}", number);
 
-            match number.t_type() {
-                "Natural" => {
-                    // println!("{:?}", &number);
-                    // let num: f64 = number.into();
-                },
-                _ => {},
-            }
+            // match number.t_type() {
+            //     "Natural" => {
+            //         // println!("{:?}", &number);
+            //         // let num: f64 = number.into();
+            //     },
+            //     _ => {},
+            // }
         }
         // if type == Natural
 
@@ -58,18 +59,19 @@ fn main() {
         // "<",
     ];
     ops.iter().for_each(|op| {
-        if let Some(opeator) = Operator::from(*op) {
+        // call the char as an operator...
+        // if let Some(opeator) = Operator::from(*op) {
             // debug!("{:?}", opeator);
-        }
+        // }
     });
 
 
     // * PrimitiveToken types
     let tokens = [
-        // ^ Variables
-        "A",
-        "C",
-        "D",
+        // // ^ Variables
+        // "A",
+        // "C",
+        // "D",
 
         // ^ Numbers
         "-23",
@@ -86,16 +88,19 @@ fn main() {
         "!=",
 
         // ^ Some...
-        "a",
+        // "a",
     ];
 
     tokens.iter().for_each(|token| {
         let primitive_token = PrimitiveToken::from(*token);
+
         debug!("{:?}", primitive_token);
+
+
 
 
     });
 
 
-
 }
+

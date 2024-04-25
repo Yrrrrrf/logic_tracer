@@ -14,7 +14,6 @@ use crate::components::{
 // pub trait Token {  // * without the Debug trait (isn't really needed)
 // * just added because it's easier to debug the Token's
 pub trait Token: std::fmt::Debug {
-
     fn from_str<S: Into<String>>(string: S) -> Option<Self> where Self: Sized;
     
     fn t_type(&self) -> &'static str {
@@ -26,52 +25,63 @@ pub trait Token: std::fmt::Debug {
 
 }
 
+
 #[derive(Debug, PartialEq)]
-pub enum PrimitiveToken<Op, Num>
-// pub enum PrimitiveToken<Op>
-// pub enum PrimitiveToken<Num>
-    where 
-        Op: OperatorTrait, 
-        Num: NumberTrait 
-{
-    // * Done 
-    Number(Num),
-    Operator(Op),
-    
-    // ^ Testing
-    Variable(char),  // Any letter from A to Z (uppercase or lowercase)
+pub struct PrimitiveToken{}
 
-    // . Temporarily done (probably will be removed...)
-    Invalid(),  // Any char thas is not included in the alphabet or any PrimitiveToken
+
+// #[derive(Debug, PartialEq)]
+// pub enum PrimitiveToken<Op, Num>
+//     where 
+//         Op: OperatorTrait, 
+//         Num: NumberTrait 
+// {
+//     // ^ Testing
+//     Variable(char),  // Any letter from A to Z (uppercase or lowercase)
+//     // . Temporarily done (probably will be removed...)
+//     Invalid(),  // Any char thas is not included in the alphabet or any PrimitiveToken
+// }
+
+
+// // Create an invalid token
+// #[derive(Debug, PartialEq)]
+// pub struct InvalidToken {
+//     pub value: String
+// }
+
+// impl Token for InvalidToken {
+//     fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+//         Some(InvalidToken { value: string.into() })
+//     }
+// }
+
+
+// * This will include the Token types in the PrimitiveToken...
+// * This means that it are the basic types that can be used in the language
+// ^ If some Token have a repeated &str identifier, it will only MATCH the FIRST ONE!
+#[macro_export]
+macro_rules! define_token_types {
+    ( $( $token_type:ty ),+ $(,)? ) => {
+        impl PrimitiveToken {
+            pub fn from<S: Into<String>>(string: S) -> Option<Box<dyn Token>> {
+                let s = string.into();
+                $(if let Some(value) = <$token_type>::from_str(&s) {
+                    return Some(Box::new(value));
+                })+
+                None
+            }
+        }
+    };
 }
 
-
-impl PrimitiveToken<LogicOp, Natural> {
-
-    // * A primitive token is a token that is not a composite token
-    pub fn from<S: Into<String>>(string: S) -> Self {
-        let s: String = string.into();
-
-        // * Check if the string is a number
-        if let Some(number) = Natural::from_str(&s) {
-            return PrimitiveToken::Number(number);
-        }
-
-        // * Check if the string is an operator
-        if let Some(operator) = LogicOp::from_str(&s) {
-            return PrimitiveToken::Operator(operator);
-        }
-
-        // * Check if the string is a variable
-        if let Some(variable) = s.chars().next().filter(|c| c.is_alphabetic()){
-            return PrimitiveToken::Variable(variable);
-        }
-
-        // println!("Invalid token: {:?}", s);
-        Self::Invalid()
-    }
-}
-
+define_token_types!(
+    Natural, 
+    // Integer, 
+    // Real, 
+    LogicOp, 
+    // MathOp, 
+    RelOp
+);
 
 
 #[macro_export]
@@ -94,6 +104,4 @@ macro_rules! impl_token_type {
         }
     };
 }
-
-
 
