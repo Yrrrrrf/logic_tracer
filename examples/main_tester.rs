@@ -60,9 +60,9 @@ fn main() {
     ];
     ops.iter().for_each(|op| {
         // call the char as an operator...
-        // if let Some(opeator) = Operator::from(*op) {
+        if let Some(opeator) = Operator::from(*op) {
             // debug!("{:?}", opeator);
-        // }
+        }
     });
 
 
@@ -92,15 +92,32 @@ fn main() {
     ];
 
     tokens.iter().for_each(|token| {
-        let primitive_token = PrimitiveToken::from(*token);
-
-        debug!("{:?}", primitive_token);
-
-
-
+        if let Some(token) = Lexer::token_from(*token) {
+            // debug!("{:?}", token);
+            // debug!("{}", token.to_string());
+        }
 
     });
 
+
+
+
+    let some_txt = "abcde2 -123 + 17.6 ";
+    let mut lexer = Lexer::new(some_txt);
+
+    for i in 0..=some_txt.len() {
+        let token = lexer.next();
+        debug!("{:?}", token);
+    }
+
+
+
+
+
+
+    // for token in lexer {
+    //     debug!("{:?}", token);
+    // }
 
 }
 

@@ -20,11 +20,9 @@
 
 mod components;
 pub use components::{
-    proposition::*,
+    // proposition::*,
     operators::*,
-    alphabet::*,
-    grammar::*,
-    neo_grammar::*,
+    lexer::*,
     numbers::*,
 };
 
