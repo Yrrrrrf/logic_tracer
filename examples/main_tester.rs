@@ -8,11 +8,12 @@ use dev_utils::{
 };
 use logic_tracer::*;
 
+
 fn main() {
     print_app_data(file!());
     // RLog::init_logger(LevelFilter::Info);
-    RLog::init_logger(LevelFilter::Debug);
-    // RLog::init_logger(LevelFilter::Trace);
+    // RLog::init_logger(LevelFilter::Debug);
+    RLog::init_logger(LevelFilter::Trace);
 
 
     // * Number types
@@ -24,22 +25,9 @@ fn main() {
         // "10.0i",
     ];
     nums.iter().for_each(|num| {
-        // call the string as a number...
-        if let Some(number) = Number::from(*num) {
+        if let Some(number) = Number::from(*num) {  // call the string as a number...
             // debug!("{:?}", number);
-
-            // match number.t_type() {
-            //     "Natural" => {
-            //         // println!("{:?}", &number);
-            //         // let num: f64 = number.into();
-            //     },
-            //     _ => {},
-            // }
         }
-        // if type == Natural
-
-
-    
     });
 
 
@@ -59,8 +47,7 @@ fn main() {
         // "<",
     ];
     ops.iter().for_each(|op| {
-        // call the char as an operator...
-        if let Some(opeator) = Operator::from(*op) {
+        if let Some(opeator) = Operator::from(*op) {  // call the char as an operator...
             // debug!("{:?}", opeator);
         }
     });
@@ -90,7 +77,6 @@ fn main() {
         // ^ Some...
         // "a",
     ];
-
     tokens.iter().for_each(|token| {
         if let Some(token) = Lexer::token_from(*token) {
             // debug!("{:?}", token);
@@ -100,24 +86,25 @@ fn main() {
     });
 
 
+    // todo: fix the Number handle for the case of
+    // todo: `x.xx`, this means that I need to check when the string is something like..
+    // todo: `x.*`, because I need to handle when the x
+    let some_txt = "32 + 7 - 123 + 17.6 - 64x";
+    // let some_txt = "- 123 + 17.6 - 6.4";
+    // let some_txt = "3.4 + 1";
 
+    let mut lexer: Lexer = Lexer::new(some_txt);
+    // println!("Lexer: {:?}", lexer);
 
-    let some_txt = "abcde2 -123 + 17.6 ";
-    let mut lexer = Lexer::new(some_txt);
-
-    for i in 0..=some_txt.len() {
-        let token = lexer.next();
-        debug!("{:?}", token);
-    }
-
-
-
+    // let tokens = lexer.get_token_table();
+    // println!("Tokens: {:#?}", tokens);
 
 
 
     // for token in lexer {
-    //     debug!("{:?}", token);
-    // }
+    // same as iterating over the lexer...
+    while let Some(token) = lexer.next() {
+        debug!("{:?}", token);
+    }
 
 }
-

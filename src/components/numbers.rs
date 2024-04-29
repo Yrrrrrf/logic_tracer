@@ -42,6 +42,7 @@ macro_rules! define_numeric_type {
 
             impl Token for $name {
                 fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+                    // todo:  if the last character is 'i' then it is an imaginary number
                     string.into().parse::<$native_type>().ok().map(|value| Self { value })
                 // // &str2type:ident   // Function to convert string to type
                 //     $str2type(string)  // Call the str2type function    
@@ -55,7 +56,7 @@ macro_rules! define_numeric_type {
 define_numeric_type!(Number; NumberTrait;
     Natural(usize),
     Integer(isize),
-    Real(f64)
+    Real(f64),
 );
 
 
