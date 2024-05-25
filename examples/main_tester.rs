@@ -7,6 +7,9 @@ use dev_utils::{
     log::rlog::RLog
 };
 use logic_tracer::*;
+use logic_tracer::tokens::*;
+// use logic_tracer::tokens::numbers::*;
+// use logic_tracer::tokens::operators::*;
 
 
 fn main() {
@@ -22,6 +25,7 @@ fn main() {
         "-456",
         "7.892",
         "-456.16",
+        // ^ from now on, the Number types can't be repreented as any numerical rust type... (usize, isize, f64, ...)
         // "10.0i",
     ];
     nums.iter().for_each(|num| {
@@ -39,12 +43,11 @@ fn main() {
         "¬",
         "!",
         "&",
-
-        // "*",
-        // "|",
-        // ">=",
-        // "!=",
-        // "<",
+        "*",
+        "|",
+        ">=",
+        "!=",
+        "<",
     ];
     ops.iter().for_each(|op| {
         if let Some(opeator) = Operator::from(*op) {  // call the char as an operator...
@@ -92,6 +95,7 @@ fn main() {
     let some_txt = "32 + 7 - 123 + 17.6 - 64x";
     // let some_txt = "- 123 + 17.6 - 6.4";
     // let some_txt = "3.4 + 1";
+    let some_txt = "\\G25.1 φ * φ 42 - 13.6";
 
     let mut lexer: Lexer = Lexer::new(some_txt);
     // println!("Lexer: {:?}", lexer);
@@ -100,11 +104,16 @@ fn main() {
     // println!("Tokens: {:#?}", tokens);
 
 
-
-    // for token in lexer {
+    for token in lexer {
     // same as iterating over the lexer...
-    while let Some(token) = lexer.next() {
+    // while let Some(token) = lexer.next() {
         debug!("{:?}", token);
+
+        // print th type of the token
+        // debug!("{}", token);
     }
 
+
+
 }
+

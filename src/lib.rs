@@ -20,18 +20,15 @@
 
 mod components;
 pub use components::{
-    // proposition::*,
-    operators::*,
     lexer::*,
-    numbers::*,
+    parser::*,
+    tokens,
+    // the tokens::* can be impl as wanted to avoid having many structs on the components module
 };
-
-pub use components::numbers::*;
 
 // mod circuits;
 // pub use circuits::*;
 
-// mod error;
 
 // ? Tests --------------------------------------------------------------------------------------------------------------------
 

@@ -7,17 +7,33 @@ The grammar is written in Extended Backus-Naur Form (EBNF).
 The EBNF is a notation technique for context-free grammars, often used to describe the syntax of languages used in computing.
 
 
+**TODO**:
+
+`Chech to add some 'function' Function = "f(Letter*) = Expression" to the grammar.`
+
+`Check how to add some graph that represents the grammar...`
+
 <!-- * -> 0..=n -->
 <!-- ? -> 0..=1 -->
 <!-- + -> 1..=n -->
 
-$ n \in \mathbb{N} \subset \mathbb{Z} \subset \mathbb{R} \subset \mathbb{C} $
+
+<!-- * NUMBER TYPES -->
+$$
+n \in \mathbb{N} \subset \mathbb{Z} \subset \mathbb{R} \subset \mathbb{C}
+$$
+
+<!-- * OPERATIONS for Logic Proposition -->
+<!-- ^ LogicProp uses Number: NaturalNum + LogicOp -->
+<!-- $$  -->
+<!-- \sum \prod -->
+<!-- $$ -->
 
 ## Grammar
 ```ebnf
 Expression ::= Term (Operator Term)*;
 
-Term ::= Number?Variable* | AdvancedOperation | GroupedExpression;
+Term ::= (Neg)? (Variable)* | AdvancedOperation | GroupedExpression;
 
 GroupedExpression ::= '(' Expression ')' 
                     | '[' Expression ']'
@@ -53,9 +69,10 @@ Variable ::= Constant |  Letter ('_' Natural)?;
             MuonMass        ::= "\mμ";  // Muon rest mass
             ElectronMass ::= "\me";  // Electron rest mass
             ProtonMass ::= "\mp";     // Proton rest mass
-        <!-- * Add some new constants... -->
+        <!-- todo: Add some new constants... -->
 
-Operator ::=;
+Operator ::=;  <!-- * 100% impl (src/components/tokens/operators.rs) * -->
+    Neg ::= Some(Operator);
     Logic ::=;
         And     ::= "\And"  | '&' | '*' | '⋅' | '∧';
         Or      ::= "\Or"   | '+' | '|';
@@ -77,16 +94,16 @@ Operator ::=;
         Multiply ::= '*' | '×' | '⋅' | '∙' | '•';
         Divide ::= '/' | '÷';
         Modulus ::= '%' | 'mod';
-    <!-- * Add some new operators.(e.g. Bitwise, Shift, etc.)... -->
+    <!-- todo: Add some new operators.(e.g. Bitwise, Shift, etc.)... -->
 
-Neg ::= Some(Operator);
 
-Number ::=;
+Number ::=;  <!-- * impl: digit, Natural, Integer, Real (src/components/tokens/numbers.rs) * -->
     digit ::= `0..=9`;
     Natural ::= digit+;
     Integer ::= Neg?Natural;
     Real ::= Integer '.' Natural;
 
+    <!-- todo: Add the rest of the number types... -->
     <!-- Rational ::= Integer '/' Integer; -->
     Imaginary ::= Real 'i';
     Complex ::= Real '+' Imaginary;
@@ -118,16 +135,16 @@ AdvancedOperation ::= '\\' Function '(' Expression ')';
             Natural ::= "ln";
             LogBase ::= "log";
         <!-- todo: Improve this part of the grammar... -->        
-        <!-- * Add some new functions (e.g. Statistical, etc.)...
+        <!-- todo: Add some new functions (e.g. Statistical, etc.)...
 
 
 
-        * Add some new operations (e.g. Derivative, Integral, Limit, etc.)... -->
+        <!-- todo: Add some new operations (e.g. Derivative, Integral, Limit, etc.)... -->
         Calculus ::= _ Range
             DIfferential and PartialDifferential ::=;
             Integral (Definite and Indefinite) ::=;
-            <!-- * Add some new calculus operations (e.g. Gradient, Divergence, Curl, Laplacian, etc.)... -->
-        <!-- * Add some new series (e.g. Product, etc.)...
+            <!-- todo: Add some new calculus operations (e.g. Gradient, Divergence, Curl, Laplacian, etc.)... -->
+        <!-- todo: Add some new series (e.g. Product, etc.)...
 
 Range ::= "{Number}_{Number}";
 
