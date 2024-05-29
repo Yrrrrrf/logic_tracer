@@ -51,7 +51,13 @@ cargo run --example <example name>
 - [ ] Add combinational logic (multiplexers, decoders, etc.)
 - [ ] Add sequential logic (flip-flops, registers, etc.)
 - [ ] Add some geometric demonstration (to be able to solve geometric problems)
-    - \sum_{i=1}^{n} i = \frac{n(n+1)}{2} or smth like that
+    - `\sum_{i=1}^{n} i = \frac{n(n+1)}{2}` or smth like that
+
+`I want to make this crate copletely independent of any other crate.`
+`So, I will implement the parser myself...`
+But also I'll check the pest crate to see how it works and to see if I can use it in some other project... (maybe in the future)
+- Check [PEST](https://docs.rs/pest/latest/pest/) [grammar declaration using `.pest` files](https://docs.rs/pest/latest/pest/index.html#pest-files)
+
 ----
 
 ## License

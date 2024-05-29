@@ -18,13 +18,10 @@
 
 // ? Lib Modules ----------------------------------------------------------------------------------------------------------
 
-mod components;
-pub use components::{
-    lexer::*,
-    parser::*,
-    tokens,
+mod tracer;
+pub use tracer::*;
     // the tokens::* can be impl as wanted to avoid having many structs on the components module
-};
+// };
 
 // mod circuits;
 // pub use circuits::*;

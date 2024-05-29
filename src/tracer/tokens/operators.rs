@@ -1,6 +1,8 @@
 use super::*;
 
 use crate::impl_enum_token;
+
+
 pub trait OperatorTrait: Token {
     // * Add properties and methods for the operator type...
     // todo: Add all the stuff below...
@@ -111,12 +113,12 @@ impl_operator_token!(Operator; OperatorTrait;
         NAnd => ("↑"),
         NOr => ("↓"),
     ),
-    // RelationalOp (NotEqual;
-    //     Equal => ("==", "="),
-    //     NotEqual => ("!=", "≠"),
-    //     LessThan => ("<"),
-    //     LessThanOrEqual => ("<=", "≤"),
-    //     GreaterThan => (">"),
-    //     GreaterThanOrEqual => (">=", "≥"),
-    // ),
+    RelationalOp (;  // ^ without implementing OperatorNegator trait
+        Equal => ("==", "="),
+        NotEqual => ("!=", "≠"),
+        LessThan => ("<"),
+        LessThanOrEqual => ("<=", "≤"),
+        GreaterThan => (">"),
+        GreaterThanOrEqual => (">=", "≥"),
+    ),
 );

@@ -4,11 +4,6 @@
 //! It provides a foundational framework for building the lexical components of a language,
 //! including primitive and potentially complex token types.
 //! 
-//! ## Modules
-//! 
-//! - `operators`: Includes various operator types like logical, mathematical, and relational operators.
-//! - `numbers`: Defines numeric token types such as natural numbers, integers, and real numbers.
-//!
 //! ## Usage
 //!
 //! Token types are typically constructed via parsing strings and are extensively used throughout the
@@ -21,39 +16,42 @@ pub mod operators;  // Contains definitions for various operators.
 pub mod numbers;    // Contains definitions for numeric types.
 pub mod variables;  // Contains definitions for variable-related tokens.
 
-pub use operators::Operator;
-pub use numbers::Number;
-pub use variables::Variable;  // variables generator
+pub use operators::*;
+pub use numbers::*;
+pub use variables::*;  // variables generator (constants, alphabets, hiragana, etc...)
 
-// pub use variables::Variable;
-// pub use variables::Constant;
 
+use std::fmt::Debug;
 
 /// Represents a generic token within the language processing system.
 /// 
 /// All token types must implement this trait to ensure they can be debugged and
 /// dynamically handled via polymorphism. Tokens are generally created from strings and
 /// can be represented back as strings for debugging and logging purposes.
-pub trait Token: std::fmt::Debug + 'static {
+// * IN COMPUTER SCIENCE.
+// * A token is a string of one or more characters, which are treated as a single unit by a program.
+// * Tokens are the smallest elements of a program, and they are classified by the compiler according to their functionality. 
+pub trait Token: Debug {
     /// Constructs an instance of a token from a string, if possible.
     fn from_str<S: Into<String>>(string: S) -> Option<Self> where Self: Sized;
     
     /// Returns a string representation of the token, typically used for debugging.
     fn to_string(&self) -> String {
+        
         let mut result = std::any::type_name::<Self>().split("::").collect::<Vec<&str>>();
         result.reverse();
-
-        let mut token_type = result.get(1).unwrap();
+        
+        let mut token_type = result.get(0).unwrap();
         let token_type = token_type.chars().next().unwrap().to_uppercase().collect::<String>() + &token_type[1..];
-
+        
         // format!("{:>12} :: {self:?}", token_type)  // no additional formatting...
         let token_type = format!("\x1B[3m{}\x1B[0m", token_type);  // italic
         let token_type = format!("\x1B[1m{}\x1B[0m", token_type);  // bold
-        
-        format!("{:>28} :: {self:?}", token_type)
+
+        format!("{token_type:>28} :: {self:?}")
         // let token_type = format!("\x1B[36m{}\x1B[0m", token_type);  // cyan
         // let token_type = format!("\x1B[32m{}\x1B[0m", token_type);  // green
-        // format!("{:>36} :: {self:?}", token_type)  (format with spacing according to the token_type length...)
+        // format!("{:>36} :: {self:?}", token_type)  // (format with spacing according to the token_type length...)
         // todo: make this a bit more dynamic...
     }
 
