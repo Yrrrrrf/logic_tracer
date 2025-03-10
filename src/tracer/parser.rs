@@ -15,10 +15,7 @@
 
 #![allow(unused)]
 
-use crate::tracer::{
-    lexer::*,
-    tokens::*,
-};
+use crate::tracer::{lexer::*, tokens::*};
 
 /// Represents a parser for converting a sequence of tokens into an AST.
 ///
@@ -51,6 +48,4 @@ impl Parser {
         // let mut current = 0;
         // let mut current_token = self.tokens[current];
     }
-
 }
-

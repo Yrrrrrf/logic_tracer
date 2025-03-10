@@ -7,9 +7,7 @@
 //     log::rlog::RLog,
 // };
 
-
 use logic_tracer::*;
-
 
 fn main() {
     // print_app_data(file!());
@@ -30,10 +28,12 @@ fn main() {
     ];
 
     for expression in src_vec.iter() {
-        let src: Vec<char> = expression.chars()  // Remove whitespace and control characters from the expression
-            .filter(|c| !c.is_whitespace() && !c.is_ascii_control()).collect();
+        let src: Vec<char> = expression
+            .chars() // Remove whitespace and control characters from the expression
+            .filter(|c| !c.is_whitespace() && !c.is_ascii_control())
+            .collect();
 
-        println!("\nSource Expression: {}", expression);  // Print the source expression
+        println!("\nSource Expression: {}", expression); // Print the source expression
 
         // println!("Logic: {:?}",  // Parse as a Logic Expression
         //     src.iter().map(|c| Token::<LogicOp>::from(*c)).collect::<Vec<Token<LogicOp>>>()
@@ -41,8 +41,5 @@ fn main() {
         // println!("Math: {:?}",  // Parse as a Math Expression
         //     src.iter().map(|c| Token::<MathOp>::from(*c)).collect::<Vec<Token<MathOp>>>()
         // );
-
     }
-    
-
 }

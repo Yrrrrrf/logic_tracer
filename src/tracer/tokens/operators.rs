@@ -2,13 +2,12 @@ use super::*;
 
 use crate::impl_enum_token;
 
-
 pub trait OperatorTrait: Token {
     // * Add properties and methods for the operator type...
     // todo: Add all the stuff below...
-        // todo: Add `precedence`, `associativity`, and `arity` properties for the operator type...
-        // todo: Add `is_unary`, `is_binary`, and `is_nary` methods for the operator type... (use `arity`)
-        // todo: Add `is_left_associative`, `is_right_associative`, and `is_non_associative` methods for the operator type... (use `associativity`)
+    // todo: Add `precedence`, `associativity`, and `arity` properties for the operator type...
+    // todo: Add `is_unary`, `is_binary`, and `is_nary` methods for the operator type... (use `arity`)
+    // todo: Add `is_left_associative`, `is_right_associative`, and `is_non_associative` methods for the operator type... (use `associativity`)
 }
 #[derive(Debug, Clone, PartialEq)]
 pub struct Operator;
@@ -18,17 +17,17 @@ pub trait OperatorNegator: OperatorTrait {
 }
 
 /// Macro to implement operator tokens and their associated traits.
-/// 
+///
 /// # Parameters
-/// 
+///
 /// - `$token_type`: The type of the token (e.g., `Operator`).
 /// - `$trait_name`: The name of the trait that all operator tokens will implement.
 /// - `$name`: The name of the enum representing a specific operator type (e.g., `MathOp`).
 /// - `$negator`: An optional parameter representing the negator variant for the operator type.
 /// - `$variant`: The variants of the operator enum, mapping strings to enum variants.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```rust
 /// impl_operator_token!(Operator; OperatorTrait;
 ///     MathOp (Subtract;  // this will be the negator of the operator type

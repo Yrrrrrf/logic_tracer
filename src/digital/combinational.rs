@@ -39,14 +39,16 @@ pub trait Combinational {
     // fn get_output_as_u32(&self) -> u32;  To make it more generic (bit width)
 }
 
-
 /// # Half Adder
 #[derive(Default, Debug, Clone)]
 pub struct HalfAdder {
-    
+        
 }
 
 // todo: CHECK THIS IDEA
 
 // Implement the Combinational ciruits using their functions to calculate the output
 // The output must be a u64 (or u32, u16, u8, etc). This to handle the bit width of the circuit.
+
+
+// some 

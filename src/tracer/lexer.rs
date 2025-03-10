@@ -1,12 +1,10 @@
 #![allow(unused)]
 
-use std::str::CharIndices;
 use std::iter::Peekable;
-use log::debug;
+use std::str::CharIndices;
+// use log::debug;
 
-use crate::{
-    tracer::tokens::*,
-};
+use crate::tracer::tokens::*;
 
 pub trait TokenRecognizer {
     fn recognize_token<S: Into<String>>(input: S) -> Option<Box<dyn Token>>;
@@ -34,10 +32,10 @@ impl<T: TokenRecognizer> Lexer<T> {
     /// use logic_tracer::tokens::Token;
     /// use logic_tracer::tokens::numbers::*;
     /// use logic_tracer::tokens::operators::*;
-    /// 
+    ///
     /// let code = String::from("25.1 * 42 - 13");
     /// let lexer = Lexer::new(code);
-    /// 
+    ///
     /// for token in lexer {
     ///     println!("{:?}", token);
     /// }
@@ -45,27 +43,30 @@ impl<T: TokenRecognizer> Lexer<T> {
     pub fn new<S: Into<String>>(src_code: S) -> Self {
         let src_str: String = src_code.into();
 
-        // Remove all whitespace and control characters from the source code 
-        let trimmed_str: String = src_str.chars()
-            .filter(|c| !c.is_whitespace())  // remove \t, \n, \r, \x20, etc.
-            .filter(|c| !c.is_ascii_control())  // remove \x00 - \x1F, \x7F, etc.
+        // Remove all whitespace and control characters from the source code
+        let trimmed_str: String = src_str
+            .chars()
+            .filter(|c| !c.is_whitespace()) // remove \t, \n, \r, \x20, etc.
+            .filter(|c| !c.is_ascii_control()) // remove \x00 - \x1F, \x7F, etc.
             .collect();
 
-        println!("\nNew {}:\t {}",
+        println!(
+            "\nNew {}:\t {}",
             std::any::type_name::<T>().split("::").last().unwrap(),
-            format!("\x1B[1m\x1B[3m{}\x1B[0m\n", src_str)
-            // format!("\x1B[1m\x1B[3m{}\x1B[0m\n", trimmed_str)
+            format!("\x1B[1m\x1B[3m{}\x1B[0m\n", src_str) // format!("\x1B[1m\x1B[3m{}\x1B[0m\n", trimmed_str)
         );
 
         Self {
             src_code: trimmed_str.clone(),
-            char_indices: Box::leak(trimmed_str.into_boxed_str()).char_indices().peekable(),
+            char_indices: Box::leak(trimmed_str.into_boxed_str())
+                .char_indices()
+                .peekable(),
             _marker: std::marker::PhantomData,
         }
     }
 
     /// Generates a table of tokens by tokenizing the entire source code.
-    /// 
+    ///
     /// This mehod resets the lexer and tokenizes the entire source code, returning a vector of boxed tokens
     /// # Returns
     ///
@@ -73,15 +74,16 @@ impl<T: TokenRecognizer> Lexer<T> {
     pub fn get_token_table(&mut self) -> Vec<Box<dyn Token>> {
         let mut tokens: Vec<Box<dyn Token>> = Vec::new();
         // * restart the lexer (reset the char_indices iterator)
-        self.char_indices = Box::leak(self.src_code.clone().into_boxed_str()).char_indices().peekable();
-        while let Some(token) = self.next() {  // Tokenize the entire source code.
-            tokens.push(token);  // Add the token to the table.
+        self.char_indices = Box::leak(self.src_code.clone().into_boxed_str())
+            .char_indices()
+            .peekable();
+        while let Some(token) = self.next() {
+            // Tokenize the entire source code.
+            tokens.push(token); // Add the token to the table.
         }
-        tokens  // Return the token table.
+        tokens // Return the token table.
     }
-
 }
-
 
 impl<T: TokenRecognizer> Iterator for Lexer<T> {
     type Item = Box<dyn Token + 'static>;
@@ -101,21 +103,24 @@ impl<T: TokenRecognizer> Iterator for Lexer<T> {
             // Attempt to match the current string as a token.
             c_token = T::recognize_token(&c_string);
             // If the current character is a single-character token, return it immediately.
-            if c == '+' || c == '-' {return c_token}
+            if c == '+' || c == '-' {
+                return c_token;
+            }
 
             // Check the next character for multi-character tokens. (any: `dyn Token`)
             if let Some((_, next_char)) = self.char_indices.clone().peekable().peek().cloned() {
                 let next_string = format!("{}{}", c_string, next_char);
                 if let Some(token) = T::recognize_token(&next_string) {
-                    c_token = Some(token);  // Return the multi-character token.
-                    continue;  // Continue scanning for the next token.
+                    c_token = Some(token); // Return the multi-character token.
+                    continue; // Continue scanning for the next token.
                 }
             }
 
             // Return the current token if a match is found or continue scanning.
             match c_token {
                 Some(token) => return Some(token),
-                None => debug!("Token not found for: {:?}", c_string),
+                None => println!("Token not found for: {:?}", c_string),
+                // None => debug!("Token not found for: {:?}", c_string),
             }
         }
 
@@ -124,11 +129,11 @@ impl<T: TokenRecognizer> Iterator for Lexer<T> {
 }
 
 /// Macro to implement a token recognizer for a given set of token types.
-/// 
+///
 /// This macro generates a token recognizer struct that can be used to tokenize source code.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```rust
 /// impl_lexer_token_from!(MathLexer;  // recognizer for math tokens
 ///    MathOp,
@@ -165,11 +170,14 @@ macro_rules! impl_lexer_token_from {
 impl_lexer_token_from!(MathLexer;
     MathOp,
     Real,
+    Natural,
 );
 
 impl_lexer_token_from!(LogicLexer;
     LogicOp,
     Natural,
+    Alphabet,
+    AlphaUpper,
 );
 
 impl_lexer_token_from!(PhysicLexer;

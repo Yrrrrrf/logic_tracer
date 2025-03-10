@@ -1,37 +1,35 @@
 //! # Logic Tracer
-//! 
+//!
 //! `logic_tracer` is a library for tracing the logic of a logic propopsition.
-//! 
+//!
 //! Also creates a truth table and a Karnaugh map (if possible).
-//! 
+//!
 //! ## Features
-//! 
+//!
 //! - Creates a logic trace
 //! - Creates a truth table
 //! - Creates a Karnaugh map
 //! - Reduces the logic proposition to its simplest form (if possible)
 //! - Creates a circuit diagram (if possible)
 //! - Serializes the logic proposition to a file (must be implemented)
-//! 
+//!
 #![allow(unused)]
-
 
 // ? Lib Modules ----------------------------------------------------------------------------------------------------------
 
 mod tracer;
 pub use tracer::*;
-    // the tokens::* can be impl as wanted to avoid having many structs on the components module
+// the tokens::* can be impl as wanted to avoid having many structs on the components module
 // };
 
 // mod circuits;
 // pub use circuits::*;
 
-
 // ? Tests --------------------------------------------------------------------------------------------------------------------
 
-#[cfg(test)]  // Only compiles when running tests
+#[cfg(test)] // Only compiles when running tests
 mod tests {
-    #[test]  // Indicates that this is a test
+    #[test] // Indicates that this is a test
     fn test_pair_brackets() {
         // vec![
         //     ("A & (B & C)", true),
@@ -53,11 +51,10 @@ mod tests {
         //     ("{[()]}>", false),
         //     (" ", true),
         //     ("", true),
-        // ].iter().for_each(|(src, result)| 
+        // ].iter().for_each(|(src, result)|
         //     assert_eq!(check_pair_brackets(&src.chars().collect::<Vec<char>>()), *result)
         // );
     }
-
 
     // /// Test if the notation for the AST is correct.
     // #[test]
@@ -77,7 +74,6 @@ mod tests {
     //     });
     // }
 
-
     // #[test]
     // fn test_logic_evalaution() {
     //     vec![
@@ -89,7 +85,6 @@ mod tests {
     //         ("A + B + C", 255),
     //     ].iter().for_each(|(src, result)| assert_eq!(Proposition::new(src).evaluate_logic(), *result));
     // }
-
 
     // #[test]
     // fn test_math_evaluation() {
@@ -104,9 +99,8 @@ mod tests {
     //         ("A/B", vec![21.0, 57.0], 0.3684210526315789),
     //         // 3 variables
     //         ("A+B+C", vec![21.0, 57.0, 12.0], 90.0),
-    //     ].iter().for_each(|(src, values, result)| 
+    //     ].iter().for_each(|(src, values, result)|
     //         assert_eq!(Proposition::new(src).evaluate_math(values.clone()), *result)
     //     );
     // }
-
 }

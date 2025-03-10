@@ -6,7 +6,6 @@ use super::*;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Number;
 
-
 pub trait NumberTrait: Token {
     // Create the into f64 method (according to std::convert::From)
 }
@@ -83,7 +82,6 @@ define_numeric_type!(Number; NumberTrait;
     Real(f64),
 );
 
-
 // todo: Improve define_numeric_type! macro to handle Imaginary and Complex numbers
 // todo: Also modify the code above to make it able to use the Digit type to parse the numbers!
 // todo: Using the Digit type will allow the input of numbers in ANY BASE!
@@ -139,4 +137,4 @@ define_numeric_type!(Number; NumberTrait;
 //     }
 // }
 
-// todo: Also 
+// todo: Also

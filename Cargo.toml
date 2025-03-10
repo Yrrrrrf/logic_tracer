@@ -1,7 +1,8 @@
 [package]
 name = "logic_tracer"
 # Check Semantic versioning (https://semver.org/)
-version = "0.0.11-alpha-0"  # major.minor.patch-pre-release  # 0.0.0-alpha-0
+# major.minor.patch-pre-release  # 0.0.0-alpha-0 (add this as update penchs)
+version = "0.0.11"
 edition = "2021"
 repository = "https://github.com/Yrrrrrf/logic_tracer"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
@@ -9,13 +10,10 @@ authors = ["Yrrrrrf"]
 license = "MIT"
 readme = "README.md"
 keywords = ["logic", "proposition", "truth_table", "calculator", "compiler"]
-categories = ["logic", "proposition", "truth_table", "calculator", "compiler"]
+categories = ["development-tools", "compilers", "data-structures"]
 
 exclude = [  # Exclude these files from the package
-    ".vscode*",  # editor config
-    "resources/*",  # data files (csv, json, etc)
-    "target/",  # build directory (compiled code)
-    "Cargo.lock",  # lock file (dependency versions)
+    "resources/",  # data files (csv, json, etc)
 ]
 
 
@@ -39,13 +37,13 @@ lto = true  # link-time optimizations (slower compile time, faster runtime)
 # DEPENDENCIES --------------------------------------------------------------------------------
 
 [dependencies]
-log = "0.4.*"  # Logging (https://docs.rs/log/latest/log/)
-dev_utils = "0.0.*"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
-# dev_utils = { path = "./../dev_utils/dev_utils" }  // local path (src code...)
+# log = "0.4.22"  # Logging (https://docs.rs/log/latest/log/)
+dev_utils = "0.1.1"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
+# dev_utils = { path = "./../dev_utils/dev_utils" }  # local path (src code...)
 
-[dev-dependencies]
-pest = "*"  # Parser (https://docs.rs/pest/latest/pest/)
-regex = "*"  # Regular expressions (https://docs.rs/regex/latest/regex/)
+# [dev-dependencies]
+# pest = "*"  # Parser (https://docs.rs/pest/latest/pest/)
+# regex = "*"  # Regular expressions (https://docs.rs/regex/latest/regex/)
 
 
 [features]

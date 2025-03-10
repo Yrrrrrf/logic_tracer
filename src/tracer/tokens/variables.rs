@@ -8,11 +8,9 @@ use crate::impl_enum_token;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Variable;
 
-
 pub trait VariableTrait: Token {
     // * Add properties and methods for the variable type...
 }
-
 
 /// Macro to define constants with their associated subjects and declare the subject traits.
 ///
@@ -65,7 +63,6 @@ macro_rules! define_constants {
         );
     };
 }
-
 
 define_constants!(Variable; VariableTrait;
 
@@ -182,7 +179,7 @@ define_constants!(Variable; VariableTrait;
     // * CONSTANTS
     MathConst (
         Tau => ("τ", "\\tau"),
-        Pi => ("π"),
+        Pi => ("π", "\\pi"),
         Phi => ("φ"),
         EulerGamma => ("γ"),
         Infinity => ("∞"),

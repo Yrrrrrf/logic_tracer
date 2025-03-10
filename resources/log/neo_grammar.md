@@ -110,42 +110,39 @@ Number ::=;  <!-- * impl: digit, Natural, Integer, Real (src/components/tokens/n
     Irrational ::= Real;  // ? This is more like a placeholder for irrational numbers...
 
 AdvancedOperation ::= '\\' Function '(' Expression ')';
-    Function ::=;
-        Arithmetic ::=;
-            Sum ::= "\sum" Range;
-            Product ::= "\prod" Range;
-        Geometric ::=;
-            Trigonometric ::=;
-                Sine ::= "sin";
-                Cosine ::= "cos";
-                Tangent ::= "tan";
-                Cotangent ::= "cot";
-                Secant ::= "sec";
-                Cosecant ::= "csc";
-            InverseTrigonometric ::= "a" Trigonometric;
-            Hyperbolic ::= Trigonometric "h";
-            InverseHyperbolic ::= "a" Hyperbolic;
-        Algebraic ::=;
-            AbsoluteValue ::= "abs";
-            Floor ::= "floor";
-            Ceiling ::= "ceil";
-            GreatestCommonDivisor ::= "gcd";
-            LeastCommonMultiple ::= "lcm";
-        Logarithm ::=;
-            Natural ::= "ln";
-            LogBase ::= "log";
-        <!-- todo: Improve this part of the grammar... -->        
-        <!-- todo: Add some new functions (e.g. Statistical, etc.)...
+    Arithmetic ::= self Variable '=' Range(Natural) { expr };
+        Sum ::= 'sum' | 'Σ';
+        Product ::= 'prod' | 'Π';
+
+    Algebraic ::= ('abs' | 'floor' | 'ceil' | 'gcd' | 'lcm') '(' Expression ')';
+
+    Geometric ::= TrigonometricFunction | InverseTrigonometricFunction | HyperbolicFunction | InverseHyperbolicFunction;
+        TrigonometricFunction ::= ('sin' | 'cos' | 'tan' | 'cot' | 'sec' | 'csc') '(' Expression ')';
+        InverseTrigonometricFunction ::= ('arcsin' | 'arccos' | 'arctan' | 'arccot' | 'arcsec' | 'arccsc') '(' Expression ')';
+        HyperbolicFunction ::= ('sinh' | 'cosh' | 'tanh' | 'coth' | 'sech' | 'csch') '(' Expression ')';
+        InverseHyperbolicFunction ::= ('arsinh' | 'arcosh' | 'artanh' | 'arcoth' | 'arsech' | 'arcsch') '(' Expression ')';
+
+    CalculusFunction ::= Integral | Derivative | Limit;
+        Integral ::= 'int' Range;
+        Derivative ::= 'diff' '(' Expression ',' Variable ')';
+        Limit ::= 'lim' Range;
+
+Range(Number)::= Number '..' Number (..Number)?;
+
+        <!-- todo: Add some new calculus operations (e.g. Gradient, Divergence, Curl, Laplacian, etc.)... -->
+
+    <!-- todo: Add some new functions (e.g. Statistical, etc.)...
+<!--  -->
+<!--  -->
+<!--  -->
+    Logical ::= Proposition | Predicate | Quantifier;  // ? This is more like a placeholder for logical operations...
+        Proposition ::= 'prop' '(' Expression ')';
+        Predicate ::= 'pred' '(' Expression ')';
+        Quantifier ::= 'forall' '(' Variable ',' Expression ')' | 'exists' '(' Variable ',' Expression ')';
+<!--  -->
+<!--  -->
+<!--  -->
 
 
-
-        <!-- todo: Add some new operations (e.g. Derivative, Integral, Limit, etc.)... -->
-        Calculus ::= _ Range
-            DIfferential and PartialDifferential ::=;
-            Integral (Definite and Indefinite) ::=;
-            <!-- todo: Add some new calculus operations (e.g. Gradient, Divergence, Curl, Laplacian, etc.)... -->
-        <!-- todo: Add some new series (e.g. Product, etc.)...
-
-Range ::= "{Number}_{Number}";
 
 ```
