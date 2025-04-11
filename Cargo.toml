@@ -2,8 +2,8 @@
 name = "logic_tracer"
 # Check Semantic versioning (https://semver.org/)
 # major.minor.patch-pre-release  # 0.0.0-alpha-0 (add this as update penchs)
-version = "0.0.11"
-edition = "2021"
+version = "0.0.12"
+edition = "2024"
 repository = "https://github.com/Yrrrrrf/logic_tracer"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
 authors = ["Yrrrrrf"]
