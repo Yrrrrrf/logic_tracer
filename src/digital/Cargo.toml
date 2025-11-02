@@ -10,8 +10,6 @@ readme = "README.md"
 keywords = ["digital-logic", "simulation", "circuits", "combinational", "sequential"]
 categories = ["science", "simulation", "development-tools"]
 
-publish = false
-
 [dependencies]
 # Add any future dependencies here, for example:
 bitvec = "1.0.1" # A common crate for handling collections of bits efficiently.
