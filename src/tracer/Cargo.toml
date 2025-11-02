@@ -6,7 +6,7 @@ repository = "https://github.com/Yrrrrrf/logic_tracer"
 description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
 authors = {workspace = true}
 license = {workspace = true}
-readme = "../README.md"
+readme = "../../README.md"
 keywords = ["logic", "proposition", "truth_table", "calculator", "compiler"]
 categories = ["development-tools", "compilers", "data-structures"]
 
