@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="resources/img/algorithm.png" alt="Logic Tracer Icon" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/Yrrrrrf/logic_tracer/main/resources/img/framework.png" alt="Axion Icon" width="128" height="128">
   <div align="center">Logic Tracer</div>
 </h1>
 
