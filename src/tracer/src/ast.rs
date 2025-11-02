@@ -3,7 +3,7 @@
 //! This module defines a tree structure for representing parsed expressions
 //! using trait objects to support any token type without modification.
 
-use crate::tracer::tokens::*;
+use crate::tokens::*;
 use std::fmt::{self, Debug, Display, Formatter};
 
 /// A node in the Abstract Syntax Tree

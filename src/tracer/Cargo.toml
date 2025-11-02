@@ -1,0 +1,36 @@
+[package]
+name = "logic_tracer"
+version = "0.0.13"
+edition = {workspace = true }
+repository = "https://github.com/Yrrrrrf/logic_tracer"
+description = "Recognize a logic proposition and trace its truth value, also generate a truth table (still in development)"
+authors = {workspace = true}
+license = {workspace = true}
+readme = "../README.md"
+keywords = ["logic", "proposition", "truth_table", "calculator", "compiler"]
+categories = ["development-tools", "compilers", "data-structures"]
+
+[dependencies]
+# log = "0.4.22"  # Logging (https://docs.rs/log/latest/log/)
+dev_utils = "0.1.1"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
+# dev_utils = { path = "./../dev_utils/dev_utils" }  # local path (src code...)
+
+# [dev-dependencies]
+# pest = "*"  # Parser (https://docs.rs/pest/latest/pest/)
+# regex = "*"  # Regular expressions (https://docs.rs/regex/latest/regex/)
+
+
+[features]
+default = []  # no features enabled by default
+
+# Features are a way to enable or disable parts of your library
+# combinational = []  # combinational logic stuff (gates, multiplexers, decoders, etc)
+# sequential = []  # sequential logic stuff (flip-flops, registers, counters, etc)
+digital = [
+    # "combinational",
+    # "sequential",
+]  # digital logic stuff (combinational + sequential)
+
+full = [
+    "digital",
+]  # all features enabled

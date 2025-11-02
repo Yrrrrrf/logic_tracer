@@ -1,26 +1,57 @@
 <h1 align="center">
-    <!-- <img src="resources/img/hex.gif" alt="Algorithm" width="192"> -->
-    <img src="resources/img/algorithm.png" alt="Algorithm" width="192">
-    <div align="center">Logic Tracer</div>
+  <img src="resources/img/algorithm.png" alt="Logic Tracer Icon" width="128" height="128">
+  <div align="center">Logic Tracer</div>
 </h1>
 
-[<img alt="github" src="https://img.shields.io/badge/github-Yrrrrrf%2Flogic__tracer-58A6FF?style=for-the-badge&logo=github" height="24">](https://github.com/Yrrrrrf/logic_tracer)
-[<img alt="crates.io" src="https://img.shields.io/crates/v/logic_tracer.svg?style=for-the-badge&logo=rust" height="24">](https://crates.io/crates/logic_tracer)
-[<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-logic__tracer-66c2a5?style=for-the-badge&labelColor=555555" height="24">](https://docs.rs/logic_tracer)
+<div align="center">
 
-Logic Traces is a simple crate that reads a logical proposition and interprets it to **build the truth table and the AST of the proposition**.  
+[![GitHub: Repo](https://img.shields.io/badge/github-Yrrrrrf%2Flogic__tracer-58A6FF?&logo=github)](https://github.com/Yrrrrrf/logic_tracer)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](./LICENSE)
 
-Makes use of regular expressions are used to validate the input and to tokenize the proposition.  
-Also implements the [Shunting Yard Algorithm](https://en.wikipedia.org/wiki/Shunting-yard_algorithm) (not yet) to build the AST.
+[![Crates.io](https://img.shields.io/crates/v/logic_tracer.svg?logo=rust)](https://crates.io/crates/logic_tracer)
+[![Crates.io Downloads](https://img.shields.io/crates/d/logic_tracer)](https://crates.io/crates/logic_tracer)
+[![docs.rs](https://img.shields.io/badge/docs.rs-logic__tracer-66c2a5)](https://docs.rs/logic_tracer)
+
+</div>
+
+> A Rust library that reads logical propositions and interprets them to build truth tables and ASTs.
+
+`Logic Tracer` is a Rust library designed to parse and interpret logical propositions, automatically generating truth tables and Abstract Syntax Trees (ASTs) from input expressions. Makes use of regular expressions to validate the input and tokenize the proposition.
+
+## 🚦 Getting Started
+
+### Installation
+
+Add this crate to your `Cargo.toml`:
+
+```toml
+[dependencies]
+logic_tracer = "0.0.13"
+```
+
+#### Quick Start
+
+Here's a minimal example to get you started:
+
+```rust
+use logic_tracer::Proposition;
+
+// Create a new proposition
+let proposition = Proposition::new("A & B");
+// TODO: Add actual usage examples when functionality is implemented
+```
 
 ## Examples
 
-Check the [examples](./examples/) direcotry to see how to use the crate.
+Check the [examples](./examples/) directory to see how to use the crate.
+
 ```bash
 cargo run --example <example name>
 ```
 
-## Roadmap
+## Features
+
+### Current
 - [x] Read a logical proposition
 - [x] Tokenize the proposition
 - [x] Validate Input Tokens (only valid tokens)
@@ -28,6 +59,8 @@ cargo run --example <example name>
     - [x] Logical Operators (and, or, not, implies, iff)
     - [x] Mathematical Operators (add, sub, mul, div, pow)
     - [x] Compounds (only numbers, variables, variable with subindex)
+
+### Planned
 - [ ] Parse the proposition (make sure it is valid)
 - [ ] Build the AST (Shunting Yard Algorithm) (use postfix notation)
 - [ ] Add notation to the AST (prefix, infix, postfix)
@@ -42,24 +75,24 @@ cargo run --example <example name>
 - [ ] Improve documentation
 - [ ] Improve the import/export of the crate (to improve it's usability as a library)
 
-### Considerations
-- [ ] Add some parallel computation (to improve the performance)
+<!-- ### Considerations
+- [ ] Add some parallel computation (to improve the performance) -->
 
-### Future
-- [ ] Add comlex math iteration (sums, products, etc.) (to be able to solve more complex propositions)
+<!-- ### Future
+- [ ] Add complex math iteration (sums, products, etc.) (to be able to solve more complex propositions)
     - [ ] Test a proposition with complex math iteration
 - [ ] Add combinational logic (multiplexers, decoders, etc.)
 - [ ] Add sequential logic (flip-flops, registers, etc.)
 - [ ] Add some geometric demonstration (to be able to solve geometric problems)
-    - `\sum_{i=1}^{n} i = \frac{n(n+1)}{2}` or smth like that
+$$
+\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
+$$ -->
 
-`I want to make this crate copletely independent of any other crate.`
+> `I want to make this crate completely independent of any other crate.`
 `So, I will implement the parser myself...`
-But also I'll check the pest crate to see how it works and to see if I can use it in some other project... (maybe in the future)
-- Check [PEST](https://docs.rs/pest/latest/pest/) [grammar declaration using `.pest` files](https://docs.rs/pest/latest/pest/index.html#pest-files)
 
-----
+> Check [PEST](https://docs.rs/pest/latest/pest/) [grammar declaration using `.pest` files](https://docs.rs/pest/latest/pest/index.html#pest-files)
 
-## License
+## 📄 License
 
-This project is licensed under the Compounds of the [MIT license](./LICENSE)
+This project is licensed under the [**MIT License**](./LICENSE).

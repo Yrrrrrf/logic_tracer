@@ -17,8 +17,22 @@
 
 // ? Lib Modules ----------------------------------------------------------------------------------------------------------
 
-mod tracer;
-pub use tracer::*;
+// mod tracer;
+// pub use tracer::*;
+
+mod tokens;
+pub use tokens::*;
+
+mod ast;
+pub use ast::*;
+
+mod lexer;
+pub use lexer::*;
+
+mod parser;
+pub use parser::*;
+
+
 // the tokens::* can be impl as wanted to avoid having many structs on the components module
 // };
 

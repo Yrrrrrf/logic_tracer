@@ -15,7 +15,7 @@
 
 #![allow(unused)]
 
-use crate::tracer::{lexer::*, tokens::*};
+use crate::{lexer::*, tokens::*};
 
 /// Represents a parser for converting a sequence of tokens into an AST.
 ///

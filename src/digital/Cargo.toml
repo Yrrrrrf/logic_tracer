@@ -1,0 +1,17 @@
+[package]
+name = "digital"
+version = "0.0.1"
+edition = {workspace = true }
+repository = "https://github.com/Yrrrrrf/logic_tracer/tree/main/src/digital"
+description = "A crate for simulating digital logic circuits (combinational and sequential)"
+authors = { workspace = true }
+license = {workspace = true}
+readme = "README.md"
+keywords = ["digital-logic", "simulation", "circuits", "combinational", "sequential"]
+categories = ["science", "simulation", "development-tools"]
+
+publish = false
+
+[dependencies]
+# Add any future dependencies here, for example:
+bitvec = "1.0.1" # A common crate for handling collections of bits efficiently.

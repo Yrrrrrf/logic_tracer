@@ -5,8 +5,9 @@
 #![allow(unused)]
 
 use dev_utils::{app_dt, debug, dlog::*, error, info, trace, warn};
-use logic_tracer::ast::*;
-use logic_tracer::tokens::*;
+use logic_tracer::*;  // todo: Add some 'prelude' module to avoid importing everything each time
+// use logic_tracer::ast::*;
+// use logic_tracer::tokens::*;
 
 /// Test 1: Simple binary operation "23 - 45"
 fn test_simple_binary_operation() {

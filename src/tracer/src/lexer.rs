@@ -4,7 +4,7 @@ use std::iter::Peekable;
 use std::str::CharIndices;
 // use log::debug;
 
-use crate::tracer::tokens::*;
+use crate::tokens::*;
 
 pub trait TokenRecognizer {
     fn recognize_token<S: Into<String>>(input: S) -> Option<Box<dyn Token>>;
