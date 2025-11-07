@@ -1,8 +1,13 @@
 [package]
 name = "proposition"
 version = "0.0.1"
-edition.workspace = true
-authors.workspace = true
-license.workspace = true
+edition = {workspace = true }
+repository = "https://github.com/Yrrrrrf/logic_tracer/tree/main/src/proposition"
+description = "A crate dedicated to proposition building logic, providing mathematical lexers and language properties for defining logical languages"
+authors = { workspace = true }
+license = {workspace = true}
+readme = "README.md"
+keywords = ["logic", "proposition", "mathematical-lexer", "language-properties", "permutation"]
+categories = ["mathematics", "development-tools", "parsing"]
 
 [dependencies]

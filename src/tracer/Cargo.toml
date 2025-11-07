@@ -13,8 +13,12 @@ categories = ["development-tools", "compilers", "data-structures"]
 [dependencies]
 log = "0.4.28"  # Logging (https://docs.rs/log/latest/log/)
 dev_utils = "0.1.4"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
+
 # digital = "0.0.*"  # add latest
 digital = { version = "0.0.1", path = "../digital" }
+
+# proposition = "0.0.*"
+proposition = { version = "0.0.1", path = "../proposition" }
 
 # [dev-dependencies]
 # pest = "*"  # Parser (https://docs.rs/pest/latest/pest/)
