@@ -4,3 +4,6 @@
 
 # will have compiled files and executables
 /target/
+
+# lock files
+**/*.lock

@@ -11,14 +11,14 @@ keywords = ["logic", "proposition", "truth_table", "calculator", "compiler"]
 categories = ["development-tools", "compilers", "data-structures"]
 
 [dependencies]
-# log = "0.4.22"  # Logging (https://docs.rs/log/latest/log/)
-dev_utils = "0.1.1"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
-# dev_utils = { path = "./../dev_utils/dev_utils" }  # local path (src code...)
+log = "0.4.28"  # Logging (https://docs.rs/log/latest/log/)
+dev_utils = "0.1.4"  # Development utilities (https://docs.rs/dev_utils/latest/dev_utils/)
+# digital = "0.0.*"  # add latest
+digital = { version = "0.0.1", path = "../digital" }
 
 # [dev-dependencies]
 # pest = "*"  # Parser (https://docs.rs/pest/latest/pest/)
 # regex = "*"  # Regular expressions (https://docs.rs/regex/latest/regex/)
-
 
 [features]
 default = []  # no features enabled by default
@@ -32,5 +32,5 @@ digital = [
 ]  # digital logic stuff (combinational + sequential)
 
 full = [
-    "digital",
+
 ]  # all features enabled
