@@ -7,7 +7,7 @@ description = "A crate dedicated to proposition building logic, providing mathem
 authors = { workspace = true }
 license = {workspace = true}
 readme = "README.md"
-keywords = ["logic", "proposition", "mathematical-lexer", "language-properties", "permutation"]
+# keywords = ["logic", "proposition", "mathematical-lexer", "language-properties", "permutation"]
 categories = ["mathematics", "development-tools", "parsing"]
 
 [dependencies]
