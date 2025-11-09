@@ -1,15 +1,23 @@
 # logic_tracer/Cargo.toml (Main workspace manifest)
-
 [workspace]
 package.edition = "2024"
-package.authors = ["Yrrrrrf <fer.rezac@outlook.com>"]
+package.authors = ["Fernando Bryan Reza Campos <fer.rezac@outlook.com>"]
 package.license = "MIT"
+package.readme = "README.md"
+package.keywords = ["logic", "proposition", "truth_table", "calculator", "compiler"]
+
+# package.homepage = "https://crates.io/crates/logic_tracer"
+package.repository = "https://github.com/Yrrrrrf/logic_tracer"
+package.documentation = "https://docs.rs/logic_tracer"
+
 resolver = "3"
+
 members = [
     "src/tracer",
     "src/digital",
     "src/proposition"
 ]
+
 # exclude = [
 #     ".github",
 #     "axion-core/*",
