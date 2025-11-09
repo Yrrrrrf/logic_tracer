@@ -36,8 +36,8 @@ fn main() {
     trace!("Some trace\n\n\n\nPenchs");
 
     impl_some_lexer_test!(
-        // CompleteLexer;
-        MathLexer;
+        CompleteLexer;
+        // MathLexer;
         // LogicLexer;
         "g2+3 & 3^ &",
         "23 - 45",

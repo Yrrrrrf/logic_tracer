@@ -6,9 +6,7 @@ use super::*;
 #[derive(Debug, Clone, PartialEq)]
 pub struct Number;
 
-pub trait NumberTrait: Token {
-    // Create the into f64 method (according to std::convert::From)
-}
+pub trait NumberTrait: Token {}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Digit(u8);
@@ -19,24 +17,7 @@ impl Digit {
     }
 }
 
-/// Macro to define numeric types and their associated traits.
-///
-/// # Parameters
-///
-/// - `$token_type`: The type of the token (e.g., `Number`).
-/// - `$trait_name`: The name of the trait that all numeric tokens will implement.
-/// - `$name`: The name of the struct representing a specific numeric type (e.g., `Natural`, `Integer`, `Real`).
-/// - `$native_type`: The native Rust type that the struct wraps (e.g., `usize`, `isize`, `f64`).
-///
-/// # Example
-///
-/// ```rust
-/// define_numeric_type!(Number; NumberTrait;
-///     Natural(usize),
-///     Integer(isize),
-///     Real(f64),
-/// );
-/// ```
+/// Minimal macro for numeric types
 macro_rules! define_numeric_type {
     ($token_type:ident; $trait_name:ident;
         $(
@@ -46,41 +27,118 @@ macro_rules! define_numeric_type {
     ) => {
         $(
             #[derive(Debug, Clone, PartialEq)]
-            pub struct $name { value: $native_type }
+            pub struct $name { 
+                value: $native_type,
+            }
 
             impl $name {
-                /// Creates a new instance of the numeric type from the native Rust type.
-                /// # Parameters
-                /// - `value`: The native Rust type value to be wrapped.
                 pub fn from_n(value: $native_type) -> Self {
                     Self { value }
                 }
             }
 
-            impl $trait_name for $name {}
+            // impl $trait_name for $name {}
 
-            impl Token for $name {
-                /// Parses a string into an instance of the numeric type.
-                /// # Parameters
-                /// - `string`: The string to be parsed.
-                /// # Returns
-                /// - `Option<Self>`: An instance of the numeric type if the parsing succeeds, `None` otherwise.
-                fn from_str<S: Into<String>>(string: S) -> Option<Self> {
-                    string.into().parse::<$native_type>().ok().map(|value| Self { value })
-                }
-            }
+            // impl Token for $name {
+            //     fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+            //         string.into().parse::<$native_type>().ok().map(|value| Self { value })
+            //     }
+            // }
         )+
-        // Once all the numeric types have been defined, implement the trait for the token type...
         crate::impl_token_trait!($token_type; $trait_name; $($name),+);
     };
 }
 
-// Use the macro to define Natural, Integer, and Real
+// In src/tracer/src/tokens/numbers.rs
+impl Token for Real {
+    fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+        let s = string.into();
+        // ⛔ Reject unary operators - let the parser handle them
+        if s.starts_with('-') || s.starts_with('+') {
+            return None;
+        }
+        s.parse::<f64>().ok().map(|value| Self { value })
+    }
+}
+
+impl Token for Natural {
+    fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+        let s = string.into();
+        // ⛔ Same for naturals
+        if s.starts_with('-') || s.starts_with('+') {
+            return None;
+        }
+        s.parse::<usize>().ok().map(|value| Self { value })
+    }
+}
+
 define_numeric_type!(Number; NumberTrait;
     Natural(usize),
-    Integer(isize),
     Real(f64),
 );
+
+// /// Macro to define numeric types and their associated traits.
+// ///
+// /// # Parameters
+// ///
+// /// - `$token_type`: The type of the token (e.g., `Number`).
+// /// - `$trait_name`: The name of the trait that all numeric tokens will implement.
+// /// - `$name`: The name of the struct representing a specific numeric type (e.g., `Natural`, `Integer`, `Real`).
+// /// - `$native_type`: The native Rust type that the struct wraps (e.g., `usize`, `isize`, `f64`).
+// ///
+// /// # Example
+// ///
+// /// ```rust
+// /// define_numeric_type!(Number; NumberTrait;
+// ///     Natural(usize),
+// ///     Integer(isize),
+// ///     Real(f64),
+// /// );
+// /// ```
+// macro_rules! define_numeric_type {
+//     ($token_type:ident; $trait_name:ident;
+//         $(
+//             $name:ident($native_type:ty)
+//         ),+
+//         $(,)?
+//     ) => {
+//         $(
+//             #[derive(Debug, Clone, PartialEq)]
+//             pub struct $name { value: $native_type }
+
+//             impl $name {
+//                 /// Creates a new instance of the numeric type from the native Rust type.
+//                 /// # Parameters
+//                 /// - `value`: The native Rust type value to be wrapped.
+//                 pub fn from_n(value: $native_type) -> Self {
+//                     Self { value }
+//                 }
+//             }
+
+//             impl $trait_name for $name {}
+
+//             impl Token for $name {
+//                 /// Parses a string into an instance of the numeric type.
+//                 /// # Parameters
+//                 /// - `string`: The string to be parsed.
+//                 /// # Returns
+//                 /// - `Option<Self>`: An instance of the numeric type if the parsing succeeds, `None` otherwise.
+//                 fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+//                     string.into().parse::<$native_type>().ok().map(|value| Self { value })
+//                 }
+//             }
+//         )+
+//         // Once all the numeric types have been defined, implement the trait for the token type...
+//         crate::impl_token_trait!($token_type; $trait_name; $($name),+);
+//     };
+// }
+
+// // Use the macro to define Natural, Integer, and Real
+// define_numeric_type!(Number; NumberTrait;
+//     Natural(usize),
+//     // Integer(isize),
+//     Real(f64),
+// );
 
 // todo: Improve define_numeric_type! macro to handle Imaginary and Complex numbers
 // todo: Also modify the code above to make it able to use the Digit type to parse the numbers!

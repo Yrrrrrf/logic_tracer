@@ -8,8 +8,11 @@ use crate::tokens::*;
 
 pub trait TokenRecognizer {
     fn recognize_token<S: Into<String>>(input: S) -> Option<Box<dyn Token>>;
+    fn could_match(current: &str, next_char: char) -> bool {
+        let test = format!("{}{}", current, next_char);
+        Self::recognize_token(&test).is_some()
+    }
 }
-
 #[derive(Debug, Clone)]
 /// A lexer for tokenizing source code.
 pub struct Lexer<T: TokenRecognizer> {
@@ -93,39 +96,67 @@ impl<T: TokenRecognizer> Iterator for Lexer<T> {
     /// # Returns
     ///
     /// Returns Some(Box<dyn [`Token`]>) containing the next token if available, or `None` when no more tokens are available.
-    fn next(&mut self) -> Option<Self::Item> {
-        let mut c_string: String = String::new();
-        let mut c_token: Option<Box<dyn Token>> = None;
+    // fn next(&mut self) -> Option<Self::Item> {
+    //     let mut c_string: String = String::new();
+    //     let mut c_token: Option<Box<dyn Token>> = None;
 
-        while let Some((_, c)) = self.char_indices.next() {
-            c_string.push(c);
+    //     while let Some((_, c)) = self.char_indices.next() {
+    //         c_string.push(c);
 
-            // Attempt to match the current string as a token.
-            c_token = T::recognize_token(&c_string);
-            // If the current character is a single-character token, return it immediately.
-            if c == '+' || c == '-' {
-                return c_token;
-            }
+    //         // Attempt to match the current string as a token.
+    //         c_token = T::recognize_token(&c_string);
+    //         // If the current character is a single-character token, return it immediately.
+    //         // if c == '+' || c == '-' {
+    //         //     return c_token;
+    //         // }
 
-            // Check the next character for multi-character tokens. (any: `dyn Token`)
-            if let Some((_, next_char)) = self.char_indices.clone().peekable().peek().cloned() {
-                let next_string = format!("{}{}", c_string, next_char);
-                if let Some(token) = T::recognize_token(&next_string) {
-                    c_token = Some(token); // Return the multi-character token.
-                    continue; // Continue scanning for the next token.
-                }
-            }
+    //         // Check the next character for multi-character tokens. (any: `dyn Token`)
+    //         if let Some((_, next_char)) = self.char_indices.clone().peekable().peek().cloned() {
+    //             let next_string = format!("{}{}", c_string, next_char);
+    //             if let Some(token) = T::recognize_token(&next_string) {
+    //                 c_token = Some(token); // Return the multi-character token.
+    //                 continue; // Continue scanning for the next token.
+    //             }
+    //         }
 
-            // Return the current token if a match is found or continue scanning.
-            match c_token {
-                Some(token) => return Some(token),
-                None => println!("Token not found for: {:?}", c_string),
-                // None => debug!("Token not found for: {:?}", c_string),
-            }
+    //         // Return the current token if a match is found or continue scanning.
+    //         match c_token {
+    //             Some(token) => return Some(token),
+    //             None => println!("Token not found for: {:?}", c_string),
+    //             // None => debug!("Token not found for: {:?}", c_string),
+    //         }
+    //     }
+
+    //     c_token
+    // }
+
+fn next(&mut self) -> Option<Self::Item> {
+    let mut accumulated = String::new();
+    let mut last_valid_token: Option<Box<dyn Token>> = None;
+
+    // Prime with first character
+    let (_, first_char) = self.char_indices.next()?;
+    accumulated.push(first_char);
+    last_valid_token = T::recognize_token(&accumulated);
+
+    // Keep consuming while extension could lead to a valid token
+    while let Some((_, next_char)) = self.char_indices.peek() {
+        if !T::could_match(&accumulated, *next_char) {
+            break;
         }
-
-        c_token
+        
+        accumulated.push(*next_char);
+        self.char_indices.next();
+        
+        // Update last valid token if this completes one
+        if let Some(token) = T::recognize_token(&accumulated) {
+            last_valid_token = Some(token);
+        }
     }
+    
+    last_valid_token
+}
+    
 }
 
 /// Macro to implement a token recognizer for a given set of token types.
@@ -162,6 +193,7 @@ macro_rules! impl_lexer_token_from {
                 })+
                 None
             }
+
         }
     };
 }
@@ -191,7 +223,7 @@ impl_lexer_token_from!(CompleteLexer;
     LogicOp,
     // RelOp,
     Natural,
-    Integer,
+    // Integer,
     Real,
     GreekAlpha,
     GreekUpperAlpha,
