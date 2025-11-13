@@ -1,22 +1,22 @@
 //! Circuits module. (src\circuits\circuit.rs)
-//! 
+//!
 //! This module contains the main circuit enum.
-//! 
+//!
 //! The circuit enum can be either [`Sequential`] or [`Combinational`].
-//! 
+//!
 //! [`Sequential`]: crate::circuits::sequential::Sequential
 //! [`Combinational`]: crate::circuits::combinational::Combinational
-//! 
-//! 
-//! 
+//!
+//!
+//!
 //! # Sequential circuits.
-//! 
+//!
 //! This module contains sequential circuits, which are circuits that have memory.
-//! 
+//!
 //! This module contains the following circuits:
 //! - Flip Flop
 //! - Latch
-//! 
+//!
 //! - Register
 //! - Counter
 //! - Shift Register (Serial & Parallel)
@@ -27,9 +27,8 @@ pub mod sequential;
 pub use combinational::*;
 pub use sequential::*;
 
-
 /// This is the main circuit enum.
-/// 
+///
 /// Recived a generic T that would be a [`Combinational`] or a [`Sequential`] circuit.
 /// (Combinational and Sequential are traits)
 ///

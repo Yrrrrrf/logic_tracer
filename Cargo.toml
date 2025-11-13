@@ -20,10 +20,7 @@ members = [
 
 # exclude = [
 #     ".github",
-#     "axion-core/*",
-#     "axion-macros/*",
 # ]
-
 
 # * COMPILE OPTIMIZATION ------------------------------------------------------------------------
 [profile.dev]

@@ -11,7 +11,6 @@ use dev_utils::{
     warn,
 };
 
-
 use logic_tracer::*;
 
 fn main() {
@@ -30,5 +29,4 @@ fn main() {
     }
 
     debug!("src: {}", lexer.src_code);
-
 }

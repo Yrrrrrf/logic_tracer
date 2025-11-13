@@ -32,7 +32,6 @@ pub use lexer::*;
 mod parser;
 pub use parser::*;
 
-
 // the tokens::* can be impl as wanted to avoid having many structs on the components module
 // };
 

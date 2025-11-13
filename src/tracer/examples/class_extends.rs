@@ -9,7 +9,7 @@ macro_rules! class_extends {
             parent: $parent,
             $(pub $field: $type),*
         }
-        
+
         // Constructor básico
         impl $child {
             pub fn new(parent: $parent, $($field: $type),*) -> Self {
@@ -19,11 +19,11 @@ macro_rules! class_extends {
                 }
             }
         }
-        
+
         // Delegación mediante Deref
         impl std::ops::Deref for $child {
             type Target = $parent;
-            
+
             fn deref(&self) -> &Self::Target {
                 &self.parent
             }
@@ -41,7 +41,7 @@ impl Person {
     pub fn new(name: String, age: u32) -> Self {
         Self { name, age }
     }
-    
+
     pub fn greet(&self) {
         println!("Hello, my name is {}", self.name);
     }
@@ -63,18 +63,13 @@ impl Student {
 fn main() {
     let person = Person::new("John".to_string(), 30);
     person.greet();
-    
-    let student = Student::new(
-        Person::new("Alice".to_string(), 20),
-        "MIT".to_string(), 
-        10
-    );
-    
+
+    let student = Student::new(Person::new("Alice".to_string(), 20), "MIT".to_string(), 10);
+
     // Método "heredado" mediante Deref
     student.greet();
 
     // Método propio
     student.study();
     student.parent.greet();
-
 }

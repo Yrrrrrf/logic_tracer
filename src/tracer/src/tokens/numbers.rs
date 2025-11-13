@@ -27,7 +27,7 @@ macro_rules! define_numeric_type {
     ) => {
         $(
             #[derive(Debug, Clone, PartialEq)]
-            pub struct $name { 
+            pub struct $name {
                 value: $native_type,
             }
 

@@ -1,30 +1,30 @@
 //!  Combinational circuits.
-//! 
+//!
 //! This module contains combinational circuits, which are circuits that have no memory.
-//! 
+//!
 //! This module contains the following circuits:
 //! - Arithmetic circuits (base for the ALU)
 //!   - Half Adder
 //!   - Full Adder
 //!   - Half Subtractor
 //!   - Full Subtractor
-//! 
+//!
 //! - Comparator
-//! 
+//!
 //! - Data Selector
 //!   - Multiplexer
 //!   - Demultiplexer
-//! 
+//!
 //! - Arithmetic Logic Unit (ALU)
-//! 
+//!
 //! - Signal Converter
 //!   - Encoder (bin to signal) & Priority Encoder
 //!   - Decoder (signal to bin) & Priority Decoder
-//! 
+//!
 //! - Parity Generator
 //! - Parity Checker
-//! 
-//! 
+//!
+//!
 #![allow(unused)]
 
 // Compare this snippet from src\circuits\sequential.rs:
@@ -41,14 +41,11 @@ pub trait Combinational {
 
 /// # Half Adder
 #[derive(Default, Debug, Clone)]
-pub struct HalfAdder {
-        
-}
+pub struct HalfAdder {}
 
 // todo: CHECK THIS IDEA
 
 // Implement the Combinational ciruits using their functions to calculate the output
 // The output must be a u64 (or u32, u16, u8, etc). This to handle the bit width of the circuit.
 
-
-// some 
+// some

@@ -62,7 +62,6 @@ pub trait Token: Debug {
         // format!("{:>36} :: {self:?}", token_type)  // (format with spacing according to the token_type length...)
         // todo: make this a bit more dynamic...
     }
-
 }
 
 #[macro_export]

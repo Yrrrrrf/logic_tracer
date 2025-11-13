@@ -56,8 +56,7 @@ impl<T: TokenRecognizer> Lexer<T> {
         println!(
             "\nNew {}:\t {}",
             std::any::type_name::<T>().split("::").last().unwrap(),
-            format!("\x1B[1m\x1B[3m{}\x1B[0m\n", src_str)
-            // format!("\x1B[1m\x1B[3m{}\x1B[0m\n", trimmed_str)
+            format!("\x1B[1m\x1B[3m{}\x1B[0m\n", src_str) // format!("\x1B[1m\x1B[3m{}\x1B[0m\n", trimmed_str)
         );
 
         Self {
@@ -68,6 +67,64 @@ impl<T: TokenRecognizer> Lexer<T> {
             _marker: std::marker::PhantomData,
         }
     }
+
+    // /// Creates a new `Lexer` instance with trimmed source code.
+    // ///
+    // /// Removes all whitespace and control characters from the source code.
+    // ///
+    // /// # Arguments
+    // ///
+    // /// * `src_code` - The source code to be tokenized and trimmed.
+    // ///
+    // /// # Example
+    // ///
+    // /// ```
+    // /// use logic_tracer::Lexer;
+    // ///
+    // /// let code = String::from("25.1  *  42\n- 13");
+    // /// let lexer = Lexer::new_trimmed(code);
+    // /// // Source will be: "25.1*42-13"
+    // ///
+    // /// for token in lexer {
+    // ///     println!("{:?}", token);
+    // /// }
+    // /// ```
+    // pub fn new_trimmed<S: Into<String>>(src_code: S) -> Self {
+    //     Self::new(src_code).trim_src()
+    // }
+
+    // /// Trims the source code by removing whitespace and control characters.
+    // ///
+    // /// This method consumes self and returns a new Lexer with trimmed source.
+    // ///
+    // /// # Returns
+    // ///
+    // /// Returns a new `Lexer` with trimmed source code.
+    // ///
+    // /// # Example
+    // ///
+    // /// ```
+    // /// use logic_tracer::Lexer;
+    // ///
+    // /// let code = String::from("25.1  *  42\n- 13");
+    // /// let lexer = Lexer::new(code).trim_src();
+    // /// ```
+    // pub fn trim_src(self) -> Self {
+    //     // Remove all whitespace and control characters from the source code
+    //     let trimmed_str: String = self.src_code
+    //         .chars()
+    //         .filter(|c| !c.is_whitespace()) // remove \t, \n, \r, \x20, etc.
+    //         .filter(|c| !c.is_ascii_control()) // remove \x00 - \x1F, \x7F, etc.
+    //         .collect();
+
+    //     Self {
+    //         src_code: trimmed_str.clone(),
+    //         char_indices: Box::leak(trimmed_str.into_boxed_str())
+    //             .char_indices()
+    //             .peekable(),
+    //         _marker: std::marker::PhantomData,
+    //     }
+    // }
 
     /// Generates a table of tokens by tokenizing the entire source code.
     ///
@@ -131,33 +188,32 @@ impl<T: TokenRecognizer> Iterator for Lexer<T> {
     //     c_token
     // }
 
-fn next(&mut self) -> Option<Self::Item> {
-    let mut accumulated = String::new();
-    let mut last_valid_token: Option<Box<dyn Token>> = None;
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut accumulated = String::new();
+        let mut last_valid_token: Option<Box<dyn Token>> = None;
 
-    // Prime with first character
-    let (_, first_char) = self.char_indices.next()?;
-    accumulated.push(first_char);
-    last_valid_token = T::recognize_token(&accumulated);
+        // Prime with first character
+        let (_, first_char) = self.char_indices.next()?;
+        accumulated.push(first_char);
+        last_valid_token = T::recognize_token(&accumulated);
 
-    // Keep consuming while extension could lead to a valid token
-    while let Some((_, next_char)) = self.char_indices.peek() {
-        if !T::could_match(&accumulated, *next_char) {
-            break;
+        // Keep consuming while extension could lead to a valid token
+        while let Some((_, next_char)) = self.char_indices.peek() {
+            if !T::could_match(&accumulated, *next_char) {
+                break;
+            }
+
+            accumulated.push(*next_char);
+            self.char_indices.next();
+
+            // Update last valid token if this completes one
+            if let Some(token) = T::recognize_token(&accumulated) {
+                last_valid_token = Some(token);
+            }
         }
-        
-        accumulated.push(*next_char);
-        self.char_indices.next();
-        
-        // Update last valid token if this completes one
-        if let Some(token) = T::recognize_token(&accumulated) {
-            last_valid_token = Some(token);
-        }
+
+        last_valid_token
     }
-    
-    last_valid_token
-}
-    
 }
 
 /// Macro to implement a token recognizer for a given set of token types.
