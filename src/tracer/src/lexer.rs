@@ -16,7 +16,7 @@ pub trait TokenRecognizer {
 #[derive(Debug, Clone)]
 /// A lexer for tokenizing source code.
 pub struct Lexer<T: TokenRecognizer> {
-    src_code: String,
+    pub src_code: String,
     char_indices: Peekable<CharIndices<'static>>,
     _marker: std::marker::PhantomData<T>,
 }
@@ -56,7 +56,8 @@ impl<T: TokenRecognizer> Lexer<T> {
         println!(
             "\nNew {}:\t {}",
             std::any::type_name::<T>().split("::").last().unwrap(),
-            format!("\x1B[1m\x1B[3m{}\x1B[0m\n", src_str) // format!("\x1B[1m\x1B[3m{}\x1B[0m\n", trimmed_str)
+            format!("\x1B[1m\x1B[3m{}\x1B[0m\n", src_str)
+            // format!("\x1B[1m\x1B[3m{}\x1B[0m\n", trimmed_str)
         );
 
         Self {
@@ -174,6 +175,11 @@ fn next(&mut self) -> Option<Self::Item> {
 #[macro_export]
 macro_rules! impl_lexer_token_from {
     ($name:ident; $( $token_type:ty ),+ $(,)? ) => {
+        #[derive(Clone)]
+        // clone -> Creates a new instance with the same data
+        // copy -> Creates a bitwise copy (only for types that implement Copy)
+        // diference: Clone is for heap-allocated data, Copy is for simple, stack-allocated data
+        // todo: Probably add the Debug and Copy traits later
         pub struct $name;
 
         impl TokenRecognizer for $name {

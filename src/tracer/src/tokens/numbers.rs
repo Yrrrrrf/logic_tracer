@@ -39,37 +39,21 @@ macro_rules! define_numeric_type {
 
             // impl $trait_name for $name {}
 
-            // impl Token for $name {
-            //     fn from_str<S: Into<String>>(string: S) -> Option<Self> {
-            //         string.into().parse::<$native_type>().ok().map(|value| Self { value })
-            //     }
-            // }
+            impl Token for $name {
+                fn from_str<S: Into<String>>(string: S) -> Option<Self> {
+                    let s = string.into();
+                    // Reject unary operators - let the parser handle them
+                    if s.starts_with('-') || s.starts_with('+') {
+                        return None;
+                    }
+                    s.parse::<$native_type>().ok().map(|value| Self { value })
+
+
+                }
+            }
         )+
         crate::impl_token_trait!($token_type; $trait_name; $($name),+);
     };
-}
-
-// In src/tracer/src/tokens/numbers.rs
-impl Token for Real {
-    fn from_str<S: Into<String>>(string: S) -> Option<Self> {
-        let s = string.into();
-        // ⛔ Reject unary operators - let the parser handle them
-        if s.starts_with('-') || s.starts_with('+') {
-            return None;
-        }
-        s.parse::<f64>().ok().map(|value| Self { value })
-    }
-}
-
-impl Token for Natural {
-    fn from_str<S: Into<String>>(string: S) -> Option<Self> {
-        let s = string.into();
-        // ⛔ Same for naturals
-        if s.starts_with('-') || s.starts_with('+') {
-            return None;
-        }
-        s.parse::<usize>().ok().map(|value| Self { value })
-    }
 }
 
 define_numeric_type!(Number; NumberTrait;
@@ -195,4 +179,4 @@ define_numeric_type!(Number; NumberTrait;
 //     }
 // }
 
-// todo: Also
+// todo: Also implement parsing numbers in different bases (binary, octal, hexadecimal, etc.) using the Digit type

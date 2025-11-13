@@ -20,16 +20,8 @@
 
 ## 🚦 Getting Started
 
-### Installation
-
-Add this crate to your `Cargo.toml`:
-
-```toml
-[dependencies]
-logic_tracer = "0.0.13"
-```
-
-#### Quick Start
+<!--
+### Quick Start
 
 Here's a minimal example to get you started:
 
@@ -40,8 +32,9 @@ use logic_tracer::Proposition;
 let proposition = Proposition::new("A & B");
 // TODO: Add actual usage examples when functionality is implemented
 ```
+-->
 
-## Examples
+### Examples
 
 Check the [examples](./examples/) directory to see how to use the crate.
 
